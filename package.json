@@ -1,0 +1,74 @@
+{
+  "name": "circular-economy",
+  "version": "0.0.0",
+  "description": "An exhibit simulating certain aspects of a circular economy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IMAGINARY/circular-economy.git"
+  },
+  "author": {
+    "name": "Christian Stussak",
+    "email": "christian.stussak@imaginary.org"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IMAGINARY/circular-economy/issues"
+  },
+  "homepage": "https://github.com/IMAGINARY/circular-economy#readme",
+  "source": "src/html/index.html",
+  "engines": {
+    "npm": ">=10.1.0",
+    "node": ">=20.9.0"
+  },
+  "browserslist": [
+    ">= 0.5%",
+    "last 2 major versions",
+    "not dead",
+    "Chrome >= 60",
+    "Firefox >= 60",
+    "Firefox ESR",
+    "iOS >= 12",
+    "Safari >= 12",
+    "not Explorer <= 11",
+    "not OperaMini all"
+  ],
+  "devDependencies": {
+    "@parcel/packager-ts": "^2.10.2",
+    "@parcel/transformer-sass": "^2.10.2",
+    "@types/assert": "^1.5.10",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "eslint": "^8.54.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-compat": "^4.2.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "parcel": "^2.10.2",
+    "parcel-namer-custom": "^0.2.0",
+    "prettier": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "stylelint": "^15.11.0",
+    "stylelint-config-html": "^1.1.0",
+    "stylelint-config-prettier-scss": "^1.0.0"
+  },
+  "parcel-namer-custom": {
+    ".html$": "[name].[type]",
+    "^.*$": "assets/[name].[hash].[type]"
+  },
+  "scripts": {
+    "serve": "parcel serve --dist-dir dist-dev",
+    "clean": "rimraf assets index.html",
+    "prebuild": "npm run clean",
+    "build": "parcel build --public-url '.' --dist-dir '.'",
+    "format": "prettier --write '.'"
+  },
+  "dependencies": {
+    "@imaginary-maths/box-model": "^0.8.0",
+    "assert": "^2.1.0",
+    "chart.js": "^4.4.0",
+    "process": "^0.11.10"
+  }
+}
