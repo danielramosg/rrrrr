@@ -1,178 +1,298 @@
-import {
-  Stock,
-  Flow,
-  Variable,
-  Parameter,
-  LookupFunction,
-  BoxModel,
-} from '@imaginary-maths/box-model';
+// TODO: Build generic model type that takes modelIds as generic parameter
+// TODO: Separate the definition of the concrete model from the generic model
+// TODO: Maybe even create a class for it (?? maybe not, because .. state management again)
 
-const stocks: Stock[] = [
-  {
-    id: 'manufacturer',
-    in: ['natural resources', 'recycle'],
-    out: ['selling'],
-  },
-  {
-    id: 'first hand',
-    in: ['selling', 'refurbish'],
-    out: ['abandon-first-hand', 'break-first-hand'],
-  },
-  {
-    id: 'second hand',
-    in: ['repair', 'reuse'],
-    out: ['abandon-second-hand', 'break-second-hand'],
-  },
-  {
-    id: 'hibernating',
-    in: ['abandon-first-hand', 'abandon-second-hand'],
-    out: ['dispose-hibernating', 'refurbish'],
-  },
-  {
-    id: 'broken',
-    in: ['break-first-hand', 'break-second-hand'],
-    out: ['dispose-broken', 'repair'],
-  },
-  {
-    id: 'landfill',
-    in: ['dispose-hibernating', 'dispose-broken'],
-    out: [],
-  },
-];
+import { FlowEvaluator, step } from './box-model/box-model';
+import { IntegrationEngineOutputArray } from './box-model/types';
 
-const flows: Flow[] = [
-  {
-    id: 'abandon-first-hand',
-    formula: ({ p, s }: { p: LookupFunction; s: LookupFunction }): number =>
-      p('abandon rate') * s('first hand'),
-  },
-  {
-    id: 'abandon-second-hand',
-    formula: ({ p, s }: { p: LookupFunction; s: LookupFunction }): number =>
-      p('abandon rate') * s('second hand'),
-  },
-  {
-    id: 'break-first-hand',
-    formula: ({ p, s }: { p: LookupFunction; s: LookupFunction }): number =>
-      p('break rate') * s('first hand'),
-  },
-  {
-    id: 'break-second-hand',
-    formula: ({ p, s }: { p: LookupFunction; s: LookupFunction }): number =>
-      p('break rate') * s('second hand'),
-  },
-  {
-    id: 'dispose-broken',
-    formula: ({ s }: { s: LookupFunction }): number => 0.4 * s('broken'),
-  },
-  {
-    id: 'dispose-hibernating',
-    formula: ({ s }: { s: LookupFunction }): number => 0.4 * s('hibernating'),
-  },
-  { id: 'natural resources', formula: () => 0.0 },
-  {
-    id: 'recycle',
-    formula: ({ p, s }: { p: LookupFunction; s: LookupFunction }): number =>
-      p('recycle rate') * s('broken'),
-  },
-  {
-    id: 'refurbish',
-    formula: ({ p, s }: { p: LookupFunction; s: LookupFunction }): number =>
-      p('refurbish rate') * s('hibernating'),
-  },
-  {
-    id: 'repair',
-    formula: ({
-      p,
-      s,
-      v,
-    }: {
-      p: LookupFunction;
-      s: LookupFunction;
-      v: LookupFunction;
-    }): number =>
-      Math.min(v('second hand demand') - s('second hand'), s('broken')) *
-      p('repair rate'),
-  },
-  {
-    id: 'reuse',
-    formula: ({
-      p,
-      s,
-      v,
-    }: {
-      p: LookupFunction;
-      s: LookupFunction;
-      v: LookupFunction;
-    }): number =>
-      Math.min(v('second hand demand') - s('second hand'), s('hibernating')) *
-      p('reuse rate'),
-  },
-  {
-    id: 'selling',
-    formula: ({ v, s }: { v: LookupFunction; s: LookupFunction }): number =>
-      v('first hand demand') - s('first hand'),
-  },
-];
+type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+type Ids<T extends ReadonlyArray<string>> = T;
+type TupleToUnion<T extends ReadonlyArray<string>> = Writeable<T>[number];
+type TupleToObject<T extends ReadonlyArray<string>, V> = {
+  [P in TupleToUnion<T>]: V;
+};
+type TupleToNumberArray<T extends ReadonlyArray<string>, V> = {
+  -readonly [P in keyof T]: V;
+};
+type ConvertObjectToArrayFunction<T extends ReadonlyArray<string>, V> = (
+  object: TupleToObject<T, V>,
+) => TupleToNumberArray<T, V>;
+type ConvertArrayToObjectFunction<T extends ReadonlyArray<string>, V> = (
+  array: TupleToNumberArray<T, V>,
+) => TupleToObject<T, V>;
+type COTAF<T extends ReadonlyArray<string>, V> = ConvertObjectToArrayFunction<
+  T,
+  V
+>;
+type CATOF<T extends ReadonlyArray<string>, V> = ConvertArrayToObjectFunction<
+  T,
+  V
+>;
 
-const variables: Variable[] = [
-  {
-    id: 'first hand demand',
-    formula: ({ p }: { p: LookupFunction }): number =>
-      p('global demand') * p('first hand preference'),
-  },
-  {
-    id: 'second hand demand',
-    formula: ({ p, v }: { p: LookupFunction; v: LookupFunction }): number =>
-      p('global demand') - v('first hand demand'),
-  },
-  {
-    id: 'number of items',
-    formula: ({ s }: { s: LookupFunction }): number =>
-      s('first hand') + s('second hand'),
-  },
-];
+const stockIds = [
+  'manufacturer',
+  'firstHand',
+  'secondHand',
+  'hibernating',
+  'broken',
+  'landfill',
+] as const;
 
-const parameters: Parameter[] = [
-  {
-    id: 'first hand preference',
-    value: 0.52,
-  },
-  {
-    id: 'global demand',
-    value: 1000000,
-  },
-  {
-    id: 'abandon rate',
-    value: 0.0,
-  },
-  {
-    id: 'break rate',
-    value: 0.25,
-  },
-  {
-    id: 'repair rate',
-    value: 1.0,
-  },
-  {
-    id: 'reuse rate',
-    value: 1.0,
-  },
-  {
-    id: 'refurbish rate',
-    value: 1.0,
-  },
-  {
-    id: 'recycle rate',
-    value: 0.0,
-  },
-];
+const parameterIds = [
+  'firstHandPreference',
+  'globalDemand',
+  'abandonRate',
+  'breakRate',
+  'repairRate',
+  'reuseRate',
+  'refurbishRate',
+  'recycleRate',
+] as const;
 
-const model: BoxModel = {
-  stocks,
-  flows,
-  variables,
-  parameters,
+const flowIds = [
+  'abandonFirstHand',
+  'abandonSecondHand',
+  'breakFirstHand',
+  'breakSecondHand',
+  'disposeBroken',
+  'disposeHibernating',
+  'naturalResources',
+  'recycle',
+  'refurbish',
+  'repair',
+  'reuse',
+  'selling',
+] as const;
+
+const variableIds = [
+  'firstHandDemand',
+  'secondHandDemand',
+  'numberOfItems',
+] as const;
+
+type StockIds = Ids<typeof stockIds>;
+type StockId = TupleToUnion<StockIds>;
+type Stocks = TupleToObject<StockIds, number>;
+type StockArray = TupleToNumberArray<StockIds, number>;
+
+type ParameterIds = Ids<typeof parameterIds>;
+type ParameterId = TupleToUnion<ParameterIds>;
+type Parameters = TupleToObject<ParameterIds, number>;
+
+type VariableIds = Ids<typeof variableIds>;
+type VariableId = TupleToUnion<VariableIds>;
+type Variables = TupleToObject<VariableIds, number>;
+
+type FlowIds = Ids<typeof flowIds>;
+type FlowId = TupleToUnion<FlowIds>;
+type Flows = TupleToObject<FlowIds, number>;
+
+const modelElementIds = ['stocks', 'parameters', 'variables', 'flows'] as const;
+type ModelElementIds = Ids<typeof modelElementIds>;
+type ModelElementId = TupleToUnion<ModelElementIds>;
+
+type ModelIds = Readonly<{
+  stocks: StockIds;
+  parameters: ParameterIds;
+  variables: VariableIds;
+  flows: FlowIds;
+}>;
+
+const modelIds: ModelIds = {
+  stocks: stockIds,
+  parameters: parameterIds,
+  variables: variableIds,
+  flows: flowIds,
+} as const;
+
+type Record = {
+  t: number;
+  stocks: Stocks;
+  parameters: Parameters;
+  variables: Variables;
+  flows: Flows;
 };
 
-export default model;
+function createCOTAF<T extends ReadonlyArray<string>>(
+  ids: T,
+): (object: TupleToObject<T, number>) => TupleToNumberArray<T, number> {
+  return (object) =>
+    ids.map(
+      (id: keyof TupleToObject<T, number>) => object[id],
+    ) as TupleToNumberArray<T, number>;
+}
+
+function createCATOF<T extends ReadonlyArray<string>>(
+  ids: T,
+): (array: TupleToNumberArray<T, number>) => TupleToObject<T, number> {
+  return (array) => {
+    const result = ids.reduce(
+      (object, id: TupleToUnion<T>, i) => {
+        // eslint-disable-next-line no-param-reassign
+        object[id] = array[i];
+        return object;
+      },
+      {} as Partial<TupleToObject<T, number>>,
+    );
+    return result as TupleToObject<T, number>;
+  };
+}
+
+const stocksToStockArray: COTAF<StockIds, number> = createCOTAF(stockIds);
+const stockArrayToStocks: CATOF<StockIds, number> = createCATOF(stockIds);
+
+function evaluateModel(
+  stocks: Stocks,
+  parameters: Parameters,
+  t: number,
+): Record {
+  const { firstHand, secondHand, hibernating, broken } = stocks;
+  const {
+    firstHandPreference,
+    globalDemand,
+    abandonRate,
+    breakRate,
+    repairRate,
+    reuseRate,
+    refurbishRate,
+    recycleRate,
+  } = parameters;
+
+  const abandonFirstHand = abandonRate * firstHand;
+  const abandonSecondHand = abandonRate * secondHand;
+  const breakFirstHand = breakRate * firstHand;
+  const breakSecondHand = breakRate * secondHand;
+  const disposeBroken = 0.4 * broken;
+  const disposeHibernating = 0.4 * hibernating;
+  const naturalResources = 0.0;
+  const recycle = recycleRate * broken;
+  const refurbish = refurbishRate * hibernating;
+  const firstHandDemand = globalDemand * firstHandPreference;
+  const secondHandDemand = globalDemand - firstHandDemand;
+  const numberOfItems = firstHand + secondHand;
+  const repair = Math.min(secondHandDemand - secondHand, broken) * repairRate;
+  const reuse =
+    Math.min(secondHandDemand - secondHand, hibernating) * reuseRate;
+  const selling = firstHandDemand - firstHand;
+
+  const variables = { firstHandDemand, secondHandDemand, numberOfItems };
+  const flows = {
+    abandonFirstHand,
+    abandonSecondHand,
+    breakFirstHand,
+    breakSecondHand,
+    disposeBroken,
+    disposeHibernating,
+    naturalResources,
+    recycle,
+    refurbish,
+    repair,
+    reuse,
+    selling,
+  };
+
+  return { t, stocks, parameters, variables, flows };
+}
+
+export function accumulateFlowsPerStock(flows: Flows): Stocks {
+  const {
+    abandonFirstHand,
+    abandonSecondHand,
+    breakFirstHand,
+    breakSecondHand,
+    disposeBroken,
+    disposeHibernating,
+    naturalResources,
+    recycle,
+    refurbish,
+    repair,
+    reuse,
+    selling,
+  } = flows;
+  const flowPerStock: Stocks = {
+    manufacturer: naturalResources + recycle - selling,
+    firstHand: selling + refurbish - (abandonFirstHand + breakFirstHand),
+    secondHand: repair + reuse - (abandonSecondHand + breakSecondHand),
+    hibernating:
+      abandonFirstHand + abandonSecondHand - (disposeHibernating + refurbish),
+    broken: breakFirstHand + breakSecondHand - (disposeBroken + repair),
+    landfill: disposeHibernating + disposeBroken,
+  };
+  return flowPerStock;
+}
+
+function createFlowEvaluator(
+  parameters: Parameters,
+): FlowEvaluator<StockArray> {
+  function evaluateFlowPerStock(
+    stocksArray: StockArray,
+    t: number,
+  ): IntegrationEngineOutputArray<StockArray> {
+    const stocks = stockArrayToStocks(stocksArray);
+    const { flows } = evaluateModel(stocks, parameters, t);
+    const flowPerStock = accumulateFlowsPerStock(flows);
+    return stocksToStockArray(flowPerStock);
+  }
+  return evaluateFlowPerStock;
+}
+
+function stepModel(
+  stocks: Stocks,
+  t: number,
+  h: number,
+  flowEvaluator: FlowEvaluator<StockArray>,
+): Stocks {
+  const stocksArray = stocksToStockArray(stocks);
+  const newStocksArray = step<StockArray>(stocksArray, t, h, flowEvaluator);
+  return stockArrayToStocks(newStocksArray);
+}
+
+const initialStocks: Readonly<Stocks> = {
+  manufacturer: 0,
+  firstHand: 0,
+  secondHand: 0,
+  hibernating: 0,
+  broken: 0,
+  landfill: 0,
+};
+const defaultParameters: Readonly<Parameters> = {
+  firstHandPreference: 0.52,
+  globalDemand: 1000000,
+  abandonRate: 0.0,
+  breakRate: 0.25,
+  repairRate: 1.0,
+  reuseRate: 1.0,
+  refurbishRate: 1.0,
+  recycleRate: 0.0,
+};
+
+export type {
+  ModelElementIds,
+  ModelElementId,
+  ModelIds,
+  StockId,
+  StockIds,
+  Stocks,
+  StockArray,
+  ParameterId,
+  ParameterIds,
+  Parameters,
+  VariableId,
+  VariableIds,
+  Variables,
+  FlowId,
+  FlowIds,
+  Flows,
+  Record,
+};
+export {
+  modelElementIds,
+  modelIds,
+  stocksToStockArray,
+  stockArrayToStocks,
+  evaluateModel,
+  stepModel,
+  createFlowEvaluator,
+  defaultParameters,
+  initialStocks,
+};

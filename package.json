@@ -48,6 +48,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "parcel": "^2.10.2",
     "parcel-namer-custom": "^0.2.0",
+    "path-browserify": "^1.0.1",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
     "stylelint": "^15.11.0",
@@ -66,7 +67,6 @@
     "format": "prettier --write '.'"
   },
   "dependencies": {
-    "@imaginary-maths/box-model": "^0.8.0",
     "assert": "^2.1.0",
     "chart.js": "^4.4.0",
     "process": "^0.11.10"

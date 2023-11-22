@@ -1,16 +1,3 @@
-/*
-export type IntegrationEngineInputArray<T> = T extends readonly number[]
-  ? T
-  : T extends ReadonlyArray<number>
-  ? T
-  : never;
-export type IntegrationEngineOutputArray<T> = T extends readonly number[]
-  ? [...T]
-  : T extends ReadonlyArray<number>
-  ? number[]
-  : never;
-*/
-
 export type IntegrationEngineInputArray<T> = T extends readonly number[]
   ? T
   : T extends number[]
