@@ -145,5 +145,10 @@ function converge<T, C>(
   );
 }
 
-export type { FlowEvaluator, ConvergenceCriterion };
+export type {
+  FlowEvaluator,
+  ConvergenceCriterion,
+  IntegrationEngineInputArray,
+  IntegrationEngineOutputArray,
+};
 export { step, converge };

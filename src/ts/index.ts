@@ -1,53 +1,40 @@
 import { strict as assert } from 'assert';
 import Chart from 'chart.js/auto';
 import { animationFrame } from './util/animation-frame';
-import {
-  stepModel,
-  createFlowEvaluator,
-  initialStocks,
-  defaultParameters,
-  evaluateModel,
+import CircularEconomyModel, {
+  Record,
   StockArray,
-  stocksToStockArray,
-  accumulateFlowsPerStock,
-  modelElementIds,
-  modelIds,
-} from './model';
+} from './circular-economy-model';
 
 const modelSource = document.getElementById(
   'model-source',
 ) as HTMLTextAreaElement;
 assert(modelSource !== null, 'model-source element not found');
 
-modelSource.value = `${JSON.stringify(
-  {
-    ...modelIds,
-    initialStocks,
-    defaultParameters,
-  },
-  null,
-  4,
-)}
+// FIXME
+modelSource.value =
+  'Model source code can not be extracted from the compiled bundle. Sorry';
 
-${evaluateModel.toString()}
+const model = new CircularEconomyModel();
 
-${accumulateFlowsPerStock.toString()}
-`;
-
-function toChartRecord(record: ReturnType<typeof evaluateModel>) {
-  return modelElementIds
+function toChartRecord(record: Record) {
+  return CircularEconomyModel.elementIds
     .map((key) =>
       Object.entries(record[key]).map(([id, value]) => ({ id, value })),
     )
     .reduce((cur, acc) => [...cur, ...acc], []);
 }
 
-const parameters = { ...defaultParameters };
-let record = evaluateModel(initialStocks, defaultParameters, 0);
-const evaluateFlowPerStock = createFlowEvaluator(parameters);
+const parameters = { ...CircularEconomyModel.defaultParameters };
+let record = model.evaluate(
+  CircularEconomyModel.initialStocks,
+  CircularEconomyModel.defaultParameters,
+  0,
+);
+const evaluateFlowPerStock = model.createFlowEvaluator(parameters);
 const flowPerStockCache = {
   t: record.t,
-  value: stocksToStockArray(accumulateFlowsPerStock(record.flows)),
+  value: model.stocksToStockArray(model.accumulateFlowsPerStock(record.flows)),
 };
 
 const initialChartRecord = toChartRecord(record);
@@ -74,16 +61,16 @@ function stepSimulation() {
     t === flowPerStockCache.t
       ? flowPerStockCache.value
       : evaluateFlowPerStock(stocks, t);
-  const stocks = stepModel(
+  const stocks = model.step(
     record.stocks,
     record.t,
     h,
     evaluateFlowPerStockWithCache,
   );
-  record = evaluateModel(stocks, parameters, record.t + h);
+  record = model.evaluate(stocks, parameters, record.t + h);
   flowPerStockCache.t = record.t;
-  flowPerStockCache.value = stocksToStockArray(
-    accumulateFlowsPerStock(record.flows),
+  flowPerStockCache.value = model.stocksToStockArray(
+    model.accumulateFlowsPerStock(record.flows),
   );
 
   const chartRecord = toChartRecord(record);
