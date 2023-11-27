@@ -7,35 +7,37 @@ import {
 } from './types';
 import { rk4 } from './ode';
 
-function step<T>(
+function step<T extends readonly number[]>(
   stocksAtT: IntegrationEngineInputArray<T>,
   t: number,
   h: number,
   getFlows: FlowEvaluator<T>,
-  integrator: IVPIntegrator<T> = rk4,
+  integrator: IVPIntegrator<T> = rk4<T>,
 ): IntegrationEngineOutputArray<T> {
   return integrator(stocksAtT, t, h, getFlows);
 }
 
-function converge<T, C>(
+function converge<T extends readonly number[], C>(
   stocksAtT: IntegrationEngineInputArray<T>,
   t: number,
   h: number,
   getFlows: FlowEvaluator<T>,
   criterion: ConvergenceCriterion<T, C>,
-  integrator: IVPIntegrator<T> = rk4,
+  integrator: IVPIntegrator<T> = rk4<T>,
 ): C {
   let iterations = 0;
   let { userdata, done } = criterion(stocksAtT, t, undefined, iterations);
 
   if (!done) {
-    while (!done) {
-      /* eslint-disable no-param-reassign */
-      stocksAtT = integrator(stocksAtT, t, h, getFlows);
-      t += h;
+    let newT = t;
+    let newStocks: IntegrationEngineOutputArray<T> | undefined;
+
+    do {
+      newStocks = integrator(newStocks ?? stocksAtT, newT, h, getFlows);
+      newT += h;
       iterations += 1;
-      ({ userdata, done } = criterion(stocksAtT, t, userdata, iterations));
-    }
+      ({ userdata, done } = criterion(newStocks, newT, userdata, iterations));
+    } while (!done);
   }
 
   return userdata;

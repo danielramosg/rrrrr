@@ -6,7 +6,7 @@ import {
   IVPIntegrator,
 } from './types';
 
-function step5<T>(
+function step5<T extends readonly number[]>(
   stocksAtT: IntegrationEngineInputArray<T>,
   t: number,
   h: number,
@@ -16,7 +16,7 @@ function step5<T>(
   return stepImpl(stocksAtT, t, h, computeFlows, integrator);
 }
 
-function step6<T>(
+function step6<T extends readonly number[]>(
   stocksAtT: IntegrationEngineInputArray<T>,
   flowsAtT: IntegrationEngineInputArray<T>,
   t: number,
@@ -24,20 +24,20 @@ function step6<T>(
   computeFlows: FlowEvaluator<T>,
   integrator?: IVPIntegrator<T>,
 ): IntegrationEngineOutputArray<T> {
-  const mutableFlowsAtT = [...flowsAtT] as IntegrationEngineOutputArray<T>;
+  const mutableFlowsAtT: IntegrationEngineOutputArray<T> = [...flowsAtT];
   const getFlows: FlowEvaluator<T> = (y, x) =>
     x === t ? mutableFlowsAtT : computeFlows(y, x);
   return stepImpl<T>(stocksAtT, t, h, getFlows, integrator);
 }
 
-function step<T>(
+function step<T extends readonly number[]>(
   stocksAtT: IntegrationEngineInputArray<T>,
   t: number,
   h: number,
   computeFlows: FlowEvaluator<T>,
   integrator?: IVPIntegrator<T>,
 ): IntegrationEngineOutputArray<T>;
-function step<T>(
+function step<T extends number[]>(
   stocksAtT: IntegrationEngineInputArray<T>,
   flowsAtT: IntegrationEngineInputArray<T>,
   t: number,
@@ -45,7 +45,7 @@ function step<T>(
   computeFlows: FlowEvaluator<T>,
   integrator?: IVPIntegrator<T>,
 ): IntegrationEngineOutputArray<T>;
-function step<T>(
+function step<T extends readonly number[]>(
   stocksAtT: IntegrationEngineInputArray<T>,
   tOrFlowsAtT: number | IntegrationEngineInputArray<T>,
   tOrH: number,
@@ -72,7 +72,7 @@ function step<T>(
   );
 }
 
-function converge6<T, C>(
+function converge6<T extends readonly number[], C>(
   stocksAtT: IntegrationEngineInputArray<T>,
   t: number,
   h: number,
@@ -83,7 +83,7 @@ function converge6<T, C>(
   return convergeImpl(stocksAtT, t, h, computeFlows, criterion, integrator);
 }
 
-function converge7<T, C>(
+function converge7<T extends readonly number[], C>(
   stocksAtT: IntegrationEngineInputArray<T>,
   flowsAtT: IntegrationEngineInputArray<T>,
   t: number,
@@ -92,13 +92,13 @@ function converge7<T, C>(
   criterion: ConvergenceCriterion<T, C>,
   integrator?: IVPIntegrator<T>,
 ): C {
-  const mutableFlowsAtT = [...flowsAtT] as IntegrationEngineOutputArray<T>;
+  const mutableFlowsAtT: IntegrationEngineOutputArray<T> = [...flowsAtT];
   const getFlows: FlowEvaluator<T> = (y, x) =>
     x === t ? mutableFlowsAtT : computeFlows(y, x);
   return convergeImpl(stocksAtT, t, h, getFlows, criterion, integrator);
 }
 
-function converge<T, C>(
+function converge<T extends readonly number[], C>(
   stocksAtT: IntegrationEngineInputArray<T>,
   t: number,
   h: number,
@@ -106,7 +106,7 @@ function converge<T, C>(
   criterion: ConvergenceCriterion<T, C>,
   integrator?: IVPIntegrator<T>,
 ): C;
-function converge<T, C>(
+function converge<T extends readonly number[], C>(
   stocksAtT: IntegrationEngineInputArray<T>,
   flowsAtT: IntegrationEngineInputArray<T>,
   t: number,
@@ -115,7 +115,7 @@ function converge<T, C>(
   criterion: ConvergenceCriterion<T, C>,
   integrator?: IVPIntegrator<T>,
 ): C;
-function converge<T, C>(
+function converge<T extends readonly number[], C>(
   stocksAtT: IntegrationEngineInputArray<T>,
   tOrFlowsAtT: number | IntegrationEngineInputArray<T>,
   tOrH: number,

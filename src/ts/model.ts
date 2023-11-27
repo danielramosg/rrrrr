@@ -4,26 +4,22 @@ import {
   IntegrationEngineInputArray,
   IntegrationEngineOutputArray,
 } from './box-model/box-model';
+import type {
+  ConvertTupleToUnion,
+  ConvertTupleToObject,
+  ConvertTupleItemType,
+} from './util/type-helpers';
 
-type ModelElementIds = ReadonlyArray<string>;
-
-type Writeable<T> = { -readonly [P in keyof T]: T[P] };
-type TupleToUnion<T extends ModelElementIds> = Writeable<T>[number];
-type TupleToObject<T extends ModelElementIds, V> = {
-  [P in TupleToUnion<T>]: V;
-};
-type TupleToNumberArray<T extends ReadonlyArray<string>> = T extends readonly [
-  string,
-  ...infer R,
-]
-  ? R extends ReadonlyArray<string>
-    ? [number, ...TupleToNumberArray<R>]
-    : never
-  : [];
-
-type ModelElementId<I extends ModelElementIds> = TupleToUnion<I>;
-type ModelElementObject<I extends ModelElementIds> = TupleToObject<I, number>;
-type ModelElementArray<I extends ModelElementIds> = TupleToNumberArray<I>;
+type ModelElementIds = readonly string[];
+type ModelElementId<I extends ModelElementIds> = ConvertTupleToUnion<I>;
+type ModelElementObject<I extends ModelElementIds> = ConvertTupleToObject<
+  I,
+  number
+>;
+type ModelElementArray<I extends ModelElementIds> = ConvertTupleItemType<
+  I,
+  number
+>;
 
 type ModelRecord<
   S extends ModelElementIds,
@@ -82,17 +78,14 @@ abstract class Model<
 
   public static arrayToElementObject<I extends ModelElementIds>(
     ids: I,
-    array: IntegrationEngineInputArray<ModelElementArray<I>>,
+    array: readonly [...ModelElementArray<I>],
   ): ModelElementObject<I> {
-    const result = ids.reduce(
-      (object, id: ModelElementId<I>, i) => {
-        // eslint-disable-next-line no-param-reassign
-        object[id] = array[i];
-        return object;
-      },
-      {} as Partial<TupleToObject<I, number>>,
-    );
-    return result as TupleToObject<I, number>;
+    const result: Partial<ModelElementObject<I>> = {};
+    for (let i = 0; i < ids.length; i += 1) {
+      const id: ModelElementId<I> = ids[i];
+      result[id] = array[i];
+    }
+    return result as ModelElementObject<I>;
   }
 
   public stocksToStockArray(
@@ -102,7 +95,7 @@ abstract class Model<
   }
 
   public stockArrayToStocks(
-    stockArray: IntegrationEngineInputArray<ModelElementArray<S>>,
+    stockArray: readonly [...ModelElementArray<S>],
   ): ModelElementObject<S> {
     return Model.arrayToElementObject(this.stockIds, stockArray);
   }
@@ -114,7 +107,7 @@ abstract class Model<
   }
 
   public flowArrayToFlows(
-    flowArray: IntegrationEngineInputArray<ModelElementArray<F>>,
+    flowArray: readonly [...ModelElementArray<F>],
   ): ModelElementObject<F> {
     return Model.arrayToElementObject(this.flowIds, flowArray);
   }
@@ -126,7 +119,7 @@ abstract class Model<
   }
 
   public variableArrayToVariables(
-    variableArray: IntegrationEngineInputArray<ModelElementArray<V>>,
+    variableArray: readonly [...ModelElementArray<V>],
   ): ModelElementObject<V> {
     return Model.arrayToElementObject(this.variableIds, variableArray);
   }
@@ -138,7 +131,7 @@ abstract class Model<
   }
 
   public parameterArrayToParameters(
-    parameterArray: IntegrationEngineInputArray<ModelElementArray<P>>,
+    parameterArray: readonly [...ModelElementArray<P>],
   ): ModelElementObject<P> {
     return Model.arrayToElementObject(this.parameterIds, parameterArray);
   }
@@ -172,7 +165,6 @@ abstract class Model<
       const stocks = this.stockArrayToStocks(stocksArray);
       const flowsPerStock = this.evaluateFlowPerStock(stocks, parameters, t);
       const flowPerStockArray = this.stocksToStockArray(flowsPerStock);
-      // @ts-expect-error TypeScript seems to have issues inferring the generic type
       return flowPerStockArray;
     };
     return result;
@@ -184,9 +176,7 @@ abstract class Model<
     h: number,
     flowEvaluator: FlowEvaluator<ModelElementArray<S>>,
   ): ModelElementObject<S> {
-    // @ts-expect-error TypeScript seems to have issues inferring the generic type
-    const stocksArray: IntegrationEngineInputArray<ModelElementArray<S>> =
-      this.stocksToStockArray(stocks);
+    const stocksArray: ModelElementArray<S> = this.stocksToStockArray(stocks);
     const newStocksArray = step<ModelElementArray<S>>(
       stocksArray,
       t,

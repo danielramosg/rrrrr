@@ -1,10 +1,11 @@
-import {
-  Model,
+import type {
   ModelElementIds,
   ModelElementArray,
   ModelElementObject,
   ModelRecord,
 } from './model';
+import { Model } from './model';
+
 import { FlowEvaluator } from './box-model/types';
 
 class ModelSimulator<
@@ -23,7 +24,7 @@ class ModelSimulator<
 
   protected flowPerStockCache: {
     t: number;
-    value: ModelElementArray<S>;
+    value: readonly [...ModelElementArray<S>];
   } | null;
 
   protected flowEvaluator: FlowEvaluator<ModelElementArray<S>>;
@@ -43,19 +44,17 @@ class ModelSimulator<
     this.record = this.model.evaluate(stocks, parameters, t);
     this.h = h;
     this.flowEvaluator = this.model.createFlowEvaluator(parameters);
-    // @ts-expect-error FIXME: Generic type inference issue
     this.flowEvaluatorWithCache = this.evaluateFlowPerStockWithCache.bind(this);
   }
 
   protected evaluateFlowPerStockWithCache(
-    stockArray: ModelElementArray<S>,
+    stockArray: readonly [...ModelElementArray<S>],
     t: number,
-  ): ModelElementArray<S> {
+  ): [...ModelElementArray<S>] {
     if (this.flowPerStockCache !== null && this.flowPerStockCache.t === t)
-      return this.flowPerStockCache.value;
+      return [...this.flowPerStockCache.value];
 
-    // @ts-expect-error FIXME: Generic type inference issue
-    return this.flowEvaluator(stockArray, this.parameters, t);
+    return this.flowEvaluator(stockArray, t);
   }
 
   step(): ModelRecord<S, F, V, P> {

@@ -3,7 +3,7 @@ import {
   IntegrationEngineOutputArray,
 } from './types';
 
-export function euler<T>(
+export function euler<T extends readonly number[]>(
   y: IntegrationEngineInputArray<T>,
   x: number,
   h: number,
@@ -19,7 +19,7 @@ export function euler<T>(
   return yTemp;
 }
 
-export function rk4<T>(
+export function rk4<T extends readonly number[]>(
   y: IntegrationEngineInputArray<T>,
   x: number,
   h: number,
