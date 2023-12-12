@@ -4,15 +4,6 @@ import { animationFrame } from './util/animation-frame';
 import CircularEconomyModel, { Record } from './circular-economy-model';
 import ModelSimulator from './model-simulator';
 
-const modelSource = document.getElementById(
-  'model-source',
-) as HTMLTextAreaElement;
-assert(modelSource !== null, 'model-source element not found');
-
-// FIXME
-modelSource.value =
-  'Model source code can not be extracted from the compiled bundle. Sorry';
-
 const model = new CircularEconomyModel();
 const modelSimulator = new ModelSimulator(
   model,
