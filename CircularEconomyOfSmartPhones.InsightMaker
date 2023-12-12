@@ -1,0 +1,1305 @@
+<InsightMakerModel>
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    <Setting Note="" Version="37" TimeLength="200" TimeStart="0" TimeStep="1" TimeUnits="Days" Units="" SolutionAlgorithm="RK4" BackgroundColor="white" Throttle="1" Macros="" SensitivityPrimitives="" SensitivityRuns="50" SensitivityBounds="50, 80, 95, 100" SensitivityShowRuns="false" StyleSheet="{}" id="2">
+      <mxCell parent="1" vertex="1" visible="0">
+        <mxGeometry x="20" y="20" width="80" height="40" as="geometry" />
+      </mxCell>
+    </Setting>
+    <Display name="Default Display" Note="" Type="Time Series" xAxis="Time (%u)" yAxis="%o" Primitives="93,98,140,146,147,155,157,160,163,197,201,102,100,97,94,96,222,224,234,242,251,255,261,263,274,276" AutoAddPrimitives="true" ScatterplotOrder="X Primitive, Y Primitive" Image="Display" yAxis2="" Primitives2="" showMarkers="false" showLines="true" showArea="false" legendPosition="Automatic" id="3">
+      <mxCell style="roundImage;image=/builder/images/DisplayFull.png;" parent="1" vertex="1" visible="0">
+        <mxGeometry x="50" y="20" width="64" height="64" as="geometry" />
+      </mxCell>
+    </Display>
+    <Stock name="Supply of repaired phones" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="93" id="93">
+      <mxCell style="stock" parent="1" vertex="1">
+        <mxGeometry x="1600" y="90" width="100" height="60" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Stock name="Supply of recycled materials" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="96" id="96">
+      <mxCell style="stock" parent="1" vertex="1">
+        <mxGeometry x="1060" y="1490" width="120" height="60" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Stock name="Supply of refurbished phones" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="98" id="98">
+      <mxCell style="stock" parent="1" vertex="1">
+        <mxGeometry x="1410" y="1400" width="100" height="60" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Flow name="landfill" Note="" FlowRate="[Landfill rate]*[Supply of disposed phones for landfilling]" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="110" id="110">
+      <mxCell style="flow;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="157" edge="1">
+        <mxGeometry x="1080" y="530" width="100" height="100" as="geometry">
+          <mxPoint x="2520" y="1140" as="sourcePoint" />
+          <mxPoint x="2790" y="1150" as="targetPoint" />
+          <Array as="points" />
+          <mxPoint y="-20" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="acquire repaired" Note="" FlowRate="[Acquire rate]*Min([Demand for repaired phones],[Supply of repaired phones])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="122" id="122">
+      <mxCell style="flow;strokeWidth=6;strokeColor=#99CC00;fontSize=16;fontColor=#339966;endArrow=open;fontStyle=1;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="93" target="94" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="780" y="360" as="sourcePoint" />
+          <mxPoint x="880" y="260" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1490" y="500" />
+          </Array>
+          <mxPoint x="-5" y="-280" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="acquire newly produced" Note="" FlowRate="[Acquire rate]*Min([Supply of newly produced phones],[Demand for newly produced phones])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="123" id="123">
+      <mxCell style="flow;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="97" target="94" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="960" y="640" as="sourcePoint" />
+          <mxPoint x="180" y="340" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1100" y="640" />
+          </Array>
+          <mxPoint x="-38" y="-20" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="acquire refurbished" Note="" FlowRate="[Acquire rate]*Min([Demand for refurbished phones],[Supply of refurbished phones])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="125" id="125">
+      <mxCell style="flow;strokeWidth=6;strokeColor=#99CC00;fontSize=16;fontColor=#339966;endArrow=open;fontStyle=1;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="98" target="94" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="770" y="360" as="sourcePoint" />
+          <mxPoint x="870" y="260" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1250" y="1430" />
+          </Array>
+          <mxPoint x="-140" y="-45" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="repair" Note="" FlowRate="[Repair rate]*Min([Supply of broken phones],[Repair demand])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="127" id="127">
+      <mxCell style="flow;strokeWidth=6;strokeColor=#99CC00;fontSize=16;fontColor=#339966;endArrow=open;fontStyle=1;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="102" target="93" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="1000" y="360" as="sourcePoint" />
+          <mxPoint x="1100" y="260" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="2390" y="570" />
+          </Array>
+          <mxPoint x="45" y="-270" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="produce from recycled materials" Note="" FlowRate="[New phone production rate]*Min([Demand for recycled materials],[Supply of recycled materials])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="128" id="128">
+      <mxCell style="flow;strokeWidth=6;strokeColor=#99CC00;fontSize=16;fontColor=#339966;endArrow=open;fontStyle=1;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="96" target="97" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="2160" y="1040" as="sourcePoint" />
+          <mxPoint x="1990" y="1460" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="900" y="1080" />
+          </Array>
+          <mxPoint x="-130" y="350" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="refurbish" Note="" FlowRate="[Refurbishment rate]*Min([Supply of hibernating phones],[Demand for refurbishment])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="136" id="136">
+      <mxCell style="flow;strokeWidth=6;strokeColor=#99CC00;fontSize=16;fontColor=#339966;endArrow=open;fontStyle=1;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="100" target="98" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="970" y="310" as="sourcePoint" />
+          <mxPoint x="1070" y="210" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1850" y="1430" />
+          </Array>
+          <mxPoint x="-100" y="113" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="produce from natural resources" Note="" FlowRate="[New phone production rate]*[Demand for natural resources]" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="107" id="107">
+      <mxCell style="flow;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" target="97" edge="1">
+        <mxGeometry x="420" y="320" width="100" height="100" as="geometry">
+          <mxPoint x="260" y="640" as="sourcePoint" />
+          <mxPoint x="760" y="690" as="targetPoint" />
+          <Array as="points" />
+          <mxPoint y="-30" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="dispose hibernating" Note="" FlowRate="[Dispose rate]*[Supply of hibernating phones]" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="120" id="120">
+      <mxCell style="flow;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="100" target="157" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="830" y="630" as="sourcePoint" />
+          <mxPoint x="2320" y="1090" as="targetPoint" />
+          <Array as="points" />
+          <mxPoint x="-80" y="-35" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="dispose broken" Note="" FlowRate="[Dispose rate]*[Supply of broken phones for disposal]" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="121" id="121">
+      <mxCell style="flow;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="102" target="157" edge="1">
+        <mxGeometry x="760" y="880" width="100" height="100" as="geometry">
+          <mxPoint x="650" y="830" as="sourcePoint" />
+          <mxPoint x="2060" y="1340" as="targetPoint" />
+          <Array as="points" />
+          <mxPoint x="-75" y="-20" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Stock name="Supply of newly produced phones" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="97" id="97">
+      <mxCell style="stock" parent="1" vertex="1">
+        <mxGeometry x="845" y="600" width="100" height="80" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Stock name="Phones in use" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="94" id="94">
+      <mxCell style="stock" parent="1" vertex="1">
+        <mxGeometry x="1190" y="620" width="710" height="40" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Stock name="Supply of hibernating phones" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="100" id="100">
+      <mxCell style="stock" parent="1" vertex="1">
+        <mxGeometry x="1800" y="1120" width="100" height="60" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Stock name="Supply of broken phones" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="102" id="102">
+      <mxCell style="stock" parent="1" vertex="1">
+        <mxGeometry x="2340" y="620" width="100" height="40" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Flow name="go broken" Note="" FlowRate="([Break rate]/[Durability])*[Phones in use]" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="116" id="116">
+      <mxCell style="flow;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="94" target="102" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="870" y="370" as="sourcePoint" />
+          <mxPoint x="970" y="270" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="2200" y="640" />
+          </Array>
+          <mxPoint x="10" y="-20" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="abandon" Note="" FlowRate="[Abandon rate]*[Phones in use excess]" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="118" id="118">
+      <mxCell style="flow;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="94" target="100" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="590" y="360" as="sourcePoint" />
+          <mxPoint x="1730" y="690" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1630" y="1150" />
+          </Array>
+          <mxPoint x="-25" y="220" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Flow name="acquire used" Note="" FlowRate="[Acquire rate]*Min([Supply of hibernating phones],[Demand for reused phones])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="131" id="131">
+      <mxCell style="flow;strokeColor=#99CC00;strokeWidth=6;fontColor=#339966;fontSize=16;fontStyle=1;endArrow=open;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="100" target="94" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="900" y="510" as="sourcePoint" />
+          <mxPoint x="1000" y="410" as="targetPoint" />
+          <Array as="points" />
+          <mxPoint x="59" y="-73" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Stock name="Supply of disposed phones" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="157" id="157">
+      <mxCell style="stock" parent="1" vertex="1">
+        <mxGeometry x="2320" y="1120" width="130" height="60" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Flow name="recycle" Note="" FlowRate="[Recycle rate]*Min([Supply of disposed phones for recycling],[Recycle demand])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="158" id="158">
+      <mxCell style="flow;strokeWidth=6;strokeColor=#99CC00;fontSize=16;fontColor=#339966;endArrow=open;fontStyle=1;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="157" target="96" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="2280" y="860" as="sourcePoint" />
+          <mxPoint x="1660" y="1190" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="2390" y="1330" />
+          </Array>
+          <mxPoint x="275" y="153" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Link name="Link" Note="" BiDirectional="false" oldId="161" id="161">
+      <mxCell style="link" parent="1" source="94" target="160" edge="1">
+        <mxGeometry x="580" y="320" width="100" height="100" as="geometry">
+          <mxPoint x="580" y="420" as="sourcePoint" />
+          <mxPoint x="680" y="320" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Newly produced phone incentive" Note="" Equation="0.82" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="1" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="163" id="163">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FDCDAC;" parent="1" vertex="1">
+        <mxGeometry x="945" y="840" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Variable name="Reuse incentive" Note="" Equation="0.86" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="1" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="165" id="165">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FDCDAC;" parent="1" vertex="1">
+        <mxGeometry x="1710" y="1040" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="174" id="174">
+      <mxCell style="link" parent="1" source="155" target="128" edge="1">
+        <mxGeometry x="430" y="320" width="100" height="100" as="geometry">
+          <mxPoint x="430" y="420" as="sourcePoint" />
+          <mxPoint x="530" y="320" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="540" y="1110" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="175" id="175">
+      <mxCell style="link" parent="1" source="155" target="107" edge="1">
+        <mxGeometry x="310" y="320" width="100" height="100" as="geometry">
+          <mxPoint x="310" y="420" as="sourcePoint" />
+          <mxPoint x="540" y="650" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="400" y="740" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="193" id="193">
+      <mxCell style="link" parent="1" source="188" target="229" edge="1">
+        <mxGeometry x="370" y="345" width="100" height="100" as="geometry">
+          <mxPoint x="370" y="445" as="sourcePoint" />
+          <mxPoint x="470" y="345" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="340" y="1640" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="203" id="203">
+      <mxCell style="link" parent="1" source="197" target="107" edge="1">
+        <mxGeometry x="-120" y="60" width="100" height="100" as="geometry">
+          <mxPoint x="-120" y="160" as="sourcePoint" />
+          <mxPoint x="-20" y="60" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="210" id="210">
+      <mxCell style="link" parent="1" source="209" target="123" edge="1">
+        <mxGeometry x="290" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="260" as="sourcePoint" />
+          <mxPoint x="390" y="160" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1190" y="770" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Capacity adjustment rate" Note="" Equation="0.1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="201" id="201">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="270" y="330" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="202" id="202">
+      <mxCell style="link" parent="1" source="201" target="238" edge="1">
+        <mxGeometry x="-150.5" y="110.52" width="100" height="100" as="geometry">
+          <mxPoint x="-150.5" y="210.51999999999998" as="sourcePoint" />
+          <mxPoint x="559.844827586207" y="459.4855172413793" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Demand for recycled materials" Note="" Equation="[Recycling incentive]/([Natural resources incentive]+[Recycling incentive])*[Resource demand]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="222" id="222">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="720" y="850" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="223" id="223">
+      <mxCell style="link" parent="1" source="222" target="128" edge="1">
+        <mxGeometry x="290" y="-40" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="60" as="sourcePoint" />
+          <mxPoint x="390" y="-40" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Resource demand" Note="" Equation="Max([Capacity of newly produced phones]-[Supply of newly produced phones],0)" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="224" id="224">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="830" y="530" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="225" id="225">
+      <mxCell style="link" parent="1" source="197" target="224" edge="1">
+        <mxGeometry x="90" y="140" width="100" height="100" as="geometry">
+          <mxPoint x="90" y="240" as="sourcePoint" />
+          <mxPoint x="190" y="140" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="226" id="226">
+      <mxCell style="link" parent="1" source="97" target="224" edge="1">
+        <mxGeometry x="170" y="140" width="100" height="100" as="geometry">
+          <mxPoint x="170" y="240" as="sourcePoint" />
+          <mxPoint x="270" y="140" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="227" id="227">
+      <mxCell style="link" parent="1" source="224" target="222" edge="1">
+        <mxGeometry x="230" y="265" width="100" height="100" as="geometry">
+          <mxPoint x="230" y="365" as="sourcePoint" />
+          <mxPoint x="800" y="1325" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="730" y="670" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Demand for natural resources" Note="" Equation="[Natural resources incentive]/([Natural resources incentive]+[Recycling incentive])*[Resource demand]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="229" id="229">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="520" y="850" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="230" id="230">
+      <mxCell style="link" parent="1" source="224" target="229" edge="1">
+        <mxGeometry x="110" y="265" width="100" height="100" as="geometry">
+          <mxPoint x="110" y="365" as="sourcePoint" />
+          <mxPoint x="210" y="265" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="620" y="660" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="231" id="231">
+      <mxCell style="link" parent="1" source="229" target="107" edge="1">
+        <mxGeometry x="170" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="170" y="260" as="sourcePoint" />
+          <mxPoint x="270" y="160" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Number of users" Note="" Equation="1000000" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10000000" SliderMin="0" SliderStep="100" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="140" id="140">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FDCDAC;" parent="1" vertex="1">
+        <mxGeometry x="1120" y="290" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Variable name="Phones per user goal" Note="" Equation="1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="146" id="146">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FDCDAC;" parent="1" vertex="1">
+        <mxGeometry x="1285" y="290" width="130" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Variable name="Phone goal" Note="" Equation="[Number of users]*[Phones per user goal]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="147" id="147">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="1120" y="380" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="148" id="148">
+      <mxCell style="link" parent="1" source="140" target="147" edge="1">
+        <mxGeometry x="600" y="-120" width="100" height="100" as="geometry">
+          <mxPoint x="600" y="-20" as="sourcePoint" />
+          <mxPoint x="700" y="-120" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="149" id="149">
+      <mxCell style="link" parent="1" source="146" target="147" edge="1">
+        <mxGeometry x="600" y="-120" width="100" height="100" as="geometry">
+          <mxPoint x="600" y="-20" as="sourcePoint" />
+          <mxPoint x="700" y="-120" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="150" id="150">
+      <mxCell style="link" parent="1" source="147" target="160" edge="1">
+        <mxGeometry x="647.5" y="-100" width="100" height="100" as="geometry">
+          <mxPoint x="647.5" as="sourcePoint" />
+          <mxPoint x="747.5" y="-100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Demand for phones" Note="" Equation="Max(0,[Phone goal]-[Phones in use])" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="160" id="160">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="1120" y="470" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Variable name="Acquire rate" Note="" Equation="1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="209" id="209">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="1280" y="740" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Stock name="Capacity of newly produced phones" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="197" id="197">
+      <mxCell style="stock;fillColor=#CCFFFF;" parent="1" vertex="1">
+        <mxGeometry x="840" y="430" width="100" height="75" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Variable name="Recycling incentive" Note="" Equation="0.89" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="1" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="188" id="188">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FDCDAC;" parent="1" vertex="1">
+        <mxGeometry x="1060" y="1570" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Variable name="New phone production rate" Note="" Equation="0.5" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="155" id="155">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="320" y="850" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Variable name="Demand for newly produced phones" Note="" Equation="([Newly produced phone incentive]/[Inflow incentive sum for phones in use])*[Demand for phones]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="234" id="234">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="1010" y="540" width="130" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="235" id="235">
+      <mxCell style="link" parent="1" source="163" target="234" edge="1">
+        <mxGeometry x="390" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="390" y="260" as="sourcePoint" />
+          <mxPoint x="490" y="160" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="970" y="600" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="237" id="237">
+      <mxCell style="link" parent="1" source="160" target="234" edge="1">
+        <mxGeometry x="320" y="190" width="100" height="100" as="geometry">
+          <mxPoint x="320" y="290" as="sourcePoint" />
+          <mxPoint x="420" y="190" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Flow name="Capacity of newly produced phones adjustment" Note="" FlowRate="[Capacity adjustment rate]*([Demand for newly produced phones]-[Capacity of newly produced phones])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="238" id="238">
+      <mxCell style="flow;startArrow=classic;startFill=0;fillColor=none;labelBackgroundColor=none;" parent="1" target="197" edge="1">
+        <mxGeometry y="-50" width="100" height="100" as="geometry">
+          <mxPoint x="830" y="360" as="sourcePoint" />
+          <mxPoint x="902.5" y="830" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="890" y="440" />
+          </Array>
+          <mxPoint x="10" y="-113" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Link name="Link" Note="" BiDirectional="false" oldId="241" id="241">
+      <mxCell style="link" parent="1" source="234" target="123" edge="1">
+        <mxGeometry x="170" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="170" y="260" as="sourcePoint" />
+          <mxPoint x="1040" y="630" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Stock name="Capacity of recycled materials" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="242" id="242">
+      <mxCell style="stock;fillColor=#CCFFFF;" parent="1" vertex="1">
+        <mxGeometry x="1060" y="1360" width="130" height="40" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Flow name="Capacity of recycled materials adjustment" Note="" FlowRate="[Capacity adjustment rate]*([Demand for recycled materials]-[Capacity of recycled materials])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="243" id="243">
+      <mxCell style="flow;fillColor=none;labelBackgroundColor=none;startArrow=block;startFill=0;" parent="1" target="242" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="960" y="1300" as="sourcePoint" />
+          <mxPoint x="1545.69" y="1510" as="targetPoint" />
+          <Array as="points" />
+          <mxPoint x="-30" y="90" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Link name="Link" Note="" BiDirectional="false" oldId="244" id="244">
+      <mxCell style="link" parent="1" source="201" target="243" edge="1">
+        <mxGeometry x="-180" y="520" width="100" height="100" as="geometry">
+          <mxPoint x="-180" y="620" as="sourcePoint" />
+          <mxPoint x="-80" y="520" as="targetPoint" />
+          <Array as="points">
+            <mxPoint y="1190" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="245" id="245">
+      <mxCell style="link" parent="1" source="222" target="243" edge="1">
+        <mxGeometry x="-180" y="30" width="100" height="100" as="geometry">
+          <mxPoint x="-180" y="130" as="sourcePoint" />
+          <mxPoint x="-80" y="30" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="790" y="1260" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Landfill incentive" Note="" Equation="0.5" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="1" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="248" id="248">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;" parent="1" vertex="1">
+        <mxGeometry x="2500" y="1350" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Variable name="Recycle rate" Note="" Equation="1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="251" id="251">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="1065" y="1290" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="254" id="254">
+      <mxCell style="link" parent="1" source="251" target="158" edge="1">
+        <mxGeometry x="290" y="370" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="470" as="sourcePoint" />
+          <mxPoint x="390" y="370" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1210" y="1330" />
+            <mxPoint x="1220" y="1460" />
+            <mxPoint x="1410" y="1470" />
+            <mxPoint x="1910" y="1470" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Recycle demand" Note="" Equation="Max([Capacity of recycled materials]-[Supply of recycled materials],0)" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="255" id="255">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="1065" y="1420" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="256" id="256">
+      <mxCell style="link" parent="1" source="255" target="158" edge="1">
+        <mxGeometry x="290" y="350" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="450" as="sourcePoint" />
+          <mxPoint x="390" y="350" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1300" y="1500" />
+            <mxPoint x="1800" y="1480" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="257" id="257">
+      <mxCell style="link" parent="1" source="96" target="255" edge="1">
+        <mxGeometry x="-170" y="300" width="100" height="100" as="geometry">
+          <mxPoint x="-170" y="400" as="sourcePoint" />
+          <mxPoint x="-70" y="300" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="258" id="258">
+      <mxCell style="link" parent="1" source="242" target="255" edge="1">
+        <mxGeometry x="-185" y="430" width="100" height="100" as="geometry">
+          <mxPoint x="-185" y="530" as="sourcePoint" />
+          <mxPoint x="-85" y="430" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Landfill rate" Note="" Equation="1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="261" id="261">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="2660" y="1210" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="262" id="262">
+      <mxCell style="link" parent="1" source="261" target="110" edge="1">
+        <mxGeometry x="570" y="430" width="100" height="100" as="geometry">
+          <mxPoint x="570" y="530" as="sourcePoint" />
+          <mxPoint x="670" y="430" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Abandon rate" Note="" Equation="0.1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="263" id="263">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="1430" y="950" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="264" id="264">
+      <mxCell style="link" parent="1" source="263" target="118" edge="1">
+        <mxGeometry x="470" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="470" y="260" as="sourcePoint" />
+          <mxPoint x="570" y="160" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Break rate" Note="" Equation="0.1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="265" id="265">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="1960" y="570" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="266" id="266">
+      <mxCell style="link" parent="1" source="265" target="116" edge="1">
+        <mxGeometry x="470" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="470" y="260" as="sourcePoint" />
+          <mxPoint x="570" y="160" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Dispose rate" Note="" Equation="0.5" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="268" id="268">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="2080" y="890" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="269" id="269">
+      <mxCell style="link" parent="1" source="268" target="120" edge="1">
+        <mxGeometry x="470" y="430" width="100" height="100" as="geometry">
+          <mxPoint x="470" y="530" as="sourcePoint" />
+          <mxPoint x="570" y="430" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="270" id="270">
+      <mxCell style="link" parent="1" source="268" target="121" edge="1">
+        <mxGeometry x="320" y="630" width="100" height="100" as="geometry">
+          <mxPoint x="320" y="730" as="sourcePoint" />
+          <mxPoint x="420" y="630" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Demand for refurbishment" Note="" Equation="Max([Capacity of refurbished phones]-[Supply of refurbished phones],0)" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="274" id="274">
+      <mxCell style="variable;fillColor=#FFFF99;shape=rectangle;perimeter=rectanglePerimeter;" parent="1" vertex="1">
+        <mxGeometry x="1400" y="1330" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Stock name="Capacity of refurbished phones" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="276" id="276">
+      <mxCell style="stock;fillColor=#CCFFFF;" parent="1" vertex="1">
+        <mxGeometry x="1395" y="1260" width="130" height="40" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Flow name="Capacity of refurbished phones adjustment" Note="" FlowRate="[Capacity adjustment rate]*([Demand for refurbished phones]-[Capacity of refurbished phones])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="277" id="277">
+      <mxCell style="flow;startArrow=block;startFill=0;fillColor=none;labelBackgroundColor=none;" parent="1" target="276" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="1320" y="1220" as="sourcePoint" />
+          <mxPoint x="885" y="1060" as="targetPoint" />
+          <Array as="points" />
+          <mxPoint x="-28" y="80" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Link name="Link" Note="" BiDirectional="false" oldId="278" id="278">
+      <mxCell style="link" parent="1" source="276" target="274" edge="1">
+        <mxGeometry x="150" y="20" width="100" height="100" as="geometry">
+          <mxPoint x="150" y="120" as="sourcePoint" />
+          <mxPoint x="250" y="20" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="279" id="279">
+      <mxCell style="link" parent="1" source="98" target="274" edge="1">
+        <mxGeometry x="150" y="40" width="100" height="100" as="geometry">
+          <mxPoint x="150" y="140" as="sourcePoint" />
+          <mxPoint x="250" y="40" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Refurbishment rate" Note="" Equation="1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="281" id="281">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="1400" y="1190" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="282" id="282">
+      <mxCell style="link" parent="1" source="281" target="136" edge="1">
+        <mxGeometry x="290" y="-40" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="60" as="sourcePoint" />
+          <mxPoint x="390" y="-40" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1660" y="1270" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Refurbishment incentive" Note="" Equation="0.5" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="1" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="283" id="283">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;" parent="1" vertex="1">
+        <mxGeometry x="1400" y="1120" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="287" id="287">
+      <mxCell style="link" parent="1" source="283" target="120" edge="1">
+        <mxGeometry x="470" y="-40" width="100" height="100" as="geometry">
+          <mxPoint x="470" y="60" as="sourcePoint" />
+          <mxPoint x="570" y="-40" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1880" y="1270" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="290" id="290">
+      <mxCell style="link" parent="1" source="234" target="238" edge="1">
+        <mxGeometry x="170" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="170" y="260" as="sourcePoint" />
+          <mxPoint x="270" y="160" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Demand for refurbished phones" Note="" Equation="([Refurbishment incentive]/[Inflow incentive sum for phones in use])*[Demand for phones]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="295" id="295">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="1405" y="1030" width="120" height="60" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="298" id="298">
+      <mxCell style="link" parent="1" source="160" target="295" edge="1">
+        <mxGeometry x="260" y="-156.22000000000003" width="100" height="100" as="geometry">
+          <mxPoint x="260" y="-56.22000000000003" as="sourcePoint" />
+          <mxPoint x="360" y="-156.22000000000003" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1100" y="840" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="300" id="300">
+      <mxCell style="link" parent="1" source="295" target="277" edge="1">
+        <mxGeometry x="370" y="-256.22" width="100" height="100" as="geometry">
+          <mxPoint x="370" y="-156.22000000000003" as="sourcePoint" />
+          <mxPoint x="470" y="-256.22" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1370" y="1120" />
+            <mxPoint x="1390" y="1220" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="301" id="301">
+      <mxCell style="link" parent="1" source="201" target="277" edge="1">
+        <mxGeometry x="37.849999999999994" y="-79.94999999999999" width="100" height="100" as="geometry">
+          <mxPoint x="37.849999999999994" y="20.05000000000001" as="sourcePoint" />
+          <mxPoint x="137.85" y="-79.94999999999999" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="10" y="1330" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="302" id="302">
+      <mxCell style="link" parent="1" source="274" target="136" edge="1">
+        <mxGeometry x="290" y="-40" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="60" as="sourcePoint" />
+          <mxPoint x="390" y="-40" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1630" y="1370" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Repair demand" Note="" Equation="Max([Capacity of repaired phones]-[Supply of repaired phones],0)" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="303" id="303">
+      <mxCell style="variable;fillColor=#FFFF99;shape=rectangle;perimeter=rectanglePerimeter;" parent="1" vertex="1">
+        <mxGeometry x="1590" y="180" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Stock name="Capacity of repaired phones" Note="" InitialValue="0" StockMode="Store" Delay="10" Volume="100" NonNegative="true" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="304" id="304">
+      <mxCell style="stock;fillColor=#CCFFFF;" parent="1" vertex="1">
+        <mxGeometry x="1580" y="270" width="130" height="40" as="geometry" />
+      </mxCell>
+    </Stock>
+    <Flow name="Repair shop capcity adjustment" Note="" FlowRate="[Capacity adjustment rate]*([Demand for repaired phones]-[Capacity of repaired phones])" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="305" id="305">
+      <mxCell style="flow;startArrow=block;startFill=0;fillColor=none;labelBackgroundColor=none;" parent="1" target="304" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint x="1510" y="310" as="sourcePoint" />
+          <mxPoint x="1870" y="200" as="targetPoint" />
+          <Array as="points" />
+          <mxPoint x="-5" y="-60" as="offset" />
+        </mxGeometry>
+      </mxCell>
+    </Flow>
+    <Link name="Link" Note="" BiDirectional="false" oldId="306" id="306">
+      <mxCell style="link" parent="1" source="304" target="303" edge="1">
+        <mxGeometry x="500" y="-760" width="100" height="100" as="geometry">
+          <mxPoint x="500" y="-660" as="sourcePoint" />
+          <mxPoint x="600" y="-760" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Demand for repaired phones" Note="" Equation="([Repair incentive]/[Inflow incentive sum for phones in use])*[Demand for phones]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="308" id="308">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="1575" y="530" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="309" id="309">
+      <mxCell style="link" parent="1" source="93" target="303" edge="1">
+        <mxGeometry x="160" y="-530" width="100" height="100" as="geometry">
+          <mxPoint x="160" y="-430" as="sourcePoint" />
+          <mxPoint x="260" y="-530" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="312" id="312">
+      <mxCell style="link" parent="1" source="160" target="308" edge="1">
+        <mxGeometry x="290" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="260" as="sourcePoint" />
+          <mxPoint x="390" y="160" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="314" id="314">
+      <mxCell style="link" parent="1" source="308" target="305" edge="1">
+        <mxGeometry x="410" y="-840" width="100" height="100" as="geometry">
+          <mxPoint x="410" y="-740" as="sourcePoint" />
+          <mxPoint x="510" y="-840" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1530" y="470" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="315" id="315">
+      <mxCell style="link" parent="1" source="201" target="305" edge="1">
+        <mxGeometry x="290" y="110" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="210" as="sourcePoint" />
+          <mxPoint x="390" y="110" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1020" y="20" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Demand for reused phones" Note="" Equation="([Reuse incentive]/[Inflow incentive sum for phones in use])*[Demand for phones]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="321" id="321">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="1710" y="960" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="323" id="323">
+      <mxCell style="link" parent="1" source="160" target="321" edge="1">
+        <mxGeometry x="290" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="260" as="sourcePoint" />
+          <mxPoint x="390" y="160" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1390" y="740" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="325" id="325">
+      <mxCell style="link" parent="1" source="165" target="321" edge="1">
+        <mxGeometry x="130" y="380" width="100" height="100" as="geometry">
+          <mxPoint x="130" y="480" as="sourcePoint" />
+          <mxPoint x="230" y="380" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Repair rate" Note="" Equation="1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="326" id="326">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" parent="1" vertex="1">
+        <mxGeometry x="1580" y="370" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="327" id="327">
+      <mxCell style="link" parent="1" source="326" target="127" edge="1">
+        <mxGeometry x="290" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="260" as="sourcePoint" />
+          <mxPoint x="390" y="160" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="328" id="328">
+      <mxCell style="link" parent="1" source="303" target="127" edge="1">
+        <mxGeometry x="290" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="260" as="sourcePoint" />
+          <mxPoint x="390" y="160" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Dispose incentive" Note="" Equation="0.5" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="1" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="329" id="329">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;" parent="1" vertex="1">
+        <mxGeometry x="2460" y="620" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="331" id="331">
+      <mxCell style="link" parent="1" source="329" target="413" edge="1">
+        <mxGeometry x="140" y="630" width="100" height="100" as="geometry">
+          <mxPoint x="140" y="730" as="sourcePoint" />
+          <mxPoint x="240" y="630" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="2490" y="760" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Phones in use excess" Note="" Equation="Max([Phones in use]-[Phone goal],0)" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="337" id="337">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="1290" y="380" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="338" id="338">
+      <mxCell style="link" parent="1" source="147" target="337" edge="1">
+        <mxGeometry x="425" y="80" width="100" height="100" as="geometry">
+          <mxPoint x="425" y="180" as="sourcePoint" />
+          <mxPoint x="525" y="80" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="340" id="340">
+      <mxCell style="link" parent="1" source="337" target="118" edge="1">
+        <mxGeometry x="290" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="260" as="sourcePoint" />
+          <mxPoint x="390" y="160" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1460" y="870" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="346" id="346">
+      <mxCell style="link" parent="1" source="308" target="122" edge="1">
+        <mxGeometry x="330" y="-840" width="100" height="100" as="geometry">
+          <mxPoint x="330" y="-740" as="sourcePoint" />
+          <mxPoint x="430" y="-840" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1510" y="460" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="350" id="350">
+      <mxCell style="link" parent="1" source="94" target="337" edge="1">
+        <mxGeometry x="290" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="260" as="sourcePoint" />
+          <mxPoint x="390" y="160" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1530" y="480" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Durability" Note="" Equation="1" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="100" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="351" id="351">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;" parent="1" vertex="1">
+        <mxGeometry x="2190" y="570" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="352" id="352">
+      <mxCell style="link" parent="1" source="351" target="116" edge="1">
+        <mxGeometry x="290" y="160" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="260" as="sourcePoint" />
+          <mxPoint x="390" y="160" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Repair incentive" Note="" Equation="0.5" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="1" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="353" id="353">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;" parent="1" vertex="1">
+        <mxGeometry x="1580" y="450" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Variable name="Supply of disposed phones for recycling" Note="" Equation="([Recycling incentive]/([Recycling incentive]+[Landfill incentive]))*[Supply of disposed phones]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="354" id="354">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="2500" y="1510" width="120" height="60" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="356" id="356">
+      <mxCell style="link" parent="1" source="248" target="354" edge="1">
+        <mxGeometry x="140" y="590" width="100" height="100" as="geometry">
+          <mxPoint x="140" y="690" as="sourcePoint" />
+          <mxPoint x="240" y="590" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="357" id="357">
+      <mxCell style="link" parent="1" source="157" target="354" edge="1">
+        <mxGeometry x="140" y="430" width="100" height="100" as="geometry">
+          <mxPoint x="140" y="530" as="sourcePoint" />
+          <mxPoint x="240" y="430" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="2450" y="1410" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="358" id="358">
+      <mxCell style="link" parent="1" source="354" target="158" edge="1">
+        <mxGeometry x="290" y="-40" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="60" as="sourcePoint" />
+          <mxPoint x="390" y="-40" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="2210" y="1580" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Supply of disposed phones for landfilling" Note="" Equation="([Landfill incentive]/([Recycling incentive]+[Landfill incentive]))*[Supply of disposed phones]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="359" id="359">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="2500" y="1210" width="120" height="60" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="360" id="360">
+      <mxCell style="link" parent="1" source="248" target="359" edge="1">
+        <mxGeometry x="120" y="430" width="100" height="100" as="geometry">
+          <mxPoint x="120" y="530" as="sourcePoint" />
+          <mxPoint x="220" y="430" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="362" id="362">
+      <mxCell style="link" parent="1" source="359" target="110" edge="1">
+        <mxGeometry x="140" y="430" width="100" height="100" as="geometry">
+          <mxPoint x="140" y="530" as="sourcePoint" />
+          <mxPoint x="240" y="430" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="363" id="363">
+      <mxCell style="link" parent="1" source="157" target="359" edge="1">
+        <mxGeometry x="140" y="430" width="100" height="100" as="geometry">
+          <mxPoint x="140" y="530" as="sourcePoint" />
+          <mxPoint x="240" y="430" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="365" id="365">
+      <mxCell style="link" parent="1" source="188" target="354" edge="1">
+        <mxGeometry x="290" y="-70" width="100" height="100" as="geometry">
+          <mxPoint x="290" y="30" as="sourcePoint" />
+          <mxPoint x="390" y="-70" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="2080" y="1640" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="366" id="366">
+      <mxCell style="link" parent="1" source="188" target="359" edge="1">
+        <mxGeometry x="-360" y="-160" width="100" height="100" as="geometry">
+          <mxPoint x="-360" y="-60" as="sourcePoint" />
+          <mxPoint x="-260" y="-160" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="3240" y="1800" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="367" id="367">
+      <mxCell style="link" parent="1" source="209" target="125" edge="1">
+        <mxGeometry y="50" width="100" height="100" as="geometry">
+          <mxPoint y="150" as="sourcePoint" />
+          <mxPoint x="100" y="50" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1340" y="1020" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="368" id="368">
+      <mxCell style="link" parent="1" source="209" target="122" edge="1">
+        <mxGeometry y="50" width="100" height="100" as="geometry">
+          <mxPoint y="150" as="sourcePoint" />
+          <mxPoint x="100" y="50" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1410" y="460" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="369" id="369">
+      <mxCell style="link" parent="1" source="209" target="131" edge="1">
+        <mxGeometry y="50" width="100" height="100" as="geometry">
+          <mxPoint y="150" as="sourcePoint" />
+          <mxPoint x="100" y="50" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1690" y="720" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="375" id="375">
+      <mxCell style="link" parent="1" source="188" target="222" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="470" y="1610" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Inflow incentive sum for phones in use" Note="" Equation="[Reuse incentive]+[Repair incentive]+[Refurbishment incentive]+[Newly produced phone incentive]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="387" id="387">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="1920" y="710" width="140" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="388" id="388">
+      <mxCell style="link" parent="1" source="353" target="387" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1910" y="500" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="391" id="391">
+      <mxCell style="link" parent="1" source="165" target="387" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1950" y="1020" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="392" id="392">
+      <mxCell style="link" parent="1" source="163" target="387" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1570" y="830" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="394" id="394">
+      <mxCell style="link" parent="1" source="283" target="387" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1670" y="1170" />
+            <mxPoint x="1980" y="1040" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="395" id="395">
+      <mxCell style="link" parent="1" source="387" target="308" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1870" y="480" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="396" id="396">
+      <mxCell style="link" parent="1" source="387" target="321" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1930" y="980" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="397" id="397">
+      <mxCell style="link" parent="1" source="387" target="295" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1760" y="800" />
+            <mxPoint x="1640" y="1050" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="398" id="398">
+      <mxCell style="link" parent="1" source="387" target="234" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1900" y="560" />
+            <mxPoint x="1660" y="610" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="400" id="400">
+      <mxCell style="link" parent="1" source="283" target="295" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="401" id="401">
+      <mxCell style="link" parent="1" source="353" target="308" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Natural resources incentive" Note="" Equation="0.5" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="1" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="402" id="402">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FDCDAC;" parent="1" vertex="1">
+        <mxGeometry x="620" y="770" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="403" id="403">
+      <mxCell style="link" parent="1" source="402" target="229" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="404" id="404">
+      <mxCell style="link" parent="1" source="402" target="222" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="405" id="405">
+      <mxCell style="link" parent="1" source="321" target="131" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="407" id="407">
+      <mxCell style="link" parent="1" source="295" target="125" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="1260" y="1120" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="1320" y="1130" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Supply of broken phones for repair" Note="" Equation="([Repair incentive]/([Repair incentive]+[Dispose incentive]))*[Supply of broken phones]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="408" id="408">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="2180" y="435" width="130" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="409" id="409">
+      <mxCell style="link" parent="1" source="329" target="408" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="2450" y="470" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="410" id="410">
+      <mxCell style="link" parent="1" source="353" target="408" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="411" id="411">
+      <mxCell style="link" parent="1" source="408" target="127" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="412" id="412">
+      <mxCell style="link" parent="1" source="102" target="408" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Supply of broken phones for disposal" Note="" Equation="([Dispose incentive]/([Repair incentive]+[Dispose incentive]))*[Supply of broken phones]" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="413" id="413">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FFFF99;" parent="1" vertex="1">
+        <mxGeometry x="2220" y="740" width="120" height="60" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="414" id="414">
+      <mxCell style="link" parent="1" source="353" target="413" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+          <Array as="points">
+            <mxPoint x="2020" y="480" />
+            <mxPoint x="2210" y="650" />
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="415" id="415">
+      <mxCell style="link" parent="1" source="102" target="413" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Link name="Link" Note="" BiDirectional="false" oldId="416" id="416">
+      <mxCell style="link" parent="1" source="413" target="121" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+  </root>
+</InsightMakerModel>
