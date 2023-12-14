@@ -1,5 +1,7 @@
 import { strict as assert } from 'assert';
 import Chart from 'chart.js/auto';
+import Sortable from 'sortablejs';
+
 import { animationFrame } from './util/animation-frame';
 import type {
   StockIds,
@@ -7,10 +9,15 @@ import type {
   VariableIds,
   ParameterIds,
 } from './circular-economy-model';
-import CircularEconomyModel, { Record } from './circular-economy-model';
+import CircularEconomyModel, {
+  Parameters,
+  Record,
+} from './circular-economy-model';
 import ModelSimulator from './model-simulator';
 import Visualization from './visualization';
 import { documentReady } from './util/document-ready';
+import { guardedQuerySelector } from './util/guarded-query-selectors';
+import ScriptedParameterTransform from './parameter-transform/scripted-parameter-transform';
 
 type CircularEconomyModelSimulator = ModelSimulator<
   StockIds,
@@ -19,30 +26,137 @@ type CircularEconomyModelSimulator = ModelSimulator<
   ParameterIds
 >;
 
-declare global {
-  interface Window {
-    modelSimulator: Promise<CircularEconomyModelSimulator>;
-  }
-}
+type ScriptCircularEconomyParameterTransform =
+  ScriptedParameterTransform<ParameterIds>;
 
-let modelSimulatorResolver: (value: CircularEconomyModelSimulator) => void;
-window.modelSimulator = new Promise<CircularEconomyModelSimulator>(
-  (resolve) => {
-    modelSimulatorResolver = resolve;
-  },
-);
+type CircularEconomyApi = {
+  model: CircularEconomyModel;
+  modelSimulator: CircularEconomyModelSimulator;
+  parameterTransforms: {
+    create: (id: string, script: string) => void;
+    destroy: (id: string) => void;
+  };
+};
 
-async function init() {
+async function init(): Promise<CircularEconomyApi> {
   const model = new CircularEconomyModel();
   const modelSimulator = new ModelSimulator(
     model,
-    CircularEconomyModel.initialStocks,
-    CircularEconomyModel.defaultParameters,
+    // FIXME: It should be possible to pass CircularEconomyModel.initialStocks directly, but TypeScript does not complain.
+    { ...CircularEconomyModel.initialStocks },
+    // FIXME: It should be possible to pass CircularEconomyModel.defaultParameters directly, but TypeScript does not complain.
+    { ...CircularEconomyModel.defaultParameters },
     0.0,
     0.01,
   );
 
-  modelSimulatorResolver(modelSimulator);
+  const availableParameterTransformsContainer = guardedQuerySelector(
+    document,
+    '#parameter-transforms .available',
+    HTMLElement,
+  );
+  const activeParameterTransformsContainer = guardedQuerySelector(
+    document,
+    '#parameter-transforms .active',
+    HTMLElement,
+  );
+
+  const availableParameterTransforms = new Map<
+    string,
+    ScriptCircularEconomyParameterTransform
+  >();
+
+  function getDistinctParameters(
+    p1: Parameters,
+    p2: Parameters,
+  ): Partial<Parameters> {
+    const result: Partial<Parameters> = {};
+    model.parameterIds.forEach((id) => {
+      if (p1[id] !== p2[id]) {
+        result[id] = p2[id];
+      }
+    });
+    return result;
+  }
+
+  function updateParameters() {
+    const parameters = { ...CircularEconomyModel.defaultParameters };
+    [...activeParameterTransformsContainer.children].forEach((e) => {
+      assert(e instanceof HTMLElement);
+      const id = e.getAttribute('data-id');
+      assert(id !== null);
+      const parameterTransform = availableParameterTransforms.get(id);
+      assert(parameterTransform !== undefined);
+      const backupParameters = { ...parameters };
+      parameterTransform.applyTo(parameters);
+      const distinctParameters = getDistinctParameters(
+        backupParameters,
+        parameters,
+      );
+      e.title = `${parameterTransform.script}\n\n${JSON.stringify(
+        distinctParameters,
+        null,
+        2,
+      )}\n\n${JSON.stringify(parameters, null, 2)}`;
+    });
+    Object.assign(modelSimulator.parameters, parameters);
+  }
+
+  Sortable.create(availableParameterTransformsContainer, {
+    group: {
+      name: 'sharedParameterTransforms',
+      pull: 'clone',
+      put: false, // Do not allow items to be put into this list
+    },
+  });
+  Sortable.create(activeParameterTransformsContainer, {
+    group: { name: 'sharedParameterTransforms' },
+    removeOnSpill: true,
+    onSort: () => updateParameters(),
+    onSpill: () => updateParameters(),
+  });
+  const parameterTransforms = {
+    create: (id: string, script: string) => {
+      if (availableParameterTransforms.has(id))
+        throw new Error(`Parameter transform with id '${id}' already exists`);
+      availableParameterTransforms.set(
+        id,
+        new ScriptedParameterTransform<ParameterIds>(
+          'none',
+          model.parameterIds,
+          script,
+        ),
+      );
+      const dummyElement = document.createElement('div');
+      dummyElement.innerHTML = `<div class="parameter-transform" data-id="${id}">${id}</div>`;
+      const parameterTransformElement = dummyElement.firstChild;
+      assert(parameterTransformElement !== null);
+      availableParameterTransformsContainer.append(parameterTransformElement);
+    },
+    destroy: (id: string) => {
+      availableParameterTransforms.delete(id);
+    },
+  };
+
+  guardedQuerySelector(
+    document,
+    '#add-parameter-transform',
+    HTMLElement,
+  ).addEventListener('click', () => {
+    const idElement = guardedQuerySelector(
+      document,
+      '#parameter-transform-id',
+      HTMLInputElement,
+    );
+    const id = idElement.value;
+    const scriptElement = guardedQuerySelector(
+      document,
+      '#parameter-transform-script',
+      HTMLTextAreaElement,
+    );
+    const script = scriptElement.value;
+    parameterTransforms.create(id, script);
+  });
 
   const visualization = await Visualization.create(model);
   document.body.prepend(visualization.element);
@@ -110,8 +224,20 @@ async function init() {
   });
 
   stepSimulation(0);
+
+  const circularEconomyApi: CircularEconomyApi = {
+    model,
+    modelSimulator,
+    parameterTransforms,
+  };
+
+  return circularEconomyApi;
 }
 
-documentReady()
-  .then(init)
-  .catch((err) => console.error('Initialization failed', err));
+declare global {
+  interface Window {
+    circularEconomy: Promise<CircularEconomyApi>;
+  }
+}
+
+window.circularEconomy = documentReady().then(init);

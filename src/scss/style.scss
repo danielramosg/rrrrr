@@ -4,3 +4,12 @@ body,
   width: 100%;
   height: 100%;
 }
+
+#parameter-transforms {
+  & * {
+    min-width: 100px;
+    max-width: 200px;
+    min-height: 20px;
+    border: solid 1px;
+  }
+}

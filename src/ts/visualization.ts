@@ -3,6 +3,7 @@ import kebabCase from 'lodash/kebabCase';
 import { ModelElementObject } from './model';
 import CircularEconomyModel, { Record } from './circular-economy-model';
 import { loadSvg } from './util/load-svg';
+import { guardedQuerySelector } from './util/guarded-query-selectors';
 
 const svgUrl = new URL('../svg/model.svg', import.meta.url);
 
@@ -41,23 +42,6 @@ const flowVizSigns: ModelElementObject<MainFlowIds> = {
   refurbish: -1,
   repair: -1,
 };
-
-function guardedQuerySelector<T extends Element>(
-  elem: Element | Document,
-  selector: string,
-  type: { new (...args: unknown[]): T },
-): T {
-  const result = elem.querySelector(selector);
-  if (result === null) {
-    throw new Error(`No element found matching selector ${selector}.`);
-  }
-  if (!(result instanceof type)) {
-    throw new Error(
-      `Element matching selector ${selector} has the wrong type.`,
-    );
-  }
-  return result;
-}
 
 export default class Visualization {
   protected readonly model: CircularEconomyModel;
