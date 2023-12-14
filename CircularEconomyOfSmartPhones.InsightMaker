@@ -171,7 +171,7 @@
         </mxGeometry>
       </mxCell>
     </Flow>
-    <Flow name="abandon" Note="" FlowRate="[Abandon rate]*[Phones in use excess]" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="118" id="118">
+    <Flow name="abandon" Note="" FlowRate="[Abandon rate]*[Phones in use]+[Abandon excess rate]*[Phones in use excess]" OnlyPositive="false" TimeIndependent="false" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="false" SliderMax="100" SliderMin="0" SliderStep="" oldId="118" id="118">
       <mxCell style="flow;fillColor=none;labelBackgroundColor=none;startArrow=none;startFill=0;" parent="1" source="94" target="100" edge="1">
         <mxGeometry width="100" height="100" as="geometry">
           <mxPoint x="590" y="360" as="sourcePoint" />
@@ -1295,6 +1295,19 @@
     </Link>
     <Link name="Link" Note="" BiDirectional="false" oldId="416" id="416">
       <mxCell style="link" parent="1" source="413" target="121" edge="1">
+        <mxGeometry width="100" height="100" as="geometry">
+          <mxPoint y="100" as="sourcePoint" />
+          <mxPoint x="100" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+    </Link>
+    <Variable name="Abandon excess rate" Note="" Equation="0.5" Units="Unitless" MaxConstraintUsed="false" MinConstraintUsed="false" MaxConstraint="100" MinConstraint="0" ShowSlider="true" SliderMax="10" SliderMin="0" SliderStep="0.01" Image="None" FlipHorizontal="false" FlipVertical="false" LabelPosition="Middle" oldId="417" id="417">
+      <mxCell style="variable;shape=rectangle;perimeter=rectanglePerimeter;fillColor=#FF99CC;" vertex="1" parent="1">
+        <mxGeometry x="1390" y="879" width="120" height="50" as="geometry" />
+      </mxCell>
+    </Variable>
+    <Link name="Link" Note="" BiDirectional="false" oldId="419" id="419">
+      <mxCell style="link" edge="1" parent="1" source="417" target="118">
         <mxGeometry width="100" height="100" as="geometry">
           <mxPoint y="100" as="sourcePoint" />
           <mxPoint x="100" as="targetPoint" />

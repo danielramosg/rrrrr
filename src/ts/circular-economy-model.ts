@@ -64,6 +64,7 @@ const variableIds = [
 ] as const;
 
 const parameterIds = [
+  'abandonExcessRate',
   'abandonRate',
   'acquireRate',
   'breakRate',
@@ -131,6 +132,7 @@ class CircularEconomyModel extends Model<
   };
 
   public static readonly defaultParameters: Readonly<Parameters> = {
+    abandonExcessRate: 0.5,
     abandonRate: 0.1,
     acquireRate: 1,
     breakRate: 0.1,
@@ -175,6 +177,7 @@ class CircularEconomyModel extends Model<
       supplyOfRepairedPhones,
     } = stocks;
     const {
+      abandonExcessRate,
       abandonRate,
       acquireRate,
       breakRate,
@@ -200,7 +203,8 @@ class CircularEconomyModel extends Model<
 
     const phoneGoal = numberOfUsers * phonesPerUserGoal;
     const phonesInUseExcess = Math.max(phonesInUse - phoneGoal, 0);
-    const abandon = abandonRate * phonesInUseExcess;
+    const abandon =
+      abandonRate * phonesInUse + abandonExcessRate * phonesInUseExcess;
     const inflowIncentiveSumForPhonesInUse =
       reuseIncentive +
       repairIncentive +
