@@ -113,7 +113,10 @@ async function init(): Promise<CircularEconomyApi> {
     group: { name: 'sharedParameterTransforms' },
     removeOnSpill: true,
     onSort: () => updateParameters(),
-    onSpill: () => updateParameters(),
+    onSpill: (event) => {
+      event.item.remove();
+      updateParameters();
+    },
   });
   const parameterTransforms = {
     create: (id: string, script: string) => {
