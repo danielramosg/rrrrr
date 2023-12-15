@@ -161,6 +161,20 @@ async function init(): Promise<CircularEconomyApi> {
     parameterTransforms.create(id, script);
   });
 
+  let circularityIndex = 0;
+  const circularityIndexElement = guardedQuerySelector(
+    document,
+    '#circularity-index',
+    HTMLElement,
+  );
+
+  let userSatisfaction = 0;
+  const userSatisfactionElement = guardedQuerySelector(
+    document,
+    '#user-satisfaction',
+    HTMLElement,
+  );
+
   const visualization = await Visualization.create(model);
   document.body.prepend(visualization.element);
 
@@ -190,8 +204,62 @@ async function init(): Promise<CircularEconomyApi> {
     options: { animation: false },
   });
 
+  function updateIndices(record: Record) {
+    const smoothingFactor = 0.5;
+
+    const { phonesInUse } = record.stocks;
+    const {
+      produceFromNaturalResources,
+      acquireNewlyProduced,
+      acquireUsed,
+      acquireRepaired,
+      acquireRefurbished,
+      disposeHibernating,
+      disposeBroken,
+      landfill,
+    } = record.flows;
+    const { phoneGoal } = record.variables;
+
+    const naturalResourcesShare = Math.min(
+      1.0,
+      produceFromNaturalResources /
+        (acquireNewlyProduced +
+          acquireUsed +
+          acquireRepaired +
+          acquireRefurbished),
+    );
+    const landfillShare = Math.min(
+      1.0,
+      landfill / (disposeHibernating + disposeBroken),
+    );
+    const circularityIndexTarget = Math.min(
+      1.0 - naturalResourcesShare,
+      1.0 - landfillShare,
+    );
+
+    circularityIndex +=
+      (circularityIndexTarget - circularityIndex) * smoothingFactor;
+    circularityIndexElement.innerText = `${(circularityIndex * 100).toFixed(
+      2,
+    )}%`;
+
+    const userSatisfactionTarget =
+      phonesInUse < phoneGoal
+        ? phonesInUse / phoneGoal
+        : phoneGoal / phonesInUse;
+    userSatisfaction +=
+      (userSatisfactionTarget - userSatisfaction) * smoothingFactor;
+    userSatisfactionElement.innerText = `${(userSatisfaction * 100).toFixed(
+      2,
+    )}%`;
+  }
+
   function stepSimulation(deltaMs: number) {
+    // TODO: pass deltaMs to modelSimulator.step()
     const record = modelSimulator.step();
+
+    updateIndices(record);
+
     const chartRecord = toChartRecord(record);
     // console.log(chartRecord);
     chart.data.datasets[0].data = chartRecord.map((row) => row.value);
