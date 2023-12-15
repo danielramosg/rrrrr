@@ -1,1 +1,0 @@
-{"mappings":"ACAA","sources":["index.aed3424d.css","src/scss/style.scss"],"sourcesContent":["html, body, #model-source {\n  width: 100%;\n  height: 100%;\n}\n\n/*# sourceMappingURL=index.aed3424d.css.map */\n","html,\nbody,\n#model-source {\n  width: 100%;\n  height: 100%;\n}\n"],"names":[],"version":3,"file":"index.aed3424d.css.map"}
