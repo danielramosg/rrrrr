@@ -210,7 +210,11 @@ class CircularEconomyModel extends Model<
       repairIncentive +
       refurbishmentIncentive +
       newlyProducedPhoneIncentive;
-    const demandForPhones = Math.max(0, phoneGoal - phonesInUse);
+    const goBroken = breakRate * phonesInUse;
+    const demandForPhones = Math.max(
+      0,
+      phoneGoal - phonesInUse + goBroken + abandon,
+    );
     const demandForNewlyProducedPhones =
       (newlyProducedPhoneIncentive / inflowIncentiveSumForPhonesInUse) *
       demandForPhones;
@@ -240,7 +244,9 @@ class CircularEconomyModel extends Model<
       capacityAdjustmentRate *
       (demandForNewlyProducedPhones - capacityOfNewlyProducedPhones);
     const demandForResources = Math.max(
-      capacityOfNewlyProducedPhones - supplyOfNewlyProducedPhones,
+      capacityOfNewlyProducedPhones -
+        supplyOfNewlyProducedPhones +
+        acquireNewlyProduced,
       0,
     );
     const demandForRecycledMaterials =
@@ -262,7 +268,6 @@ class CircularEconomyModel extends Model<
       supplyOfHibernatingPhones;
     const disposeHibernating =
       disposeRate * supplyOfHibernatingPhonesForDisposal;
-    const goBroken = breakRate * phonesInUse;
     const supplyOfDisposedPhonesForLandfilling =
       (landfillIncentive / (recyclingIncentive + landfillIncentive)) *
       supplyOfDisposedPhones;
@@ -280,7 +285,9 @@ class CircularEconomyModel extends Model<
       (recyclingIncentive / (recyclingIncentive + landfillIncentive)) *
       supplyOfDisposedPhones;
     const demandForRecycling = Math.max(
-      capacityOfRecycledMaterials - supplyOfRecycledMaterials,
+      capacityOfRecycledMaterials -
+        supplyOfRecycledMaterials +
+        produceFromRecycledMaterials,
       0,
     );
     const recycle =
@@ -291,7 +298,9 @@ class CircularEconomyModel extends Model<
         (reuseIncentive + refurbishmentIncentive + disposeIncentive)) *
       supplyOfHibernatingPhones;
     const demandForRefurbishment = Math.max(
-      capacityOfRefurbishedPhones - supplyOfRefurbishedPhones,
+      capacityOfRefurbishedPhones -
+        supplyOfRefurbishedPhones +
+        acquireRefurbished,
       0,
     );
     const refurbish =
@@ -301,7 +310,7 @@ class CircularEconomyModel extends Model<
         demandForRefurbishment,
       );
     const demandForRepair = Math.max(
-      capacityOfRepairedPhones - supplyOfRepairedPhones,
+      capacityOfRepairedPhones - supplyOfRepairedPhones + acquireRepaired,
       0,
     );
     const repair = repairRate * Math.min(supplyOfBrokenPhones, demandForRepair);
