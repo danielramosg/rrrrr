@@ -147,8 +147,7 @@ async function init(): Promise<CircularEconomyApi> {
   });
   const parameterTransforms = {
     create: (id: string, script: string) => {
-      if (availableParameterTransforms.has(id))
-        throw new Error(`Parameter transform with id '${id}' already exists`);
+      const exists = availableParameterTransforms.has(id);
       availableParameterTransforms.set(
         id,
         new ScriptedParameterTransform<ParameterIds>(
@@ -157,11 +156,18 @@ async function init(): Promise<CircularEconomyApi> {
           script,
         ),
       );
-      const dummyElement = document.createElement('div');
-      dummyElement.innerHTML = `<div class="parameter-transform" data-id="${id}">${id}</div>`;
-      const parameterTransformElement = dummyElement.firstChild;
-      assert(parameterTransformElement !== null);
-      availableParameterTransformsContainer.append(parameterTransformElement);
+      if (exists) {
+        console.warn(
+          `Overwriting parameter transform with id '${id}' because it already existed.`,
+        );
+        updateParameters();
+      } else {
+        const dummyElement = document.createElement('div');
+        dummyElement.innerHTML = `<div class="parameter-transform" data-id="${id}">${id}</div>`;
+        const parameterTransformElement = dummyElement.firstChild;
+        assert(parameterTransformElement !== null);
+        availableParameterTransformsContainer.append(parameterTransformElement);
+      }
     },
     destroy: (id: string) => {
       availableParameterTransforms.delete(id);
