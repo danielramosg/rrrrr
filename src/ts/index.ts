@@ -38,7 +38,29 @@ type CircularEconomyApi = {
   };
 };
 
-const initialParameters = { ...CircularEconomyModel.defaultParameters };
+const initialParameters = {
+  abandonExcessRate: 0.5,
+  abandonRate: 0.02,
+  acquireRate: 1.0,
+  breakRate: 0.01,
+  capacityAdjustmentRate: 0.05,
+  disposeIncentive: 1.5,
+  disposeRate: 0.5,
+  landfillIncentive: 1.0,
+  landfillRate: 1.0,
+  naturalResourcesIncentive: 1.5,
+  newPhoneProductionRate: 1.0,
+  newlyProducedPhoneIncentive: 2,
+  numberOfUsers: 1000000,
+  phonesPerUserGoal: 1.2,
+  recycleRate: 1.0,
+  recyclingIncentive: 0.25,
+  refurbishmentIncentive: 0.25,
+  refurbishmentRate: 1.0,
+  repairIncentive: 0.5,
+  repairRate: 1.0,
+  reuseIncentive: 0.25,
+};
 
 async function init(): Promise<CircularEconomyApi> {
   const model = new CircularEconomyModel();
