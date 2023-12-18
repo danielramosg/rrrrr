@@ -43,6 +43,15 @@ const flowVizSigns: ModelElementObject<MainFlowIds> = {
   repair: -1,
 };
 
+const dashGap = 30; // FIXME: Calculate from CSS
+const lineWidth = 10; // FIXME: Calculate from CSS
+const dotRadius = 20; // FIXME: Calculate from CSS
+const lineSegmentArea = lineWidth * dashGap;
+const dotWithoutLineSegmentArea =
+  Math.sqrt(dotRadius ** 2 - lineWidth ** 2) * lineWidth;
+const averageFlowVizWidth = lineSegmentArea + dotWithoutLineSegmentArea;
+console.log(lineSegmentArea, dotWithoutLineSegmentArea, averageFlowVizWidth);
+const quantityScaleFactor = 30000.0;
 export default class Visualization {
   protected readonly model: CircularEconomyModel;
 
@@ -58,10 +67,15 @@ export default class Visualization {
     this.element.append(this.svg);
   }
 
-  protected updateSvgFlows(deltaMs: DOMHighResTimeStamp, record: Record) {
+  protected updateSvgFlows(
+    deltaMs: DOMHighResTimeStamp,
+    stepSize: number,
+    record: Record,
+  ) {
     const { flows } = record;
-    const flowVizScale = 5.0 / record.parameters.numberOfUsers;
-    const dashGap = 20;
+    const flowVizScale =
+      (stepSize * (quantityScaleFactor / record.parameters.numberOfUsers)) /
+      averageFlowVizWidth;
     mainFlowIds.forEach((id) => {
       const flow = flows[id];
       const flowVizSign = flowVizSigns[id];
@@ -88,9 +102,13 @@ export default class Visualization {
     });
   }
 
-  protected updateSvgStocks(deltaMs: DOMHighResTimeStamp, record: Record) {
+  protected updateSvgStocks(
+    deltaMs: DOMHighResTimeStamp,
+    stepSize: number,
+    record: Record,
+  ) {
     const { stocks } = record;
-    const stockVizScale = 50000.0 / record.parameters.numberOfUsers;
+    const stockVizScale = quantityScaleFactor / record.parameters.numberOfUsers;
     this.model.stockIds.forEach((id) => {
       const elementId = kebabCase(id);
       const element = this.svg.getElementById(elementId);
@@ -110,13 +128,21 @@ export default class Visualization {
     });
   }
 
-  protected updateSvg(deltaMs: DOMHighResTimeStamp, record: Record) {
-    this.updateSvgFlows(deltaMs, record);
-    this.updateSvgStocks(deltaMs, record);
+  protected updateSvg(
+    deltaMs: DOMHighResTimeStamp,
+    stepSize: number,
+    record: Record,
+  ) {
+    this.updateSvgFlows(deltaMs, stepSize, record);
+    this.updateSvgStocks(deltaMs, stepSize, record);
   }
 
-  public update(deltaMs: DOMHighResTimeStamp, record: Record) {
-    this.updateSvg(deltaMs, record);
+  public update(
+    deltaMs: DOMHighResTimeStamp,
+    stepSize: number,
+    record: Record,
+  ) {
+    this.updateSvg(deltaMs, stepSize, record);
   }
 
   public static prepareSvg(model: CircularEconomyModel, svg: SVGSVGElement) {

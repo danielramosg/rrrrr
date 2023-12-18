@@ -299,7 +299,7 @@ async function init(): Promise<CircularEconomyApi> {
 
     chart.update();
 
-    visualization.update(deltaMs, record);
+    visualization.update(deltaMs, modelSimulator.h, record);
   }
 
   let running = false;
