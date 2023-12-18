@@ -48,7 +48,7 @@ async function init(): Promise<CircularEconomyApi> {
     { ...CircularEconomyModel.initialStocks },
     { ...initialParameters },
     0.0,
-    0.01,
+    0.1,
   );
 
   const availableParameterTransformsContainer = guardedQuerySelector(
