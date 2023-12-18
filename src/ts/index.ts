@@ -129,11 +129,33 @@ async function init(): Promise<CircularEconomyApi> {
     Object.assign(modelSimulator.parameters, parameters);
   }
 
+  const idElement = guardedQuerySelector(
+    document,
+    '#parameter-transform-id',
+    HTMLInputElement,
+  );
+  const scriptElement = guardedQuerySelector(
+    document,
+    '#parameter-transform-script',
+    HTMLTextAreaElement,
+  );
+
   Sortable.create(availableParameterTransformsContainer, {
     group: {
       name: 'sharedParameterTransforms',
       pull: 'clone',
       put: false, // Do not allow items to be put into this list
+    },
+    onClone: (evt) => {
+      const cloneElement = evt.clone;
+      const { id } = cloneElement.dataset;
+      assert(id !== undefined);
+      cloneElement.addEventListener('click', () => {
+        const parameterTransform = availableParameterTransforms.get(id);
+        assert(parameterTransform !== undefined);
+        idElement.value = id;
+        scriptElement.value = parameterTransform.script;
+      });
     },
   });
   Sortable.create(activeParameterTransformsContainer, {
@@ -145,6 +167,7 @@ async function init(): Promise<CircularEconomyApi> {
       updateParameters();
     },
   });
+
   const parameterTransforms = {
     create: (id: string, script: string) => {
       const exists = availableParameterTransforms.has(id);
@@ -162,10 +185,16 @@ async function init(): Promise<CircularEconomyApi> {
         );
         updateParameters();
       } else {
-        const dummyElement = document.createElement('div');
-        dummyElement.innerHTML = `<div class="parameter-transform" data-id="${id}">${id}</div>`;
-        const parameterTransformElement = dummyElement.firstChild;
-        assert(parameterTransformElement !== null);
+        const parameterTransformElement = document.createElement('div');
+        parameterTransformElement.classList.add('parameter-transform');
+        parameterTransformElement.setAttribute('data-id', id);
+        parameterTransformElement.innerText = id;
+        parameterTransformElement.addEventListener('click', () => {
+          const parameterTransform = availableParameterTransforms.get(id);
+          assert(parameterTransform !== undefined);
+          idElement.value = id;
+          scriptElement.value = parameterTransform.script;
+        });
         availableParameterTransformsContainer.append(parameterTransformElement);
       }
     },
@@ -179,17 +208,7 @@ async function init(): Promise<CircularEconomyApi> {
     '#add-parameter-transform',
     HTMLElement,
   ).addEventListener('click', () => {
-    const idElement = guardedQuerySelector(
-      document,
-      '#parameter-transform-id',
-      HTMLInputElement,
-    );
     const id = idElement.value;
-    const scriptElement = guardedQuerySelector(
-      document,
-      '#parameter-transform-script',
-      HTMLTextAreaElement,
-    );
     const script = scriptElement.value;
     parameterTransforms.create(id, script);
   });
