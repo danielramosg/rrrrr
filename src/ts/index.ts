@@ -240,7 +240,7 @@ async function init(): Promise<CircularEconomyApi> {
     circularityIndex +=
       (circularityIndexTarget - circularityIndex) * smoothingFactor;
     circularityIndexElement.innerText = `${(circularityIndex * 100).toFixed(
-      2,
+      1,
     )}%`;
 
     const userSatisfactionTarget =
@@ -250,7 +250,7 @@ async function init(): Promise<CircularEconomyApi> {
     userSatisfaction +=
       (userSatisfactionTarget - userSatisfaction) * smoothingFactor;
     userSatisfactionElement.innerText = `${(userSatisfaction * 100).toFixed(
-      2,
+      1,
     )}%`;
   }
 
