@@ -231,7 +231,13 @@ async function init(): Promise<CircularEconomyApi> {
   );
 
   const visualization = await Visualization.create(model);
-  document.body.prepend(visualization.element);
+
+  const modelVisualizationContainer = guardedQuerySelector(
+    document,
+    '#model-viz-container',
+    HTMLElement,
+  );
+  modelVisualizationContainer.append(visualization.element);
 
   function toChartRecord(record: Record) {
     return CircularEconomyModel.elementIds
