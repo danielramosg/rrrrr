@@ -38,14 +38,15 @@ type CircularEconomyApi = {
   };
 };
 
+const initialParameters = { ...CircularEconomyModel.defaultParameters };
+
 async function init(): Promise<CircularEconomyApi> {
   const model = new CircularEconomyModel();
   const modelSimulator = new ModelSimulator(
     model,
     // FIXME: It should be possible to pass CircularEconomyModel.initialStocks directly, but TypeScript does not complain.
     { ...CircularEconomyModel.initialStocks },
-    // FIXME: It should be possible to pass CircularEconomyModel.defaultParameters directly, but TypeScript does not complain.
-    { ...CircularEconomyModel.defaultParameters },
+    { ...initialParameters },
     0.0,
     0.01,
   );
@@ -80,7 +81,7 @@ async function init(): Promise<CircularEconomyApi> {
   }
 
   function updateParameters() {
-    const parameters = { ...CircularEconomyModel.defaultParameters };
+    const parameters = { ...initialParameters };
     [...activeParameterTransformsContainer.children].forEach((e) => {
       assert(e instanceof HTMLElement);
       const id = e.getAttribute('data-id');
@@ -160,6 +161,38 @@ async function init(): Promise<CircularEconomyApi> {
     const script = scriptElement.value;
     parameterTransforms.create(id, script);
   });
+
+  const sliderContainer = guardedQuerySelector(
+    document,
+    '#sliders',
+    HTMLElement,
+  );
+
+  model.parameterIds
+    .filter((id) => id !== 'numberOfUsers')
+    .forEach((id) => {
+      const sliderElementLabel = document.createElement('div');
+      const sliderElement = document.createElement('input');
+      sliderElement.type = 'range';
+      sliderElement.min = '0';
+      sliderElement.max = '4';
+      sliderElement.step = '0.001';
+      sliderElement.value = `${initialParameters[id]}`;
+
+      function updateSliderValue() {
+        initialParameters[id] = Number.parseFloat(sliderElement.value);
+        sliderElementLabel.innerText = `${id} = ${initialParameters[id]}`;
+        updateParameters();
+      }
+      updateSliderValue();
+
+      sliderElement.addEventListener('input', updateSliderValue);
+
+      const sliderWrapperElement = document.createElement('div');
+      sliderWrapperElement.append(sliderElementLabel, sliderElement);
+
+      sliderContainer.append(sliderWrapperElement);
+    });
 
   let circularityIndex = 0;
   const circularityIndexElement = guardedQuerySelector(
