@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import Chart from 'chart.js/auto';
 import Sortable from 'sortablejs';
 
+import loadConfig from './config';
 import { animationFrame } from './util/animation-frame';
 import type {
   StockIds,
@@ -63,6 +64,9 @@ const initialParameters = {
 };
 
 async function init(): Promise<CircularEconomyApi> {
+  const config = await loadConfig();
+  console.log(config);
+
   const model = new CircularEconomyModel();
   const modelSimulator = new ModelSimulator(
     model,
@@ -183,6 +187,10 @@ async function init(): Promise<CircularEconomyApi> {
     const script = scriptElement.value;
     parameterTransforms.create(id, script);
   });
+
+  config.parameterTransforms.forEach(({ id, script }) =>
+    parameterTransforms.create(id, script),
+  );
 
   const sliderContainer = guardedQuerySelector(
     document,

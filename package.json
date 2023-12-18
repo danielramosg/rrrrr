@@ -51,6 +51,7 @@
     "path-browserify": "^1.0.1",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
+    "serve-static": "^1.15.0",
     "simulation": "^3.0.0",
     "stylelint": "^15.11.0",
     "stylelint-config-html": "^1.1.0",
