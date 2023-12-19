@@ -59,13 +59,15 @@ svg.model-visualization {
     }
   }
 
-  text {
-    fill: black;
+  foreignObject {
+    overflow: visible;
+  }
+
+  .label {
     font-size: 14.0286px;
-    line-height: 1.25;
     font-family: sans-serif;
     text-align: center;
     text-anchor: middle;
-    stroke-width: 0.809342;
+    transform: translate(-50%, -50%);
   }
 }

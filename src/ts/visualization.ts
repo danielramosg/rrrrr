@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import kebabCase from 'lodash/kebabCase';
 
 import { ModelElementObject } from './model';
@@ -23,6 +24,19 @@ const mainFlowIds = [
   'refurbish',
   'repair',
 ] as const;
+
+const stockLabels = {
+  'recycled-materials': 'Verwertungsanlage',
+  'hibernating-phones': 'Ungenutzte Handies',
+  'disposed-phones': 'Handies im Müll',
+  'broken-phones': 'Kaputte Handies',
+  'repaired-phones': 'Werkstatt',
+  'phones-in-use': 'Handies in Benutzung',
+  'refurbished-phones': 'Instandsetzung',
+  'newly-produced-phones': 'Handy-Fabrik',
+  'natural-resources': 'Natur',
+  'landfilled-phones': 'Deponie',
+};
 
 type MainFlowIds = typeof mainFlowIds;
 
@@ -169,10 +183,77 @@ export default class Visualization {
     flowLayer.classList.add('flows');
     svg.append(capacityLayer, flowLayer, supplyLayer, labelLayer);
 
-    svg.querySelectorAll('text').forEach((baseElement) => {
-      const clone = baseElement.cloneNode(true) as SVGTextElement;
-      clone.classList.add('label');
-      labelLayer.append(clone);
+    svg.querySelectorAll('text').forEach((element) => {
+      elementsToRemove.push(element);
+    });
+
+    function createForeignDiv(
+      x: number,
+      y: number,
+      width: number,
+      height: number,
+    ) {
+      const foreignObjectElement = createSVGElement('foreignObject');
+      foreignObjectElement.setAttribute('x', `${x}`);
+      foreignObjectElement.setAttribute('y', `${y}`);
+      foreignObjectElement.setAttribute('width', `${width}`);
+      foreignObjectElement.setAttribute('height', `${height}`);
+
+      const divElement = foreignObjectElement.ownerDocument.createElementNS(
+        'http://www.w3.org/1999/xhtml',
+        'div',
+      );
+
+      foreignObjectElement.append(divElement);
+
+      return { foreignObjectElement, divElement };
+    }
+
+    function getCircleCenter(element: SVGCircleElement) {
+      const x = parseFloat(element.getAttribute('cx') ?? '');
+      assert(!Number.isNaN(x));
+      const y = parseFloat(element.getAttribute('cy') ?? '');
+      assert(!Number.isNaN(y));
+      return { x, y };
+    }
+
+    function getRectangleCenter(element: SVGRectElement) {
+      const x = parseFloat(element.getAttribute('x') ?? '');
+      assert(!Number.isNaN(x));
+      const y = parseFloat(element.getAttribute('y') ?? '');
+      assert(!Number.isNaN(y));
+      const width = parseFloat(element.getAttribute('width') ?? '');
+      assert(!Number.isNaN(width));
+      const height = parseFloat(element.getAttribute('height') ?? '');
+      assert(!Number.isNaN(height));
+      return { x: x + width / 2, y: y + height / 2 };
+    }
+
+    Object.entries(stockLabels).forEach(([id, label]) => {
+      const baseElement = guardedQuerySelector(
+        svg,
+        `#${id}`,
+        SVGGeometryElement,
+      );
+      assert(
+        baseElement.tagName === 'circle' || baseElement.tagName === 'rect',
+      );
+      const { x, y } =
+        baseElement.tagName === 'circle'
+          ? getCircleCenter(baseElement as SVGCircleElement)
+          : getRectangleCenter(baseElement as SVGRectElement);
+
+      const { foreignObjectElement, divElement } = createForeignDiv(
+        x,
+        y,
+        200,
+        50,
+      );
+
+      divElement.textContent = label;
+      divElement.classList.add('label');
+
+      labelLayer.append(foreignObjectElement);
     });
 
     svg.querySelectorAll('rect').forEach((baseElement) => {
