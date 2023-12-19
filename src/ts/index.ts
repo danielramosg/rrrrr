@@ -229,11 +229,8 @@ async function init(): Promise<CircularEconomyApi> {
   Sortable.create(activeParameterTransformsContainer, {
     group: { name: 'sharedParameterTransforms' },
     removeOnSpill: true,
-    onSort: () => updateParameters(),
-    onSpill: (event) => {
-      event.item.remove();
-      updateParameters();
-    },
+    onEnd: updateParameters,
+    onAdd: updateParameters,
   });
 
   const parameterTransforms = {
