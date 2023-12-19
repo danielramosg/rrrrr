@@ -226,6 +226,19 @@ async function init(): Promise<CircularEconomyApi> {
 
   guardedQuerySelector(
     document,
+    '#clear-all-active-parameter-transforms-button',
+    HTMLElement,
+  ).addEventListener('click', () => {
+    const message =
+      'Do you really want to clear all active parameter transformations?';
+    if (window.confirm(message)) {
+      activeParameterTransformsContainer.innerHTML = '';
+      updateParameters();
+    }
+  });
+
+  guardedQuerySelector(
+    document,
     '#add-parameter-transform',
     HTMLElement,
   ).addEventListener('click', () => {
