@@ -64,6 +64,11 @@ body {
           width: 100%;
         }
       }
+      & .active,
+      & .available {
+        overflow: scroll;
+        max-height: 900px;
+      }
     }
   }
 }
