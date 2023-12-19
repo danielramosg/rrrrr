@@ -1,7 +1,86 @@
-
 [
   {
-    "id": "Dummy",
-    "script": "breakRate = breakRate;"
+    "id": "Reuse Level 1",
+    "script": "reuseIncentive *= 2;"
+  },
+  {
+    "id": "Reuse Level 2",
+    "script": "reuseIncentive *= 2;"
+  },
+  {
+    "id": "Reuse Level 3",
+    "script": "reuseIncentive *= 2;"
+  },
+  {
+    "id": "Recycle Level 1",
+    "script": "recycleRate *= 3;\nrecyclingIncentive *= 2;"
+  },
+  {
+    "id": "Recycle Level 2",
+    "script": "recycleRate *= 3;\nrecyclingIncentive *= 2;"
+  },
+  {
+    "id": "Recycle Level 3",
+    "script": "recycleRate *= 3;\nrecyclingIncentive *= 2;"
+  },
+  {
+    "id": "Repair Level 1",
+    "script": "repairIncentive *= 2;\nrepairRate *= 1.5;"
+  },
+  {
+    "id": "Repair Level 2",
+    "script": "repairIncentive *= 2;\nrepairRate *= 1.5;"
+  },
+  {
+    "id": "Repair Level 3",
+    "script": "repairIncentive *= 2;\nrepairRate *= 1.5;"
+  },
+  {
+    "id": "Refurbish Level 1",
+    "script": "refurbishmentIncentive *= 3;\nrefurbishmentRate *= 2;"
+  },
+  {
+    "id": "Refurbish Level 2",
+    "script": "refurbishmentIncentive *= 3;\nrefurbishmentRate *= 2;"
+  },
+  {
+    "id": "Refurbish Level 3",
+    "script": "refurbishmentIncentive *= 3;\nrefurbishmentRate *= 2;"
+  },
+  {
+    "id": "Reduce Level 1",
+    "script": "acquireRate *= 0.5;"
+  },
+  {
+    "id": "Reduce Level 2",
+    "script": "acquireRate *= 0.5;"
+  },
+  {
+    "id": "Reduce Level 3",
+    "script": "acquireRate *= 0.5;"
+  },
+  {
+    "id": "Triple Elephant Glass",
+    "script": "breakRate *= 0.005;"
+  },
+  {
+    "id": "New Ananas Phone",
+    "script": "abandonRate *= 3;\nnewPhoneProductionRate *= 2;\nnewlyProducedPhoneIncentive *= 10;"
+  },
+  {
+    "id": "World Wide Chip Crisis",
+    "script": "newPhoneProductionRate *= 0;"
+  },
+  {
+    "id": "Eco Tax",
+    "script": "newlyProducedPhoneIncentive *= 0.02;"
+  },
+  {
+    "id": "sim card 4.0",
+    "script": "phonesPerUserGoal *= 0.5;"
+  },
+  {
+    "id": "school repair café",
+    "script": "repairIncentive *= 2;\nrepairRate *= 1.5;\nacquireRate *= 0.5;\nabandonRate *= 0.5;\ndisposeIncentive *= 0.5;\ndisposeRate *= 0.5;"
   }
 ]
