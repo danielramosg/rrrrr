@@ -416,6 +416,10 @@ async function init(): Promise<CircularEconomyApi> {
     circularityIndexElement.innerText = `${(circularityIndex * 100).toFixed(
       1,
     )}%`;
+    if (!Number.isFinite(circularityIndexTarget)) {
+      // Reset to make it possible to recover from NaN
+      circularityIndex = 0.0;
+    }
 
     const userSatisfactionTarget =
       phonesInUse < phoneGoal
@@ -426,6 +430,10 @@ async function init(): Promise<CircularEconomyApi> {
     userSatisfactionElement.innerText = `${(userSatisfaction * 100).toFixed(
       1,
     )}%`;
+    if (!Number.isFinite(userSatisfactionTarget)) {
+      // Reset to make it possible to recover from NaN
+      userSatisfaction = 0.0;
+    }
   }
 
   function stepSimulation(deltaMs: number) {
