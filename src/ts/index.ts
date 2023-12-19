@@ -1,7 +1,10 @@
+import './side-effects';
+
 import { strict as assert } from 'assert';
 import Chart from 'chart.js/auto';
 import Sortable from 'sortablejs';
 
+import { Modal } from 'bootstrap';
 import loadConfig from './config';
 import type { ParameterTransformsConfig } from './config';
 import { animationFrame } from './util/animation-frame';
@@ -80,6 +83,67 @@ async function init(): Promise<CircularEconomyApi> {
     0.0,
     0.1,
   );
+
+  const confirm = (() => {
+    const modalDialogElement = guardedQuerySelector(
+      document,
+      '#modal',
+      HTMLElement,
+    );
+    const modalDialogTitleElement = guardedQuerySelector(
+      modalDialogElement,
+      '.modal-title',
+      HTMLElement,
+    );
+    const modalDialogBodyElement = guardedQuerySelector(
+      modalDialogElement,
+      '.modal-body',
+      HTMLElement,
+    );
+    const modelDialogCloseButton = guardedQuerySelector(
+      modalDialogElement,
+      '.modal-header button.btn-close',
+      HTMLButtonElement,
+    );
+    const modelDialogOkButton = guardedQuerySelector(
+      modalDialogElement,
+      '.modal-footer button.btn-primary',
+      HTMLButtonElement,
+    );
+    const modelDialogCancelButton = guardedQuerySelector(
+      modalDialogElement,
+      '.modal-footer button.btn-secondary',
+      HTMLButtonElement,
+    );
+    const modalDialog = new Modal(modalDialogElement, { backdrop: 'static' });
+    let wasModalDialogDismissed = false;
+    let lastResolver: (result: boolean) => void = () => {};
+    modelDialogCloseButton.addEventListener('click', () => {
+      wasModalDialogDismissed = true;
+    });
+    modelDialogOkButton.addEventListener('click', () => {
+      wasModalDialogDismissed = false;
+    });
+    modelDialogCancelButton.addEventListener('click', () => {
+      wasModalDialogDismissed = true;
+    });
+    modalDialogElement.addEventListener('hidden.bs.modal', () => {
+      lastResolver(!wasModalDialogDismissed);
+    });
+
+    const titleText = 'Confirmation required';
+    return async function (
+      text: string,
+      title: string = titleText,
+    ): Promise<boolean> {
+      modalDialogTitleElement.textContent = title;
+      modalDialogBodyElement.textContent = text;
+      modalDialog.show();
+      return new Promise<boolean>((resolve) => {
+        lastResolver = resolve;
+      });
+    };
+  })();
 
   const availableParameterTransformsContainer = guardedQuerySelector(
     document,
@@ -183,11 +247,8 @@ async function init(): Promise<CircularEconomyApi> {
           script,
         ),
       );
-      const message = `Do you really want to update the definition of the parameter transformation "${id}"? This will also update all active instances of this parameter transformation.`;
       if (exists) {
-        if (window.confirm(message)) {
-          updateParameters();
-        }
+        updateParameters();
       } else {
         const parameterTransformElement = document.createElement('div');
         parameterTransformElement.classList.add('parameter-transform');
@@ -228,10 +289,11 @@ async function init(): Promise<CircularEconomyApi> {
     document,
     '#clear-all-active-parameter-transforms-button',
     HTMLElement,
-  ).addEventListener('click', () => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  ).addEventListener('click', async () => {
     const message =
       'Do you really want to clear all active parameter transformations?';
-    if (window.confirm(message)) {
+    if (await confirm(message)) {
       activeParameterTransformsContainer.innerHTML = '';
       updateParameters();
     }
@@ -241,20 +303,28 @@ async function init(): Promise<CircularEconomyApi> {
     document,
     '#add-parameter-transform',
     HTMLElement,
-  ).addEventListener('click', () => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  ).addEventListener('click', async () => {
     const id = idElement.value;
     const script = scriptElement.value;
-    parameterTransforms.create(id, script);
+    const exists = availableParameterTransforms.has(id);
+    let confirmed = true;
+    if (exists) {
+      const message = `Do you really want to update the definition of the parameter transformation "${id}"? This will also update all active instances of this parameter transformation.`;
+      confirmed = await confirm(message);
+    }
+    if (confirmed) parameterTransforms.create(id, script);
   });
 
   guardedQuerySelector(
     document,
     '#delete-parameter-transform',
     HTMLElement,
-  ).addEventListener('click', () => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  ).addEventListener('click', async () => {
     const id = idElement.value;
     const message = `Do you really want to delete the parameter transformation "${id}"? This will also delete all active instances of this parameter transformation.`;
-    if (window.confirm(message)) {
+    if (await confirm(message)) {
       parameterTransforms.destroy(id);
     }
   });
@@ -279,12 +349,13 @@ async function init(): Promise<CircularEconomyApi> {
     '#import-button',
     HTMLInputElement,
   );
-  importButton.addEventListener('click', () => {
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  importButton.addEventListener('click', async () => {
     const text = importExportElement.value;
     const data = JSON.parse(text) as ParameterTransformsConfig; // TODO: Validate input
     const message =
       'Are you sure you want to import the parameter transformations? This will clear all existing parameter transformations.';
-    if (window.confirm(message)) {
+    if (await confirm(message)) {
       parameterTransforms.clear();
       data.forEach(({ id, script }) => parameterTransforms.create(id, script));
     }
@@ -451,9 +522,27 @@ async function init(): Promise<CircularEconomyApi> {
     visualization.update(deltaMs, modelSimulator.h, record);
   }
 
+  // TODO: Sync button state and fullscreen state
+  const fullscreenToggleCheckboxBox = guardedQuerySelector(
+    document,
+    '#btn-toggle-fullscreen',
+    HTMLInputElement,
+  );
+  if (!document.fullscreenEnabled) fullscreenToggleCheckboxBox.disabled = true;
+  fullscreenToggleCheckboxBox.addEventListener('input', async () => {
+    if (fullscreenToggleCheckboxBox.checked) {
+      await document.documentElement.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  });
+
   let running = false;
-  const runCheckBox = document.getElementById('run') as HTMLInputElement;
-  assert(runCheckBox !== null, 'run checkbox not found');
+  const runCheckBox = guardedQuerySelector(
+    document,
+    '#btn-run',
+    HTMLInputElement,
+  );
 
   async function loopSimulation() {
     running = true;

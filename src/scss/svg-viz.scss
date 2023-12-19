@@ -64,10 +64,10 @@ svg.model-visualization {
   }
 
   .label {
-    font-size: 14.0286px;
+    font-size: 14px;
     font-family: sans-serif;
     text-align: center;
     text-anchor: middle;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) translateY(-7px);
   }
 }
