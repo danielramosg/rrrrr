@@ -3,6 +3,7 @@ import Chart from 'chart.js/auto';
 import Sortable from 'sortablejs';
 
 import loadConfig from './config';
+import type { ParameterTransformsConfig } from './config';
 import { animationFrame } from './util/animation-frame';
 import type {
   StockIds,
@@ -17,7 +18,10 @@ import CircularEconomyModel, {
 import ModelSimulator from './model-simulator';
 import Visualization from './visualization';
 import { documentReady } from './util/document-ready';
-import { guardedQuerySelector } from './util/guarded-query-selectors';
+import {
+  guardedQuerySelector,
+  guardedQuerySelectorAll,
+} from './util/guarded-query-selectors';
 import ScriptedParameterTransform from './parameter-transform/scripted-parameter-transform';
 
 type CircularEconomyModelSimulator = ModelSimulator<
@@ -200,6 +204,23 @@ async function init(): Promise<CircularEconomyApi> {
     },
     destroy: (id: string) => {
       availableParameterTransforms.delete(id);
+      guardedQuerySelector(
+        availableParameterTransformsContainer,
+        `[data-id="${id}"]`,
+        HTMLElement,
+      ).remove();
+      guardedQuerySelectorAll(
+        activeParameterTransformsContainer,
+        `[data-id="${id}"]`,
+        HTMLElement,
+      ).forEach((element) => element.remove());
+      updateParameters();
+    },
+    clear: () => {
+      availableParameterTransforms.clear();
+      availableParameterTransformsContainer.innerHTML = '';
+      activeParameterTransformsContainer.innerHTML = '';
+      updateParameters();
     },
   };
 
@@ -216,6 +237,36 @@ async function init(): Promise<CircularEconomyApi> {
   config.parameterTransforms.forEach(({ id, script }) =>
     parameterTransforms.create(id, script),
   );
+
+  const importExportElement = guardedQuerySelector(
+    document,
+    '#import-export',
+    HTMLTextAreaElement,
+  );
+  const exportButton = guardedQuerySelector(
+    document,
+    '#export-button',
+    HTMLInputElement,
+  );
+
+  const importButton = guardedQuerySelector(
+    document,
+    '#import-button',
+    HTMLInputElement,
+  );
+  importButton.addEventListener('click', () => {
+    const text = importExportElement.value;
+    const data = JSON.parse(text) as ParameterTransformsConfig; // TODO: Validate input
+    parameterTransforms.clear();
+    data.forEach(({ id, script }) => parameterTransforms.create(id, script));
+  });
+
+  exportButton.addEventListener('click', () => {
+    const data = [...availableParameterTransforms.entries()].map(
+      ([id, parameterTransform]) => ({ id, script: parameterTransform.script }),
+    );
+    importExportElement.value = JSON.stringify(data, null, 2);
+  });
 
   const sliderContainer = guardedQuerySelector(
     document,
