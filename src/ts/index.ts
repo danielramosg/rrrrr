@@ -183,11 +183,11 @@ async function init(): Promise<CircularEconomyApi> {
           script,
         ),
       );
+      const message = `Do you really want to update the definition of the parameter transformation "${id}"? This will also update all active instances of this parameter transformation.`;
       if (exists) {
-        console.warn(
-          `Overwriting parameter transform with id '${id}' because it already existed.`,
-        );
-        updateParameters();
+        if (window.confirm(message)) {
+          updateParameters();
+        }
       } else {
         const parameterTransformElement = document.createElement('div');
         parameterTransformElement.classList.add('parameter-transform');
@@ -257,8 +257,12 @@ async function init(): Promise<CircularEconomyApi> {
   importButton.addEventListener('click', () => {
     const text = importExportElement.value;
     const data = JSON.parse(text) as ParameterTransformsConfig; // TODO: Validate input
-    parameterTransforms.clear();
-    data.forEach(({ id, script }) => parameterTransforms.create(id, script));
+    const message =
+      'Are you sure you want to import the parameter transformations? This will clear all existing parameter transformations.';
+    if (window.confirm(message)) {
+      parameterTransforms.clear();
+      data.forEach(({ id, script }) => parameterTransforms.create(id, script));
+    }
   });
 
   exportButton.addEventListener('click', () => {
