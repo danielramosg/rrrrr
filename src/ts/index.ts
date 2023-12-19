@@ -234,6 +234,18 @@ async function init(): Promise<CircularEconomyApi> {
     parameterTransforms.create(id, script);
   });
 
+  guardedQuerySelector(
+    document,
+    '#delete-parameter-transform',
+    HTMLElement,
+  ).addEventListener('click', () => {
+    const id = idElement.value;
+    const message = `Do you really want to delete the parameter transformation "${id}"? This will also delete all active instances of this parameter transformation.`;
+    if (window.confirm(message)) {
+      parameterTransforms.destroy(id);
+    }
+  });
+
   config.parameterTransforms.forEach(({ id, script }) =>
     parameterTransforms.create(id, script),
   );
