@@ -326,9 +326,9 @@ async function init(): Promise<CircularEconomyApi> {
     }
   });
 
-  config.parameterTransforms.forEach(({ id, script }) =>
-    parameterTransforms.create(id, script),
-  );
+  config.parameterTransformsGroups
+    .flatMap(({ transforms }) => transforms)
+    .forEach(({ id, script }) => parameterTransforms.create(id, script));
 
   const importExportElement = guardedQuerySelector(
     document,
