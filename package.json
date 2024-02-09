@@ -55,7 +55,8 @@
     "simulation": "^3.0.0",
     "stylelint": "^15.11.0",
     "stylelint-config-html": "^1.1.0",
-    "stylelint-config-prettier-scss": "^1.0.0"
+    "stylelint-config-prettier-scss": "^1.0.0",
+    "tsx": "^4.7.0"
   },
   "parcel-namer-custom": {
     ".html$": "[name].[type]",
@@ -66,13 +67,15 @@
     "clean": "rimraf assets index.html",
     "prebuild": "npm run clean",
     "build": "parcel build --no-cache --public-url '.' --dist-dir '.'",
-    "format": "prettier --write '.'"
+    "format": "prettier --write '.'",
+    "convert-insightmaker-model": "tsx ./tools/convert-from-insight-maker.ts < src/insight-maker/CircularEconomyOfSmartPhones.InsightMaker > ./src/ts/circular-economy-model.ts; prettier --write ./src/ts/circular-economy-model.ts"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "@types/assert": "^1.5.10",
     "@types/bootstrap": "^5.2.10",
     "@types/lodash": "^4.14.202",
+    "@types/node": "^20.9.5",
     "@types/sortablejs": "^1.15.7",
     "assert": "^2.1.0",
     "bootstrap": "^5.3.2",

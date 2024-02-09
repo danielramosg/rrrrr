@@ -1,3 +1,4 @@
+// This file was auto-generated from the InsightMaker model. Do not edit it manually.
 import {
   Model,
   ModelElementObject,
@@ -419,6 +420,7 @@ class CircularEconomyModel extends Model<
     return flowPerStock;
   }
 }
+
 export type {
   StockIds,
   StockId,
