@@ -32,6 +32,11 @@ module.exports = {
           },
         ],
         'no-unused-vars': 'off',
+        'no-void': ['error', { allowAsStatement: true }],
+        '@typescript-eslint/no-floating-promises': [
+          'error',
+          { ignoreVoid: true },
+        ],
         '@typescript-eslint/no-unused-vars': [
           'error',
           {

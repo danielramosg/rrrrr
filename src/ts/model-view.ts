@@ -66,7 +66,7 @@ const dotWithoutLineSegmentArea =
 const averageFlowVizWidth = lineSegmentArea + dotWithoutLineSegmentArea;
 console.log(lineSegmentArea, dotWithoutLineSegmentArea, averageFlowVizWidth);
 const quantityScaleFactor = 30000.0;
-export default class Visualization {
+export default class ModelView {
   protected readonly model: CircularEconomyModel;
 
   public readonly element: HTMLDivElement;
@@ -327,6 +327,6 @@ export default class Visualization {
   public static async create(model: CircularEconomyModel) {
     const svg = await loadSvg(svgUrl);
     this.prepareSvg(model, svg);
-    return new Visualization(model, svg);
+    return new ModelView(model, svg);
   }
 }

@@ -1,3 +1,6 @@
+import CircularEconomyModel from './circular-economy-model';
+import type { GameConfig } from './game';
+
 const configBaseUrl = new URL('./config/', window.location.href);
 
 async function loadConfigFile(url: string | URL): Promise<unknown> {
@@ -16,6 +19,14 @@ export type ParameterTransformsGroupsConfig = ParameterTransformsGroupConfig[];
 
 export type Config = {
   parameterTransformsGroups: ParameterTransformsGroupsConfig;
+  model: {
+    initialParameters: typeof CircularEconomyModel.defaultParameters;
+    initialStocks: typeof CircularEconomyModel.initialStocks;
+  };
+  simulation: {
+    deltaPerSecond: number;
+    maxStepSize: number;
+  };
 };
 
 function preprocessParameterTransformsGroups(
@@ -45,10 +56,21 @@ function preprocessParameterTransformsGroups(
 }
 
 export default async function loadConfig() {
+  const modelConfig = (await loadConfigFile(
+    new URL('model.json', configBaseUrl),
+  )) as GameConfig['model']; // FIXME: Validate instead of casting
+
+  const simulationConfig = (await loadConfigFile(
+    new URL('simulation.json', configBaseUrl),
+  )) as GameConfig['simulation']; // FIXME: Validate instead of casting
+
   const parameterTransformsGroups = (await loadConfigFile(
     new URL('parameter-transforms.json', configBaseUrl),
   )) as ParameterTransformsGroupsConfig; // FIXME: Validate instead of casting
+
   return {
+    model: modelConfig,
+    simulation: simulationConfig,
     parameterTransformsGroups: preprocessParameterTransformsGroups(
       parameterTransformsGroups,
     ),

@@ -7,82 +7,42 @@ import Sortable from 'sortablejs';
 import { Modal } from 'bootstrap';
 import loadConfig from './config';
 import type { ParameterTransformsConfig } from './config';
-import { animationFrame } from './util/animation-frame';
-import type {
-  StockIds,
-  FlowIds,
-  VariableIds,
-  ParameterIds,
-} from './circular-economy-model';
+import type { ParameterIds } from './circular-economy-model';
 import CircularEconomyModel, {
   Parameters,
   Record,
 } from './circular-economy-model';
-import ModelSimulator from './model-simulator';
-import Visualization from './visualization';
 import { documentReady } from './util/document-ready';
 import {
   guardedQuerySelector,
   guardedQuerySelectorAll,
 } from './util/guarded-query-selectors';
 import ScriptedParameterTransform from './parameter-transform/scripted-parameter-transform';
-
-type CircularEconomyModelSimulator = ModelSimulator<
-  StockIds,
-  FlowIds,
-  VariableIds,
-  ParameterIds
->;
+import { Game } from './game';
 
 type ScriptCircularEconomyParameterTransform =
   ScriptedParameterTransform<ParameterIds>;
 
 type CircularEconomyApi = {
-  model: CircularEconomyModel;
-  modelSimulator: CircularEconomyModelSimulator;
+  game: Game;
   parameterTransforms: {
     create: (id: string, script: string) => void;
     destroy: (id: string) => void;
   };
 };
 
-const initialParameters = {
-  abandonExcessRate: 0.5,
-  abandonRate: 0.02,
-  acquireRate: 1.0,
-  breakRate: 0.01,
-  capacityAdjustmentRate: 0.05,
-  disposeIncentive: 1.5,
-  disposeRate: 0.5,
-  landfillIncentive: 1.0,
-  landfillRate: 1.0,
-  naturalResourcesIncentive: 1.5,
-  newPhoneProductionRate: 1.0,
-  newlyProducedPhoneIncentive: 2,
-  numberOfUsers: 1000000,
-  phonesPerUserGoal: 1.2,
-  recycleRate: 1.0,
-  recyclingIncentive: 0.25,
-  refurbishmentIncentive: 0.25,
-  refurbishmentRate: 1.0,
-  repairIncentive: 0.5,
-  repairRate: 1.0,
-  reuseIncentive: 0.25,
-};
-
 async function init(): Promise<CircularEconomyApi> {
   const config = await loadConfig();
   console.log(config);
 
-  const model = new CircularEconomyModel();
-  const modelSimulator = new ModelSimulator(
-    model,
-    // FIXME: It should be possible to pass CircularEconomyModel.initialStocks directly, but TypeScript does not complain.
-    { ...CircularEconomyModel.initialStocks },
-    { ...initialParameters },
-    0.0,
-    0.1,
+  const modelVisualizationContainer = guardedQuerySelector(
+    document,
+    '#model-viz-container',
+    HTMLDivElement,
   );
+
+  const game = await Game.create(modelVisualizationContainer, config);
+  const initialParameters = { ...config.model.initialParameters };
 
   const confirm = (() => {
     const modalDialogElement = guardedQuerySelector(
@@ -132,7 +92,7 @@ async function init(): Promise<CircularEconomyApi> {
     });
 
     const titleText = 'Confirmation required';
-    return async function (
+    return async function confirmDialog(
       text: string,
       title: string = titleText,
     ): Promise<boolean> {
@@ -166,7 +126,7 @@ async function init(): Promise<CircularEconomyApi> {
     p2: Parameters,
   ): Partial<Parameters> {
     const result: Partial<Parameters> = {};
-    model.parameterIds.forEach((id) => {
+    game.modelSimulator.model.parameterIds.forEach((id) => {
       if (p1[id] !== p2[id]) {
         result[id] = p2[id];
       }
@@ -194,7 +154,7 @@ async function init(): Promise<CircularEconomyApi> {
         2,
       )}\n\n${JSON.stringify(parameters, null, 2)}`;
     });
-    Object.assign(modelSimulator.parameters, parameters);
+    Object.assign(game.modelSimulator.parameters, parameters);
   }
 
   const idElement = guardedQuerySelector(
@@ -240,7 +200,7 @@ async function init(): Promise<CircularEconomyApi> {
         id,
         new ScriptedParameterTransform<ParameterIds>(
           'none',
-          model.parameterIds,
+          game.modelSimulator.model.parameterIds,
           script,
         ),
       );
@@ -371,7 +331,7 @@ async function init(): Promise<CircularEconomyApi> {
     HTMLElement,
   );
 
-  model.parameterIds
+  game.modelSimulator.model.parameterIds
     .filter((id) => id !== 'numberOfUsers')
     .forEach((id) => {
       const sliderElementLabel = document.createElement('div');
@@ -411,15 +371,6 @@ async function init(): Promise<CircularEconomyApi> {
     HTMLElement,
   );
 
-  const visualization = await Visualization.create(model);
-
-  const modelVisualizationContainer = guardedQuerySelector(
-    document,
-    '#model-viz-container',
-    HTMLElement,
-  );
-  modelVisualizationContainer.append(visualization.element);
-
   function toChartRecord(record: Record) {
     return CircularEconomyModel.elementIds
       .map((key) =>
@@ -428,7 +379,7 @@ async function init(): Promise<CircularEconomyApi> {
       .reduce((cur, acc) => [...cur, ...acc], []);
   }
 
-  const initialChartRecord = toChartRecord(modelSimulator.record);
+  const initialChartRecord = toChartRecord(game.modelSimulator.record);
 
   const chartCanvas = document.getElementById('chart') as HTMLCanvasElement;
   assert(chartCanvas !== null, 'chart element not found');
@@ -481,13 +432,13 @@ async function init(): Promise<CircularEconomyApi> {
 
     circularityIndex +=
       (circularityIndexTarget - circularityIndex) * smoothingFactor;
-    circularityIndexElement.innerText = `${(circularityIndex * 100).toFixed(
-      1,
-    )}%`;
     if (!Number.isFinite(circularityIndexTarget)) {
       // Reset to make it possible to recover from NaN
       circularityIndex = 0.0;
     }
+    circularityIndexElement.innerText = `${(circularityIndex * 100).toFixed(
+      1,
+    )}%`;
 
     const userSatisfactionTarget =
       phonesInUse < phoneGoal
@@ -495,18 +446,17 @@ async function init(): Promise<CircularEconomyApi> {
         : phoneGoal / phonesInUse;
     userSatisfaction +=
       (userSatisfactionTarget - userSatisfaction) * smoothingFactor;
-    userSatisfactionElement.innerText = `${(userSatisfaction * 100).toFixed(
-      1,
-    )}%`;
     if (!Number.isFinite(userSatisfactionTarget)) {
       // Reset to make it possible to recover from NaN
       userSatisfaction = 0.0;
     }
+    userSatisfactionElement.innerText = `${(userSatisfaction * 100).toFixed(
+      1,
+    )}%`;
   }
 
-  function stepSimulation(deltaMs: number) {
-    // TODO: pass deltaMs to modelSimulator.step()
-    const record = modelSimulator.step();
+  game.runner.on('tick', () => {
+    const { record } = game.modelSimulator;
 
     updateIndices(record);
 
@@ -515,9 +465,7 @@ async function init(): Promise<CircularEconomyApi> {
     chart.data.datasets[0].data = chartRecord.map((row) => row.value);
 
     chart.update();
-
-    visualization.update(deltaMs, modelSimulator.h, record);
-  }
+  });
 
   // TODO: Sync button state and fullscreen state
   const fullscreenToggleCheckboxBox = guardedQuerySelector(
@@ -526,47 +474,33 @@ async function init(): Promise<CircularEconomyApi> {
     HTMLInputElement,
   );
   if (!document.fullscreenEnabled) fullscreenToggleCheckboxBox.disabled = true;
-  fullscreenToggleCheckboxBox.addEventListener('input', async () => {
+  fullscreenToggleCheckboxBox.addEventListener('input', () => {
     if (fullscreenToggleCheckboxBox.checked) {
-      await document.documentElement.requestFullscreen();
+      void document.documentElement.requestFullscreen();
     } else {
-      await document.exitFullscreen();
+      void document.exitFullscreen();
     }
   });
 
-  let running = false;
   const runCheckBox = guardedQuerySelector(
     document,
     '#btn-run',
     HTMLInputElement,
   );
 
-  async function loopSimulation() {
-    running = true;
-    let lastTimeMs: DOMHighResTimeStamp | null = null;
-
-    while (runCheckBox.checked) {
-      // eslint-disable-next-line no-await-in-loop
-      const currentTimeMs = await animationFrame();
-      const deltaMs = lastTimeMs === null ? 0 : currentTimeMs - lastTimeMs;
-      stepSimulation(deltaMs);
-      lastTimeMs = currentTimeMs;
-    }
-    running = false;
-  }
-
   runCheckBox.addEventListener('input', () => {
-    if (!running)
-      loopSimulation().catch((err) => {
-        throw err;
-      });
+    const shouldPlay = runCheckBox.checked;
+    if (shouldPlay) {
+      game.runner.play();
+    } else {
+      game.runner.pause();
+    }
   });
 
-  stepSimulation(0);
+  game.runner.tick();
 
   const circularEconomyApi: CircularEconomyApi = {
-    model,
-    modelSimulator,
+    game,
     parameterTransforms,
   };
 
