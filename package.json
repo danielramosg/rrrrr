@@ -59,6 +59,17 @@
     "stylelint-config-prettier-scss": "^1.0.0",
     "tsx": "^4.7.0"
   },
+  "@parcel/bundler-default": {
+    "manualSharedBundles": [
+      {
+        "name": "vendor",
+        "root": "src/ts/index.ts",
+        "assets": [
+          "node_modules/**/*"
+        ]
+      }
+    ]
+  },
   "parcel-namer-rewrite": {
     "silent": true,
     "rules": {
