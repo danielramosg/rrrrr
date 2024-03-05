@@ -235,40 +235,52 @@ async function init(): Promise<CircularEconomyApi> {
   guardedQuerySelector(
     HTMLElement,
     '#clear-all-active-parameter-transforms-button',
-  ).addEventListener('click', async () => {
-    const message =
-      'Do you really want to clear all active parameter transformations?';
-    if (await confirm(message)) {
-      activeParameterTransformsContainer.innerHTML = '';
-      updateParameters();
-    }
+  ).addEventListener('click', () => {
+    ignorePromise(
+      (async () => {
+        const message =
+          'Do you really want to clear all active parameter transformations?';
+        if (await confirm(message)) {
+          activeParameterTransformsContainer.innerHTML = '';
+          updateParameters();
+        }
+      })(),
+    );
   });
 
   guardedQuerySelector(
     HTMLElement,
     '#add-parameter-transform',
-  ).addEventListener('click', async () => {
-    const id = idElement.value;
-    const script = scriptElement.value;
-    const exists = availableParameterTransforms.has(id);
-    let confirmed = true;
-    if (exists) {
-      const message = `Do you really want to update the definition of the parameter transformation "${id}"? This will also update all active instances of this parameter transformation.`;
-      confirmed = await confirm(message);
-    }
-    if (confirmed) parameterTransforms.create(id, script);
-  });
+  ).addEventListener('click', () =>
+    ignorePromise(
+      (async () => {
+        const id = idElement.value;
+        const script = scriptElement.value;
+        const exists = availableParameterTransforms.has(id);
+        let confirmed = true;
+        if (exists) {
+          const message = `Do you really want to update the definition of the parameter transformation "${id}"? This will also update all active instances of this parameter transformation.`;
+          confirmed = await confirm(message);
+        }
+        if (confirmed) parameterTransforms.create(id, script);
+      })(),
+    ),
+  );
 
   guardedQuerySelector(
     HTMLElement,
     '#delete-parameter-transform',
-  ).addEventListener('click', async () => {
-    const id = idElement.value;
-    const message = `Do you really want to delete the parameter transformation "${id}"? This will also delete all active instances of this parameter transformation.`;
-    if (await confirm(message)) {
-      parameterTransforms.destroy(id);
-    }
-  });
+  ).addEventListener('click', () =>
+    ignorePromise(
+      (async () => {
+        const id = idElement.value;
+        const message = `Do you really want to delete the parameter transformation "${id}"? This will also delete all active instances of this parameter transformation.`;
+        if (await confirm(message)) {
+          parameterTransforms.destroy(id);
+        }
+      })(),
+    ),
+  );
 
   config.parameterTransformsGroups
     .flatMap(({ transforms }) => transforms)
