@@ -19,6 +19,7 @@ import {
 } from './util/guarded-query-selectors';
 import ScriptedParameterTransform from './parameter-transform/scripted-parameter-transform';
 import { Game } from './game';
+import { Scores } from './scores';
 
 type ScriptCircularEconomyParameterTransform =
   ScriptedParameterTransform<ParameterIds>;
@@ -400,56 +401,19 @@ async function init(): Promise<CircularEconomyApi> {
   function updateIndices(record: Record) {
     const smoothingFactor = 0.5;
 
-    const { phonesInUse } = record.stocks;
     const {
-      produceFromNaturalResources,
-      acquireNewlyProduced,
-      acquireUsed,
-      acquireRepaired,
-      acquireRefurbished,
-      disposeHibernating,
-      disposeBroken,
-      landfill,
-    } = record.flows;
-    const { phoneGoal } = record.variables;
-
-    const naturalResourcesShare = Math.min(
-      1.0,
-      produceFromNaturalResources /
-        (acquireNewlyProduced +
-          acquireUsed +
-          acquireRepaired +
-          acquireRefurbished),
-    );
-    const landfillShare = Math.min(
-      1.0,
-      landfill / (disposeHibernating + disposeBroken),
-    );
-    const circularityIndexTarget = Math.min(
-      1.0 - naturalResourcesShare,
-      1.0 - landfillShare,
-    );
+      circularity: circularityTarget,
+      userSatisfaction: userSatisfactionTarget,
+    } = Scores.all(record);
 
     circularityIndex +=
-      (circularityIndexTarget - circularityIndex) * smoothingFactor;
-    if (!Number.isFinite(circularityIndexTarget)) {
-      // Reset to make it possible to recover from NaN
-      circularityIndex = 0.0;
-    }
+      (circularityTarget - circularityIndex) * smoothingFactor;
     circularityIndexElement.innerText = `${(circularityIndex * 100).toFixed(
       1,
     )}%`;
 
-    const userSatisfactionTarget =
-      phonesInUse < phoneGoal
-        ? phonesInUse / phoneGoal
-        : phoneGoal / phonesInUse;
     userSatisfaction +=
       (userSatisfactionTarget - userSatisfaction) * smoothingFactor;
-    if (!Number.isFinite(userSatisfactionTarget)) {
-      // Reset to make it possible to recover from NaN
-      userSatisfaction = 0.0;
-    }
     userSatisfactionElement.innerText = `${(userSatisfaction * 100).toFixed(
       1,
     )}%`;
