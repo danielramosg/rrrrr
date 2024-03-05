@@ -95,9 +95,9 @@ export default class ModelView {
       const flowVizSign = flowVizSigns[id];
       const elementId = `${kebabCase(id)}-flow`;
       const element = guardedQuerySelector(
-        this.svg,
-        `#${elementId}`,
         SVGPathElement,
+        `#${elementId}`,
+        this.svg,
       );
       const lastDashOffset = parseFloat(
         element.getAttribute('stroke-dashoffset') ?? '0',
@@ -231,9 +231,9 @@ export default class ModelView {
 
     Object.entries(stockLabels).forEach(([id, label]) => {
       const baseElement = guardedQuerySelector(
-        svg,
-        `#${id}`,
         SVGGeometryElement,
+        `#${id}`,
+        svg,
       );
       assert(
         baseElement.tagName === 'circle' || baseElement.tagName === 'rect',
@@ -267,9 +267,9 @@ export default class ModelView {
       .forEach((id) => {
         const baseElementId = kebabCase(id.replace(/^supplyOf/, ''));
         const baseElement = guardedQuerySelector(
-          svg,
-          `#${baseElementId}`,
           SVGGeometryElement,
+          `#${baseElementId}`,
+          svg,
         );
 
         const clone = baseElement.cloneNode(false) as SVGGeometryElement;
@@ -278,9 +278,9 @@ export default class ModelView {
         supplyLayer.append(clone);
       });
     const phonesInUse = guardedQuerySelector(
-      svg,
-      '#phones-in-use',
       SVGGeometryElement,
+      '#phones-in-use',
+      svg,
     );
     const phonesInUseClone = phonesInUse.cloneNode(false) as SVGGeometryElement;
     supplyLayer.append(phonesInUseClone);
@@ -290,9 +290,9 @@ export default class ModelView {
       .forEach((id) => {
         const baseElementId = kebabCase(id.replace(/^capacityOf/, ''));
         const baseElement = guardedQuerySelector(
-          svg,
-          `#${baseElementId}`,
           SVGGeometryElement,
+          `#${baseElementId}`,
+          svg,
         );
 
         const clone = baseElement.cloneNode(false) as SVGGeometryElement;
@@ -303,9 +303,9 @@ export default class ModelView {
     mainFlowIds.forEach((id) => {
       const baseElementId = kebabCase(id);
       const baseElement = guardedQuerySelector(
-        svg,
-        `#${baseElementId}`,
         SVGGeometryElement,
+        `#${baseElementId}`,
+        svg,
       );
 
       const edge = baseElement.cloneNode(false) as SVGGeometryElement;

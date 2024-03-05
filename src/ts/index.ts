@@ -35,44 +35,39 @@ async function init(): Promise<CircularEconomyApi> {
   console.log(config);
 
   const modelVisualizationContainer = guardedQuerySelector(
-    document,
-    '#model-viz-container',
     HTMLDivElement,
+    '#model-viz-container',
   );
 
   const game = await Game.create(modelVisualizationContainer, config);
   const initialParameters = { ...config.model.initialParameters };
 
   const confirm = (() => {
-    const modalDialogElement = guardedQuerySelector(
-      document,
-      '#modal',
-      HTMLElement,
-    );
+    const modalDialogElement = guardedQuerySelector(HTMLElement, '#modal');
     const modalDialogTitleElement = guardedQuerySelector(
-      modalDialogElement,
-      '.modal-title',
       HTMLElement,
+      '.modal-title',
+      modalDialogElement,
     );
     const modalDialogBodyElement = guardedQuerySelector(
-      modalDialogElement,
-      '.modal-body',
       HTMLElement,
+      '.modal-body',
+      modalDialogElement,
     );
     const modelDialogCloseButton = guardedQuerySelector(
-      modalDialogElement,
-      '.modal-header button.btn-close',
       HTMLButtonElement,
+      '.modal-header button.btn-close',
+      modalDialogElement,
     );
     const modelDialogOkButton = guardedQuerySelector(
-      modalDialogElement,
-      '.modal-footer button.btn-primary',
       HTMLButtonElement,
+      '.modal-footer button.btn-primary',
+      modalDialogElement,
     );
     const modelDialogCancelButton = guardedQuerySelector(
-      modalDialogElement,
-      '.modal-footer button.btn-secondary',
       HTMLButtonElement,
+      '.modal-footer button.btn-secondary',
+      modalDialogElement,
     );
     const modalDialog = new Modal(modalDialogElement, { backdrop: 'static' });
     let wasModalDialogDismissed = false;
@@ -105,14 +100,12 @@ async function init(): Promise<CircularEconomyApi> {
   })();
 
   const availableParameterTransformsContainer = guardedQuerySelector(
-    document,
-    '#parameter-transforms .available',
     HTMLElement,
+    '#parameter-transforms .available',
   );
   const activeParameterTransformsContainer = guardedQuerySelector(
-    document,
-    '#parameter-transforms .active',
     HTMLElement,
+    '#parameter-transforms .active',
   );
 
   const availableParameterTransforms = new Map<
@@ -157,14 +150,12 @@ async function init(): Promise<CircularEconomyApi> {
   }
 
   const idElement = guardedQuerySelector(
-    document,
-    '#parameter-transform-id',
     HTMLInputElement,
+    '#parameter-transform-id',
   );
   const scriptElement = guardedQuerySelector(
-    document,
-    '#parameter-transform-script',
     HTMLTextAreaElement,
+    '#parameter-transform-script',
   );
 
   Sortable.create(availableParameterTransformsContainer, {
@@ -222,14 +213,14 @@ async function init(): Promise<CircularEconomyApi> {
     destroy: (id: string) => {
       availableParameterTransforms.delete(id);
       guardedQuerySelector(
-        availableParameterTransformsContainer,
-        `[data-id="${id}"]`,
         HTMLElement,
+        `[data-id="${id}"]`,
+        availableParameterTransformsContainer,
       ).remove();
       guardedQuerySelectorAll(
-        activeParameterTransformsContainer,
-        `[data-id="${id}"]`,
         HTMLElement,
+        `[data-id="${id}"]`,
+        activeParameterTransformsContainer,
       ).forEach((element) => element.remove());
       updateParameters();
     },
@@ -242,10 +233,8 @@ async function init(): Promise<CircularEconomyApi> {
   };
 
   guardedQuerySelector(
-    document,
-    '#clear-all-active-parameter-transforms-button',
     HTMLElement,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    '#clear-all-active-parameter-transforms-button',
   ).addEventListener('click', async () => {
     const message =
       'Do you really want to clear all active parameter transformations?';
@@ -256,10 +245,8 @@ async function init(): Promise<CircularEconomyApi> {
   });
 
   guardedQuerySelector(
-    document,
-    '#add-parameter-transform',
     HTMLElement,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    '#add-parameter-transform',
   ).addEventListener('click', async () => {
     const id = idElement.value;
     const script = scriptElement.value;
@@ -273,10 +260,8 @@ async function init(): Promise<CircularEconomyApi> {
   });
 
   guardedQuerySelector(
-    document,
-    '#delete-parameter-transform',
     HTMLElement,
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    '#delete-parameter-transform',
   ).addEventListener('click', async () => {
     const id = idElement.value;
     const message = `Do you really want to delete the parameter transformation "${id}"? This will also delete all active instances of this parameter transformation.`;
@@ -290,21 +275,12 @@ async function init(): Promise<CircularEconomyApi> {
     .forEach(({ id, script }) => parameterTransforms.create(id, script));
 
   const importExportElement = guardedQuerySelector(
-    document,
-    '#import-export',
     HTMLTextAreaElement,
+    '#import-export',
   );
-  const exportButton = guardedQuerySelector(
-    document,
-    '#export-button',
-    HTMLInputElement,
-  );
+  const exportButton = guardedQuerySelector(HTMLInputElement, '#export-button');
 
-  const importButton = guardedQuerySelector(
-    document,
-    '#import-button',
-    HTMLInputElement,
-  );
+  const importButton = guardedQuerySelector(HTMLInputElement, '#import-button');
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   importButton.addEventListener('click', async () => {
     const text = importExportElement.value;
@@ -324,11 +300,7 @@ async function init(): Promise<CircularEconomyApi> {
     importExportElement.value = JSON.stringify(data, null, 2);
   });
 
-  const sliderContainer = guardedQuerySelector(
-    document,
-    '#sliders',
-    HTMLElement,
-  );
+  const sliderContainer = guardedQuerySelector(HTMLElement, '#sliders');
 
   game.modelSimulator.model.parameterIds
     .filter((id) => id !== 'numberOfUsers')
@@ -358,23 +330,17 @@ async function init(): Promise<CircularEconomyApi> {
 
   let circularityIndex = 0;
   const circularityIndexElement = guardedQuerySelector(
-    document,
-    '#circularity-index',
     HTMLElement,
+    '#circularity-index',
   );
 
   let userSatisfaction = 0;
   const userSatisfactionElement = guardedQuerySelector(
-    document,
-    '#user-satisfaction',
     HTMLElement,
+    '#user-satisfaction',
   );
 
-  const chartCanvas = guardedQuerySelector(
-    document,
-    '#chart',
-    HTMLCanvasElement,
-  );
+  const chartCanvas = guardedQuerySelector(HTMLCanvasElement, '#chart');
   const chart = new Chart(chartCanvas, game.modelSimulator.record);
 
   function updateIndices(record: Record) {
@@ -406,9 +372,8 @@ async function init(): Promise<CircularEconomyApi> {
 
   // TODO: Sync button state and fullscreen state
   const fullscreenToggleCheckboxBox = guardedQuerySelector(
-    document,
-    '#btn-toggle-fullscreen',
     HTMLInputElement,
+    '#btn-toggle-fullscreen',
   );
   if (!document.fullscreenEnabled) fullscreenToggleCheckboxBox.disabled = true;
   fullscreenToggleCheckboxBox.addEventListener('input', () =>
@@ -419,11 +384,7 @@ async function init(): Promise<CircularEconomyApi> {
     ),
   );
 
-  const runCheckBox = guardedQuerySelector(
-    document,
-    '#btn-run',
-    HTMLInputElement,
-  );
+  const runCheckBox = guardedQuerySelector(HTMLInputElement, '#btn-run');
 
   runCheckBox.addEventListener('input', () =>
     runCheckBox.checked ? game.runner.play() : game.runner.pause(),

@@ -1,7 +1,7 @@
 export function guardedQuerySelector<T extends Element>(
-  elem: Element | Document,
-  selector: string,
   type: { new (...args: unknown[]): T },
+  selector: string,
+  elem: Element | Document = document,
 ): T {
   const result = elem.querySelector(selector);
   if (result === null) {
@@ -16,9 +16,9 @@ export function guardedQuerySelector<T extends Element>(
 }
 
 export function guardedQuerySelectorAll<T extends Element>(
-  elem: Element | Document,
-  selector: string,
   type: { new (...args: unknown[]): T },
+  selector: string,
+  elem: Element | Document = document,
 ): NodeListOf<T> {
   const results = elem.querySelectorAll(selector);
   results.forEach((result) => {
