@@ -3,7 +3,6 @@ import './side-effects';
 import { strict as assert } from 'assert';
 import Sortable from 'sortablejs';
 
-import { Modal } from 'bootstrap';
 import loadConfig from './config';
 import type { ParameterTransformsConfig } from './config';
 import type { ParameterIds } from './circular-economy-model';
@@ -14,6 +13,7 @@ import {
   guardedQuerySelectorAll,
 } from './util/guarded-query-selectors';
 import { ignorePromise } from './util/ignore-promise';
+import { ModalConfirmDialog } from './util/ui/modal-confirm-dialog';
 import ScriptedParameterTransform from './parameter-transform/scripted-parameter-transform';
 import { Game } from './game';
 import { Chart } from './chart';
@@ -42,62 +42,8 @@ async function init(): Promise<CircularEconomyApi> {
   const game = await Game.create(modelVisualizationContainer, config);
   const initialParameters = { ...config.model.initialParameters };
 
-  const confirm = (() => {
-    const modalDialogElement = guardedQuerySelector(HTMLElement, '#modal');
-    const modalDialogTitleElement = guardedQuerySelector(
-      HTMLElement,
-      '.modal-title',
-      modalDialogElement,
-    );
-    const modalDialogBodyElement = guardedQuerySelector(
-      HTMLElement,
-      '.modal-body',
-      modalDialogElement,
-    );
-    const modelDialogCloseButton = guardedQuerySelector(
-      HTMLButtonElement,
-      '.modal-header button.btn-close',
-      modalDialogElement,
-    );
-    const modelDialogOkButton = guardedQuerySelector(
-      HTMLButtonElement,
-      '.modal-footer button.btn-primary',
-      modalDialogElement,
-    );
-    const modelDialogCancelButton = guardedQuerySelector(
-      HTMLButtonElement,
-      '.modal-footer button.btn-secondary',
-      modalDialogElement,
-    );
-    const modalDialog = new Modal(modalDialogElement, { backdrop: 'static' });
-    let wasModalDialogDismissed = false;
-    let lastResolver: (result: boolean) => void = () => {};
-    modelDialogCloseButton.addEventListener('click', () => {
-      wasModalDialogDismissed = true;
-    });
-    modelDialogOkButton.addEventListener('click', () => {
-      wasModalDialogDismissed = false;
-    });
-    modelDialogCancelButton.addEventListener('click', () => {
-      wasModalDialogDismissed = true;
-    });
-    modalDialogElement.addEventListener('hidden.bs.modal', () => {
-      lastResolver(!wasModalDialogDismissed);
-    });
-
-    const titleText = 'Confirmation required';
-    return async function confirmDialog(
-      text: string,
-      title: string = titleText,
-    ): Promise<boolean> {
-      modalDialogTitleElement.textContent = title;
-      modalDialogBodyElement.textContent = text;
-      modalDialog.show();
-      return new Promise<boolean>((resolve) => {
-        lastResolver = resolve;
-      });
-    };
-  })();
+  const confirmDialog = ModalConfirmDialog.instance();
+  const confirm = confirmDialog.open.bind(confirmDialog);
 
   const availableParameterTransformsContainer = guardedQuerySelector(
     HTMLElement,
