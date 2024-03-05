@@ -442,3 +442,4 @@ export type {
 };
 
 export default CircularEconomyModel;
+export { CircularEconomyModel };

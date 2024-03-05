@@ -1,17 +1,13 @@
 import './side-effects';
 
 import { strict as assert } from 'assert';
-import Chart from 'chart.js/auto';
 import Sortable from 'sortablejs';
 
 import { Modal } from 'bootstrap';
 import loadConfig from './config';
 import type { ParameterTransformsConfig } from './config';
 import type { ParameterIds } from './circular-economy-model';
-import CircularEconomyModel, {
-  Parameters,
-  Record,
-} from './circular-economy-model';
+import { Parameters, Record } from './circular-economy-model';
 import { documentReady } from './util/document-ready';
 import {
   guardedQuerySelector,
@@ -19,6 +15,7 @@ import {
 } from './util/guarded-query-selectors';
 import ScriptedParameterTransform from './parameter-transform/scripted-parameter-transform';
 import { Game } from './game';
+import { Chart } from './chart';
 import { Scores } from './scores';
 
 type ScriptCircularEconomyParameterTransform =
@@ -372,31 +369,12 @@ async function init(): Promise<CircularEconomyApi> {
     HTMLElement,
   );
 
-  function toChartRecord(record: Record) {
-    return CircularEconomyModel.elementIds
-      .map((key) =>
-        Object.entries(record[key]).map(([id, value]) => ({ id, value })),
-      )
-      .reduce((cur, acc) => [...cur, ...acc], []);
-  }
-
-  const initialChartRecord = toChartRecord(game.modelSimulator.record);
-
-  const chartCanvas = document.getElementById('chart') as HTMLCanvasElement;
-  assert(chartCanvas !== null, 'chart element not found');
-  const chart = new Chart(chartCanvas, {
-    type: 'bar',
-    data: {
-      labels: initialChartRecord.map((row) => row.id),
-      datasets: [
-        {
-          label: 'Values',
-          data: initialChartRecord.map((row) => row.value),
-        },
-      ],
-    },
-    options: { animation: false },
-  });
+  const chartCanvas = guardedQuerySelector(
+    document,
+    '#chart',
+    HTMLCanvasElement,
+  );
+  const chart = new Chart(chartCanvas, game.modelSimulator.record);
 
   function updateIndices(record: Record) {
     const smoothingFactor = 0.5;
@@ -421,14 +399,8 @@ async function init(): Promise<CircularEconomyApi> {
 
   game.runner.on('tick', () => {
     const { record } = game.modelSimulator;
-
     updateIndices(record);
-
-    const chartRecord = toChartRecord(record);
-    // console.log(chartRecord);
-    chart.data.datasets[0].data = chartRecord.map((row) => row.value);
-
-    chart.update();
+    chart.update(record);
   });
 
   // TODO: Sync button state and fullscreen state
