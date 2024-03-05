@@ -13,6 +13,7 @@ import {
   guardedQuerySelector,
   guardedQuerySelectorAll,
 } from './util/guarded-query-selectors';
+import { ignorePromise } from './util/ignore-promise';
 import ScriptedParameterTransform from './parameter-transform/scripted-parameter-transform';
 import { Game } from './game';
 import { Chart } from './chart';
@@ -410,13 +411,13 @@ async function init(): Promise<CircularEconomyApi> {
     HTMLInputElement,
   );
   if (!document.fullscreenEnabled) fullscreenToggleCheckboxBox.disabled = true;
-  fullscreenToggleCheckboxBox.addEventListener('input', () => {
-    if (fullscreenToggleCheckboxBox.checked) {
-      void document.documentElement.requestFullscreen();
-    } else {
-      void document.exitFullscreen();
-    }
-  });
+  fullscreenToggleCheckboxBox.addEventListener('input', () =>
+    ignorePromise(
+      fullscreenToggleCheckboxBox.checked
+        ? document.documentElement.requestFullscreen()
+        : document.exitFullscreen(),
+    ),
+  );
 
   const runCheckBox = guardedQuerySelector(
     document,
@@ -424,14 +425,9 @@ async function init(): Promise<CircularEconomyApi> {
     HTMLInputElement,
   );
 
-  runCheckBox.addEventListener('input', () => {
-    const shouldPlay = runCheckBox.checked;
-    if (shouldPlay) {
-      game.runner.play();
-    } else {
-      game.runner.pause();
-    }
-  });
+  runCheckBox.addEventListener('input', () =>
+    runCheckBox.checked ? game.runner.play() : game.runner.pause(),
+  );
 
   game.runner.tick();
 

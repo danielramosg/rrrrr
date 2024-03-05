@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import type TypedEmitter from 'typed-emitter';
 import { strict as assert } from 'assert';
+import { ignorePromise } from './ignore-promise';
 
 type RunnerEvents = {
   play: () => void;
@@ -39,7 +40,7 @@ class Runner extends (EventEmitter as new () => TypedEmitter<RunnerEvents>) {
 
   play() {
     this.shouldRun = true;
-    void this.run();
+    ignorePromise(this.run());
   }
 
   pause() {
