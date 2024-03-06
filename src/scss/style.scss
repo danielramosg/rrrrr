@@ -14,27 +14,29 @@ body {
 
 #top-level-container {
   display: flex;
+
   & > #viz-panel {
     z-index: -1;
-    flex-shrink: 0;
-    flex-grow: 0;
-    flex-basis: calc(1px * var(--svg-scale-factor) * var(--svg-width));
+    flex: 0 0 calc(1px * var(--svg-scale-factor) * var(--svg-width));
     height: calc(1px * var(--viz-panel-height));
+
     & > #model-viz-container {
       width: calc(1px * var(--svg-width));
       transform: scale(var(--svg-scale-factor));
       transform-origin: top left;
     }
+
     & > #indices {
       position: absolute;
       width: calc(1px * var(--svg-scale-factor) * var(--svg-width));
-      bottom: 0px;
-      left: 0px;
+      bottom: 0;
+      left: 0;
       font-size: xx-large;
       padding: 1ex;
       text-align: center;
     }
   }
+
   & > #control-panel {
     flex-grow: 1;
     border-left: solid 1px;
@@ -46,6 +48,7 @@ body {
         text-decoration: line-through;
       }
     }
+
     & .tab-pane {
       padding: 1em;
     }
@@ -53,17 +56,21 @@ body {
     & #parameter-transforms {
       display: flex;
       gap: 2em;
+
       & *:nth-child(1),
       & *:nth-child(2) {
         flex-grow: 0;
       }
+
       & *:last-child {
         flex-grow: 3;
+
         & input[type='text'],
         & textarea {
           width: 100%;
         }
       }
+
       & .active,
       & .available {
         overflow: scroll;
@@ -73,25 +80,20 @@ body {
         &::-webkit-scrollbar {
           display: none;
         }
+
         -ms-overflow-style: none; /* IE and Edge */
         scrollbar-width: none; /* Firefox */
+        min-width: 100px;
+        max-width: 200px;
+        min-height: 20px;
+        border: solid 1px;
+
+        & > div {
+          border: solid 1px;
+          margin: -1px;
+          padding: 0.2ex;
+        }
       }
-    }
-  }
-}
-
-#parameter-transforms {
-  & .active,
-  & .available {
-    min-width: 100px;
-    max-width: 200px;
-    min-height: 20px;
-    border: solid 1px;
-
-    & > div {
-      border: solid 1px;
-      margin: -1px;
-      padding: 0.2ex;
     }
   }
 }
