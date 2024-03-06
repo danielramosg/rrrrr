@@ -1,6 +1,6 @@
 import './side-effects';
 
-import loadConfig from './config';
+import { loadConfig } from './config';
 import { Parameters, Record } from './circular-economy-model';
 import { documentReady } from './util/document-ready';
 import { guardedQuerySelector } from './util/guarded-query-selectors';

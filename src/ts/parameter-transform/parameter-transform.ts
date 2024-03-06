@@ -1,6 +1,6 @@
 import type { ModelElementIds, ModelElementObject } from '../model';
 
-export default abstract class ParameterTransform<P extends ModelElementIds> {
+export abstract class ParameterTransform<P extends ModelElementIds> {
   public readonly i18nKey: string;
 
   protected constructor(i18nKey: string) {

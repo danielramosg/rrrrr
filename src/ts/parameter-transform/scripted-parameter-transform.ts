@@ -1,11 +1,12 @@
-import isVarName from '../util/is-var-name';
+import { isVarName } from '../util/is-var-name';
 
-import FunctionParameterTransform, {
+import {
+  FunctionParameterTransform,
   PararameterTransformFunction,
 } from './function-parameter-transform';
 import { ModelElementIds, ModelElementObject } from '../model';
 
-export default class ScriptedParameterTransform<
+export class ScriptedParameterTransform<
   P extends ModelElementIds,
 > extends FunctionParameterTransform<P> {
   public readonly script: string;

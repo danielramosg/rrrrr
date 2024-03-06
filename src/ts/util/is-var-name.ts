@@ -1,4 +1,4 @@
-export default function isVarName(str: unknown): boolean {
+export function isVarName(str: unknown): boolean {
   if (typeof str !== 'string') {
     return false;
   }

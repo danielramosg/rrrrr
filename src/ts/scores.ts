@@ -69,5 +69,4 @@ class Scores {
   }
 }
 
-export default Scores;
 export { Scores };

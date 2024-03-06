@@ -125,6 +125,5 @@ class Runner extends (EventEmitter as new () => TypedEmitter<RunnerEvents>) {
   }
 }
 
-export default Runner;
 export { Runner };
 export type { RunnerEvents };

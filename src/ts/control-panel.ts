@@ -18,7 +18,7 @@ import {
   guardedQuerySelector,
   guardedQuerySelectorAll,
 } from './util/guarded-query-selectors';
-import ScriptedParameterTransform from './parameter-transform/scripted-parameter-transform';
+import { ScriptedParameterTransform } from './parameter-transform/scripted-parameter-transform';
 import type { ReadOnlyConfig, ParameterTransformsConfig } from './config';
 import { ModalConfirmDialog } from './util/ui/modal-confirm-dialog';
 import { ignorePromise } from './util/ignore-promise';

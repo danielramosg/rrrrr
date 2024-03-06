@@ -90,4 +90,4 @@ class ModelSimulator<
   }
 }
 
-export default ModelSimulator;
+export { ModelSimulator };

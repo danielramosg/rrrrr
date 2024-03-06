@@ -52,5 +52,4 @@ class Chart {
   }
 }
 
-export default Chart;
 export { Chart };

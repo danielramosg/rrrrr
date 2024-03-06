@@ -1,11 +1,12 @@
-import ModelView from './model-view';
-import CircularEconomyModel, {
+import { ModelView } from './model-view';
+import {
+  CircularEconomyModel,
   type FlowIds,
   type ParameterIds,
   type StockIds,
   type VariableIds,
 } from './circular-economy-model';
-import ModelSimulator from './model-simulator';
+import { ModelSimulator } from './model-simulator';
 import { Runner } from './util/runner';
 
 type GameConfig = {
@@ -82,6 +83,5 @@ class Game {
   }
 }
 
-export default Game;
 export { Game };
 export type { GameConfig, CircularEconomyModelSimulator };

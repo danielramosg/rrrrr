@@ -1,6 +1,6 @@
-import CircularEconomyModel from './circular-economy-model';
+import type { DeepReadonly } from 'ts-essentials';
+import { CircularEconomyModel } from './circular-economy-model';
 import type { GameConfig } from './game';
-import { DeepReadonly } from 'ts-essentials';
 
 const configBaseUrl = new URL('./config/', window.location.href);
 
@@ -57,7 +57,7 @@ function preprocessParameterTransformsGroups(
   return ptgsFiltered;
 }
 
-export default async function loadConfig(): Promise<ReadOnlyConfig> {
+export async function loadConfig(): Promise<ReadOnlyConfig> {
   const modelConfig = (await loadConfigFile(
     new URL('model.json', configBaseUrl),
   )) as GameConfig['model']; // FIXME: Validate instead of casting

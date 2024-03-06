@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import kebabCase from 'lodash/kebabCase';
 
 import { ModelElementObject } from './model';
-import CircularEconomyModel, { Record } from './circular-economy-model';
+import { CircularEconomyModel, Record } from './circular-economy-model';
 import { loadSvg } from './util/load-svg';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
 
@@ -66,7 +66,7 @@ const dotWithoutLineSegmentArea =
 const averageFlowVizWidth = lineSegmentArea + dotWithoutLineSegmentArea;
 console.log(lineSegmentArea, dotWithoutLineSegmentArea, averageFlowVizWidth);
 const quantityScaleFactor = 30000.0;
-export default class ModelView {
+class ModelView {
   protected readonly model: CircularEconomyModel;
 
   public readonly element: HTMLDivElement;
@@ -330,3 +330,5 @@ export default class ModelView {
     return new ModelView(model, svg);
   }
 }
+
+export { ModelView };

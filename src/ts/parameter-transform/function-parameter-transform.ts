@@ -1,4 +1,4 @@
-import ParameterTransform from './parameter-transform';
+import { ParameterTransform } from './parameter-transform';
 import { ModelElementIds, ModelElementObject } from '../model';
 
 export type PararameterTransformFunction<P extends ModelElementIds> = <
@@ -7,7 +7,7 @@ export type PararameterTransformFunction<P extends ModelElementIds> = <
   parameters: T,
 ) => T;
 
-export default class FunctionParameterTransform<
+export class FunctionParameterTransform<
   P extends ModelElementIds,
 > extends ParameterTransform<P> {
   protected readonly callable: PararameterTransformFunction<P>;
