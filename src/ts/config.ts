@@ -1,5 +1,6 @@
 import CircularEconomyModel from './circular-economy-model';
 import type { GameConfig } from './game';
+import { DeepReadonly } from 'ts-essentials';
 
 const configBaseUrl = new URL('./config/', window.location.href);
 
@@ -17,7 +18,7 @@ export type ParameterTransformsGroupConfig = {
 };
 export type ParameterTransformsGroupsConfig = ParameterTransformsGroupConfig[];
 
-export type Config = {
+type Config = {
   parameterTransformsGroups: ParameterTransformsGroupsConfig;
   model: {
     initialParameters: typeof CircularEconomyModel.defaultParameters;
@@ -28,6 +29,7 @@ export type Config = {
     maxStepSize: number;
   };
 };
+export type ReadOnlyConfig = DeepReadonly<Config>;
 
 function preprocessParameterTransformsGroups(
   ptgs: ParameterTransformsGroupsConfig,
@@ -55,7 +57,7 @@ function preprocessParameterTransformsGroups(
   return ptgsFiltered;
 }
 
-export default async function loadConfig() {
+export default async function loadConfig(): Promise<ReadOnlyConfig> {
   const modelConfig = (await loadConfigFile(
     new URL('model.json', configBaseUrl),
   )) as GameConfig['model']; // FIXME: Validate instead of casting

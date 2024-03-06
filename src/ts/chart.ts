@@ -1,20 +1,33 @@
 import ChartJs from 'chart.js/auto';
-import { CircularEconomyModel, Record } from './circular-economy-model';
+import {
+  CircularEconomyModel,
+  stockIds,
+  flowIds,
+  variableIds,
+  parameterIds,
+  Record,
+} from './circular-economy-model';
 
 class Chart {
   readonly chartJs: ChartJs;
 
-  constructor(canvas: HTMLCanvasElement, initialRecord: Record) {
-    const initialChartRecord = Chart.toChartJsRecord(initialRecord);
+  constructor(canvas: HTMLCanvasElement) {
+    const labels = {
+      stocks: stockIds,
+      flows: flowIds,
+      variables: variableIds,
+      parameters: parameterIds,
+    };
+    const labelsArray = Object.values(labels).flat();
 
     this.chartJs = new ChartJs(canvas, {
       type: 'bar',
       data: {
-        labels: initialChartRecord.map((row) => row.id),
+        labels: labelsArray,
         datasets: [
           {
             label: 'Values',
-            data: initialChartRecord.map((row) => row.value),
+            data: new Array<number>(labelsArray.length).fill(0),
           },
         ],
       },
