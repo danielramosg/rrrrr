@@ -42,6 +42,7 @@
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.34.0",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "npm-check-updates": "^16.14.15",
     "npm-run-all": "^4.1.5",
     "parcel": "^2.12.0",
     "parcel-namer-rewrite": "^2.10.3-rc.2",
@@ -87,6 +88,7 @@
     "fix": "npm-run-all -s -c fix:**",
     "fix:scripts": "eslint --fix src",
     "fix:styles": "stylelint --fix 'src/{**/*,*}.{css,scss}'",
+    "check-updates": "npm-check-updates",
     "convert-insightmaker-model": "tsx ./tools/convert-from-insight-maker.ts < src/insight-maker/CircularEconomyOfSmartPhones.InsightMaker > ./src/ts/circular-economy-model.ts; prettier --write ./src/ts/circular-economy-model.ts"
   },
   "dependencies": {
