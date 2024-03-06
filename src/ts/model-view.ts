@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import kebabCase from 'lodash/kebabCase';
 
 import { ModelElementObject } from './model';
-import CircularEconomyModel, { Record } from './circular-economy-model';
+import { CircularEconomyModel, Record } from './circular-economy-model';
 import { loadSvg } from './util/load-svg';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
 
@@ -66,7 +66,7 @@ const dotWithoutLineSegmentArea =
 const averageFlowVizWidth = lineSegmentArea + dotWithoutLineSegmentArea;
 console.log(lineSegmentArea, dotWithoutLineSegmentArea, averageFlowVizWidth);
 const quantityScaleFactor = 30000.0;
-export default class Visualization {
+class ModelView {
   protected readonly model: CircularEconomyModel;
 
   public readonly element: HTMLDivElement;
@@ -95,9 +95,9 @@ export default class Visualization {
       const flowVizSign = flowVizSigns[id];
       const elementId = `${kebabCase(id)}-flow`;
       const element = guardedQuerySelector(
-        this.svg,
-        `#${elementId}`,
         SVGPathElement,
+        `#${elementId}`,
+        this.svg,
       );
       const lastDashOffset = parseFloat(
         element.getAttribute('stroke-dashoffset') ?? '0',
@@ -231,9 +231,9 @@ export default class Visualization {
 
     Object.entries(stockLabels).forEach(([id, label]) => {
       const baseElement = guardedQuerySelector(
-        svg,
-        `#${id}`,
         SVGGeometryElement,
+        `#${id}`,
+        svg,
       );
       assert(
         baseElement.tagName === 'circle' || baseElement.tagName === 'rect',
@@ -267,9 +267,9 @@ export default class Visualization {
       .forEach((id) => {
         const baseElementId = kebabCase(id.replace(/^supplyOf/, ''));
         const baseElement = guardedQuerySelector(
-          svg,
-          `#${baseElementId}`,
           SVGGeometryElement,
+          `#${baseElementId}`,
+          svg,
         );
 
         const clone = baseElement.cloneNode(false) as SVGGeometryElement;
@@ -278,9 +278,9 @@ export default class Visualization {
         supplyLayer.append(clone);
       });
     const phonesInUse = guardedQuerySelector(
-      svg,
-      '#phones-in-use',
       SVGGeometryElement,
+      '#phones-in-use',
+      svg,
     );
     const phonesInUseClone = phonesInUse.cloneNode(false) as SVGGeometryElement;
     supplyLayer.append(phonesInUseClone);
@@ -290,9 +290,9 @@ export default class Visualization {
       .forEach((id) => {
         const baseElementId = kebabCase(id.replace(/^capacityOf/, ''));
         const baseElement = guardedQuerySelector(
-          svg,
-          `#${baseElementId}`,
           SVGGeometryElement,
+          `#${baseElementId}`,
+          svg,
         );
 
         const clone = baseElement.cloneNode(false) as SVGGeometryElement;
@@ -303,9 +303,9 @@ export default class Visualization {
     mainFlowIds.forEach((id) => {
       const baseElementId = kebabCase(id);
       const baseElement = guardedQuerySelector(
-        svg,
-        `#${baseElementId}`,
         SVGGeometryElement,
+        `#${baseElementId}`,
+        svg,
       );
 
       const edge = baseElement.cloneNode(false) as SVGGeometryElement;
@@ -327,6 +327,8 @@ export default class Visualization {
   public static async create(model: CircularEconomyModel) {
     const svg = await loadSvg(svgUrl);
     this.prepareSvg(model, svg);
-    return new Visualization(model, svg);
+    return new ModelView(model, svg);
   }
 }
+
+export { ModelView };
