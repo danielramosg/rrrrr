@@ -50,9 +50,11 @@
     "rimraf": "^5.0.5",
     "serve-static": "^1.15.0",
     "simulation": "^3.0.0",
-    "stylelint": "^15.11.0",
+    "stylelint": "^16.2.1",
     "stylelint-config-html": "^1.1.0",
     "stylelint-config-prettier-scss": "^1.0.0",
+    "stylelint-config-standard": "^36.0.0",
+    "stylelint-config-standard-scss": "^13.0.0",
     "ts-essentials": "^9.4.1",
     "tsx": "^4.7.0",
     "typed-emitter": "^2.1.0"
