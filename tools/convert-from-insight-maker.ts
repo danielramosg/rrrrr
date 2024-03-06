@@ -111,7 +111,7 @@ export type {
   Record,
 };
 
-export default CircularEconomyModel;
+export { CircularEconomyModel, stockIds, flowIds, variableIds, parameterIds };
 `;
 
 const className = 'CircularEconomyModel';
