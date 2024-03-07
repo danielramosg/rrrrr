@@ -11,7 +11,7 @@
     "target": "es2022",
     "moduleResolution": "node",
     "lib": ["ES2022", "dom", "dom.iterable"],
-    "typeRoots": ["./lib/ts", "../node_modules/@types"],
+    "typeRoots": ["./@types", "../node_modules/@types"],
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "include": ["./ts/**/*"]
