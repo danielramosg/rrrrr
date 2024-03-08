@@ -1,25 +1,11 @@
+// TODO: Implement TUIO 1.0 2Dobj lifecycle events
+
 import type TypedEmitter from 'typed-emitter';
 import { EventEmitter } from 'events';
 
-import osc, { OscMessage, OscBundle } from './osc';
-
-export type Tuio2DObjSetParameters = {
-  command: 'set';
-  s: number;
-  i: number;
-  x: number;
-  y: number;
-  a: number;
-  X: number;
-  Y: number;
-  A: number;
-  m: number;
-  r: number;
-};
-
-export type TuioEvents = {
-  '/tuio/2Dobj': (params: Tuio2DObjSetParameters) => void;
-};
+import osc, { OscBundle, OscMessage } from './osc';
+import * as TuioParser from './tuio-parser';
+import type { TuioEvents } from './tuio-parser';
 
 function isOscMessage(obj: OscMessage | OscBundle): obj is OscMessage {
   return 'address' in obj;
@@ -39,28 +25,19 @@ export class Tuio {
   protected processOscMessage(message: OscMessage) {
     const { address, args } = message;
     switch (address) {
-      case '/tuio/2Dobj':
+      case '/tuio/2Dobj': // TODO: Parse whole osc message via zod (maybe even the whole bundle)
         {
-          const [command, ...rargs] = args;
+          const [command] = args;
           switch (command) {
             case 'set':
-              {
-                const [s, i, x, y, a, X, Y, A, m, r] = rargs;
-                const params = {
-                  command: 'set',
-                  s,
-                  i,
-                  x,
-                  y,
-                  a,
-                  X,
-                  Y,
-                  A,
-                  m,
-                  r,
-                } as Tuio2DObjSetParameters; // FIXME: Use zod for typesafe parsing of TUIO messages?
-                console.log(params);
-                this.events.emit('/tuio/2Dobj', params);
+              try {
+                const tuio2dObjSetTuple =
+                  TuioParser.zTuio2dObjSetTuple.parse(args);
+                const tuio2dObjSetRecord =
+                  TuioParser.tuio2dObjSetTupleToRecord(tuio2dObjSetTuple);
+                this.events.emit('/tuio/2Dobj', tuio2dObjSetRecord);
+              } catch (err) {
+                console.error(err);
               }
               break;
             default:

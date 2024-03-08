@@ -1,17 +1,15 @@
 declare module 'osc/dist/osc-browser' {
   import type TypedEmitter from 'typed-emitter';
-  import type { XOR } from 'ts-essentials';
   import type Long from 'long';
   import { EventEmitter } from 'events';
 
-  export type OscLong = XOR<
-    Long,
-    {
-      high: number;
-      low: number;
-      unsigned: false;
-    }
-  >;
+  export type OscLong =
+    | Long
+    | {
+        high: number;
+        low: number;
+        unsigned: false;
+      };
 
   export type OscTimeTag = {
     raw: [
@@ -65,10 +63,10 @@ declare module 'osc/dist/osc-browser' {
 
   export type OscMessage = {
     address: string;
-    args: XOR<OscRawArgument, OscTypedArgument>[];
+    args: (OscRawArgument | OscTypedArgument)[];
   };
 
-  export type OscPacket = XOR<OscMessage, OscBundle>;
+  export type OscPacket = OscMessage | OscBundle;
 
   export type OscBundle = {
     packets: OscPacket[];

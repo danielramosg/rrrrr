@@ -121,6 +121,7 @@
     "stream-browserify": "^3.0.0",
     "ts-essentials": "^9.4.1",
     "typed-emitter": "^2.1.0",
-    "ws": "^8.16.0"
+    "ws": "^8.16.0",
+    "zod": "^3.22.4"
   }
 }
