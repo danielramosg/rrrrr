@@ -1,4 +1,5 @@
-import {TuioReceiver} from "./TuioReceiver.js";
+import * as osc from 'osc/dist/osc-browser';
+import { TuioReceiver } from './TuioReceiver.js';
 
 export class WebsocketTuioReceiver extends TuioReceiver {
     constructor(url) {
