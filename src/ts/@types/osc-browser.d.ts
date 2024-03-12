@@ -26,7 +26,15 @@ declare module 'osc/dist/osc-browser' {
     a: number;
   };
 
-  export type OscRawArgument = string | number;
+  export type OscRawArgument =
+    | string
+    | number
+    | boolean
+    | Uint8Array
+    | null
+    | OscLong
+    | OscTimeTag
+    | OscColor;
 
   export type OscTypedArgumenti = { type: 'i'; value: number };
   export type OscTypedArgumenth = { type: 'h'; value: OscLong };

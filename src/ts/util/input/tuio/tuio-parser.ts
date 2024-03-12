@@ -1,7 +1,14 @@
 import Long from 'long';
 import { z } from 'zod';
 
-import osc, { OscColor, OscLong, OscTimeTag } from './osc';
+import osc, {
+  OscColor,
+  OscLong,
+  OscTimeTag,
+  OscBundle,
+  OscMessage,
+  OscPacket,
+} from './osc';
 
 export const zLong: z.ZodType<Long> = z.instanceof(Long);
 export const zOscLong: z.ZodType<OscLong> = zLong.or(
@@ -119,20 +126,28 @@ export const zOscTypedArgumentm: z.ZodType<osc.OscTypedArgumentm> = z.object({
 });
 export const zOscArgumentm = rawOrTyped(zOscTypedArgumentm);
 
-export const zTuioAliveTuple = z.tuple([
-  rawOrTyped(z.object({ type: z.literal('s'), value: z.literal('alive') })), // command,
-  z.array(zOscTypedArgumenti),
+export const zOscArgument = z.union([
+  zOscArgumenti,
+  zOscArgumenth,
+  zOscArgumentf,
+  zOscArguments,
+  zOscArgumentS,
+  zOscArgumentb,
+  zOscArgumentt,
+  zOscArgumentT,
+  zOscArgumentF,
+  zOscArgumentN,
+  zOscArgumentI,
+  zOscArgumentd,
+  zOscArgumentc,
+  zOscArgumentr,
+  zOscArgumentm,
 ]);
-export type TuioAliveTuple = z.infer<typeof zTuioAliveTuple>;
-export const tuioAliveTupleToRecord = (args: TuioAliveTuple) => {
-  const [command, ids] = args;
-  return { command, ids };
-};
-export type TuioAliveRecord = z.infer<typeof zTuioAliveTuple>;
 
+export const zTuioSourceTubleParameters = z.tuple([z.string()]);
 export const zTuioSourceTuple = z.tuple([
   rawOrTyped(z.object({ type: z.literal('s'), value: z.literal('source') })), // command,
-  z.string(),
+  ...zTuioSourceTubleParameters.items, // source
 ]);
 export type TuioSourceTuple = z.infer<typeof zTuioSourceTuple>;
 export const tuioSourceTupleToRecord = (args: TuioSourceTuple) => {
@@ -141,8 +156,21 @@ export const tuioSourceTupleToRecord = (args: TuioSourceTuple) => {
 };
 export type TuioSourceRecord = ReturnType<typeof tuioSourceTupleToRecord>;
 
-export const zTuio2dObjSetTuple = z.tuple([
-  rawOrTyped(z.object({ type: z.literal('s'), value: z.literal('set') })), // command
+export const zTuioAliveParameterTuple = z.array(rawOrTyped(zOscTypedArgumenti));
+export const zTuioAliveTuple = z
+  .tuple([
+    rawOrTyped(z.object({ type: z.literal('s'), value: z.literal('alive') })), // command
+  ])
+  .rest(zTuioAliveParameterTuple.element); // ids
+
+export type TuioAliveTuple = z.infer<typeof zTuioAliveTuple>;
+export const tuioAliveTupleToRecord = (args: TuioAliveTuple) => {
+  const [command, ...ids] = args;
+  return { command, ids };
+};
+export type TuioAliveRecord = z.infer<typeof zTuioAliveTuple>;
+
+export const zTuio2dObjSetParameterTuple = z.tuple([
   zOscArgumenti, // s
   zOscArgumenti, // i
   zOscArgumentf, // x
@@ -154,19 +182,23 @@ export const zTuio2dObjSetTuple = z.tuple([
   zOscArgumentf, // m
   zOscArgumentf, // r
 ]);
-
+export type Tuio2dObjSetParameterTuple = z.infer<typeof zTuio2dObjSetParameterTuple>;
+export const zTuio2dObjSetTuple = z.tuple([
+  rawOrTyped(z.object({ type: z.literal('s'), value: z.literal('set') })), // command
+  ...zTuio2dObjSetParameterTuple.items,
+]);
 export type Tuio2dObjSetTuple = z.infer<typeof zTuio2dObjSetTuple>;
-
-export const tuio2dObjSetTupleToRecord = (args: Tuio2dObjSetTuple) => {
-  const [command, s, i, x, y, a, X, Y, A, m, r] = args;
-  return { command, s, i, x, y, a, X, Y, A, m, r };
+export const tuio2dObjSetParameterTupleToRecord = (args: Tuio2dObjSetTuple) => {
+  const [s, i, x, y, a, X, Y, A, m, r] = args;
+  return {s, i, x, y, a, X, Y, A, m, r };
 };
 
-export type Tuio2dObjSetRecord = ReturnType<typeof tuio2dObjSetTupleToRecord>;
+export type Tuio2dObjSetParameterRecord = ReturnType<typeof tuio2dObjSetParameterTupleToRecord>;
 
+export const zTuioFSeqParameterTuple = z.tuple([zOscArgumenti]);
 export const zTuioFSeqTuple = z.tuple([
   rawOrTyped(z.object({ type: z.literal('s'), value: z.literal('fseq') })), // command,
-  zOscArgumenti, // fseq,
+  ...zTuioFSeqParameterTuple.items, // fseq,
 ]);
 export type TuioFSeqTuple = z.infer<typeof zTuioFSeqTuple>;
 export const tuioFSeqTupleToRecord = (args: TuioFSeqTuple) => {
@@ -174,6 +206,87 @@ export const tuioFSeqTupleToRecord = (args: TuioFSeqTuple) => {
   return { command, fseq };
 };
 export type TuioFSeqRecord = ReturnType<typeof tuioFSeqTupleToRecord>;
+
+type TuioSubAddress =
+  | '2Dobj'
+  | '2Dcur'
+  | '2Dblb'
+  | '25Dobj'
+  | '25Dcur'
+  | '25Dblb'
+  | '3Dobj'
+  | '3Dcur'
+  | '3Dblb'
+  | `_${string}`;
+type TuioAddress = `tuio/${TuioSubAddress}`;
+
+const zOscMessage: z.ZodType<OscMessage> = z.object({
+  address: z.string(),
+  args: z.array(zOscArgument),
+});
+
+const zTuio2dObjMessage = z.object({
+  address: '/tuio/2Dobj',
+  args: z.array(z),
+}
+
+const zTuioMessage = z.union([]);
+
+export const zOscBundle: z.ZodType<OscBundle> = z.object({
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  packets: z.lazy(() => zOscPacket.array()),
+  timeTag: zOscTimeTag,
+});
+
+export const zOscPacket = z.union([zOscMessage, zOscBundle]);
+
+/*
+ * TODO: transform an array of TUIO messages into a TUIO bundle (zod's transform method)
+ */
+type TuioBundle = {
+  source?: string;
+  alive: number[];
+  set?: Tuio2dObjSetParameterRecord[];
+  fseq: number;
+  timeTag: OscTimeTag;
+};
+
+const export zTuioBundle = zOscBundle.transform((bundle,ctx)=>{
+    const messagesParseResult =zOscMessage.array().safeParse(bundle.packets);
+    if(!messagesParseResult.success){
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "TUIO bundle must only contain OSC messages, not recursive OSC bundles",
+          });
+        return z.NEVER;
+    }
+    const messages = messagesParseResult.data;
+    const partialTuioBundle = messages.reduce((acc,cur) => {
+
+    },{} as Partial<TuioBundle>);
+
+  /*
+
+  ((val, ctx) => {
+    const parsed = parseInt(val);
+    if (isNaN(parsed)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Not a number",
+      });
+
+      // This is a special symbol you can use to
+      // return early from the transform function.
+      // It has type `never` so it does not affect the
+      // inferred return type.
+      return z.NEVER;
+    }
+    return parsed;
+  });
+*/
+});
+
+export const zTuioBundle = z.array(O);
 
 export type TuioEvents = {
   '/tuio/2Dobj': (params: Tuio2dObjSetRecord) => void;
