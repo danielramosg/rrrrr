@@ -1,7 +1,11 @@
 /* eslint-disable no-console */
 import { strict as assert } from 'assert';
-import osc from './util/input/tuio/osc';
-import { Tuio } from './util/input/tuio/tuio';
+import { Tuio11EventEmitter } from './util/input/tuio/tuio11-event-emitter';
+import {
+  WebsocketTuioReceiver,
+  Tuio11Client,
+  Tuio11Object,
+} from './util/input/tuio/tuio_client_js';
 
 import { documentReady } from './util/document-ready';
 import { guardedQuerySelectorAll } from './util/guarded-query-selectors';
@@ -93,16 +97,30 @@ function setupTuio({
 }: {
   markersWithElems: MarkerWithElem[];
 }) {
-  const oscPort = new osc.WebSocketPort({ url: 'ws://localhost:3339' });
-  const tuio = new Tuio(oscPort);
-  tuio.events.on('/tuio/2Dobj', (params) => {
-    const { i, x, y } = params;
-    markersWithElems[i % markersWithElems.length].marker.move(
-      x * 1920,
-      y * 1080,
+  const createTracer = (eventName: string) => (tuioObject: Tuio11Object) => {
+    console.log(eventName, tuioObject);
+    const { sessionId, xPos, yPos } = tuioObject;
+    markersWithElems[sessionId % markersWithElems.length].marker.move(
+      xPos * 1920,
+      yPos * 1080,
     );
-  });
-  oscPort.open();
+  };
+  const tuio11EventEmitter = new Tuio11EventEmitter();
+  tuio11EventEmitter.on('tuio-object-add', createTracer('tuio-object-add'));
+  tuio11EventEmitter.on(
+    'tuio-object-update',
+    createTracer('tuio-object-update'),
+  );
+  tuio11EventEmitter.on(
+    'tuio-object-remove',
+    createTracer('tuio-object-remove'),
+  );
+
+  const WEBSOCKET_URL = 'ws://localhost:3339';
+  const client = new Tuio11Client(new WebsocketTuioReceiver(WEBSOCKET_URL));
+
+  client.addTuioListener(tuio11EventEmitter);
+  client.connect();
 }
 
 documentReady()
