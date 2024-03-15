@@ -64,39 +64,55 @@ function setupPointerMarkerTracking(element: HTMLElement): MarkerObservables {
   const markerRemove$ = new Rx.Subject<Marker>(); // FIXME
 
   const pointerId = (id: number) => `pointer_${id}`;
-  const markers: Marker[] = POINTER_MARKER_COORDINATES.map(({ x, y }, i) => ({
-    id: pointerId(i),
-    activeShape: new Circle(x, y, MARKER_CIRCLE_DIAMETER / 2),
-  }));
+  const markers = new Map<string, Marker>(
+    POINTER_MARKER_COORDINATES.map(({ x, y }, i) => [
+      pointerId(i),
+      {
+        id: pointerId(i),
+        activeShape: new Circle(x, y, MARKER_CIRCLE_DIAMETER / 2),
+      },
+    ]),
+  );
 
-  Rx.from(markers).pipe(Rx.delay(0)).subscribe(markerAdd$);
+  Rx.from(markers.values()).pipe(Rx.delay(0)).subscribe(markerAdd$);
 
-  const knownMarkerIds = new Set(markers.map(({ id }) => id));
-  const pointerToMarker = new Map<number, string>();
+  const pointerToMarker = new Map<
+    number,
+    { markerId: string; offset: { x: number; y: number } }
+  >();
 
   element.addEventListener('pointerdown', (event) => {
     if (event.target === null || !(event.target instanceof HTMLElement)) return;
 
     const targetElement = event.target;
     const { markerId } = targetElement.dataset;
-    if (markerId && knownMarkerIds.has(markerId)) {
-      pointerToMarker.set(event.pointerId, markerId);
+    if (markerId && markers.has(markerId)) {
+      const marker = markers.get(markerId);
+      assert(typeof marker !== 'undefined');
+      const offset = {
+        x: event.clientX - marker.activeShape.x,
+        y: event.clientY - marker.activeShape.y,
+      };
+      pointerToMarker.set(event.pointerId, { markerId, offset });
       element.setPointerCapture(event.pointerId);
     }
   });
 
   element.addEventListener('pointermove', (event) => {
     if (pointerToMarker.has(event.pointerId)) {
-      const markerId = pointerToMarker.get(event.pointerId);
-      assert(typeof markerId !== 'undefined');
-      markerMove$.next({
+      const marker = pointerToMarker.get(event.pointerId);
+      assert(typeof marker !== 'undefined');
+      const { markerId, offset } = marker;
+      const updatedMarker = {
         id: markerId,
         activeShape: new Circle(
-          event.clientX,
-          event.clientY,
+          event.clientX - offset.x,
+          event.clientY - offset.y,
           MARKER_CIRCLE_DIAMETER / 2,
         ),
-      });
+      };
+      markers.set(markerId, updatedMarker);
+      markerMove$.next(updatedMarker);
     }
   });
 
