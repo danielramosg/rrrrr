@@ -24,10 +24,10 @@ const SLOT_DEFINITIONS = [
 ];
 const SLOT_CIRCLE_DIAMETER = 160;
 
-type MySlot = { id: string; activeShape: Circle };
-type MyMarker = { id: string; activeShape: Circle };
+type Slot = { id: string; activeShape: Circle };
+type Marker = { id: string; activeShape: Circle };
 
-const SLOTS: MySlot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
+const SLOTS: Slot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
   id,
   activeShape: new Circle(x, y, SLOT_CIRCLE_DIAMETER / 2.0),
 }));
@@ -36,28 +36,23 @@ function tuio11Id(symbolId: number) {
   return `tuio11_${symbolId}`;
 }
 
+type MarkerObservables = {
+  markerAdd$: Rx.Observable<Marker>;
+  markerMove$: Rx.Observable<Marker>;
+  markerRemove$: Rx.Observable<Marker>;
+};
+
 type SlotIdAndMarkerId = { slotId: string; markerId: string };
-const slotActivate$ = new Rx.Subject<SlotIdAndMarkerId>();
-const slotDeactivate$ = new Rx.Subject<SlotIdAndMarkerId>();
-const slotMarkerEnter$ = new Rx.Subject<SlotIdAndMarkerId>();
-const slotMarkerLeave$ = new Rx.Subject<SlotIdAndMarkerId>();
+type SlotObservables = {
+  slotActivate$: Rx.Observable<SlotIdAndMarkerId>;
+  slotDeactivate$: Rx.Observable<SlotIdAndMarkerId>;
+  slotMarkerEnter$: Rx.Observable<SlotIdAndMarkerId>;
+  slotMarkerLeave$: Rx.Observable<SlotIdAndMarkerId>;
+};
 
-function setupTuio() {
-  const panel = guardedQuerySelector(HTMLDivElement, '#panel');
-  SLOTS.forEach(({ id, activeShape }) => {
-    const element = document.createElement('div');
-    element.classList.add('slot');
-    element.dataset.slotId = id;
-    element.style.width = `${SLOT_CIRCLE_DIAMETER}px`;
-    element.style.height = `${SLOT_CIRCLE_DIAMETER}px`;
-    element.style.left = `${activeShape.x}px`;
-    element.style.top = `${activeShape.y}px`;
-
-    panel.append(element);
-  });
-
-  const tuio11EventEmitter = new Tuio11EventEmitter();
-
+function setupMarkerTracking(
+  tuio11EventEmitter: Tuio11EventEmitter,
+): MarkerObservables {
   const tuioObjectAdd$ = Rx.fromEvent(
     tuio11EventEmitter,
     'tuio-object-add',
@@ -88,18 +83,35 @@ function setupTuio() {
     }),
   );
 
-  const markersForSlots = new Map<string, Set<string>>(
-    SLOTS.map(({ id }) => [id, new Set<string>()]),
-  );
-
   const markerAdd$ = tuioObjectAdd$.pipe(tuioObjectToMarker, Rx.share());
   const markerMove$ = tuioObjectUpdate$.pipe(tuioObjectToMarker, Rx.share());
   const markerRemove$ = tuioObjectRemove$.pipe(tuioObjectToMarker, Rx.share());
 
+  return {
+    markerAdd$,
+    markerMove$,
+    markerRemove$,
+  };
+}
+
+function setupSlotTracking({
+  markerAdd$,
+  markerMove$,
+  markerRemove$,
+}: MarkerObservables): SlotObservables {
+  const slotActivate$ = new Rx.Subject<SlotIdAndMarkerId>();
+  const slotDeactivate$ = new Rx.Subject<SlotIdAndMarkerId>();
+  const slotMarkerEnter$ = new Rx.Subject<SlotIdAndMarkerId>();
+  const slotMarkerLeave$ = new Rx.Subject<SlotIdAndMarkerId>();
+
+  const markersForSlots = new Map<string, Set<string>>(
+    SLOTS.map(({ id }) => [id, new Set<string>()]),
+  );
+
   markerAdd$.pipe(Rx.delay(0)).subscribe((addedMarker) => {
     const { id: markerId } = addedMarker;
 
-    const filterMarkerId = Rx.filter(({ id }: MyMarker) => id === markerId);
+    const filterMarkerId = Rx.filter(({ id }: Marker) => id === markerId);
     const thisMarkerMove$ = Rx.concat(
       Rx.from([addedMarker]),
       markerMove$.pipe(
@@ -158,9 +170,35 @@ function setupTuio() {
     });
   });
 
-  markerAdd$.subscribe((tuioObject) => console.log('add', tuioObject));
-  markerMove$.subscribe((tuioObject) => console.log('move', tuioObject));
-  markerRemove$.subscribe((tuioObject) => console.log('remove', tuioObject));
+  return {
+    slotMarkerEnter$,
+    slotMarkerLeave$,
+    slotActivate$,
+    slotDeactivate$,
+  };
+}
+
+function setupUi(
+  { markerAdd$, markerMove$, markerRemove$ }: MarkerObservables,
+  {
+    slotMarkerEnter$,
+    slotMarkerLeave$,
+    slotDeactivate$,
+    slotActivate$,
+  }: SlotObservables,
+) {
+  const panel = guardedQuerySelector(HTMLDivElement, '#panel');
+  SLOTS.forEach(({ id, activeShape }) => {
+    const element = document.createElement('div');
+    element.classList.add('slot');
+    element.dataset.slotId = id;
+    element.style.width = `${SLOT_CIRCLE_DIAMETER}px`;
+    element.style.height = `${SLOT_CIRCLE_DIAMETER}px`;
+    element.style.left = `${activeShape.x}px`;
+    element.style.top = `${activeShape.y}px`;
+
+    panel.append(element);
+  });
 
   markerAdd$.subscribe((addedMarker) => {
     const { id: markerId } = addedMarker;
@@ -173,7 +211,7 @@ function setupTuio() {
 
     panel.append(element);
 
-    const filterMarkerId = Rx.filter(({ id }: MyMarker) => id === markerId);
+    const filterMarkerId = Rx.filter(({ id }: Marker) => id === markerId);
     const thisMarkerMove$ = markerMove$.pipe(
       filterMarkerId,
       Rx.takeUntil(markerRemove$.pipe(filterMarkerId)),
@@ -242,6 +280,13 @@ function setupTuio() {
     );
     slotElement.classList.remove('active');
   });
+}
+
+function main(): void {
+  const tuio11EventEmitter = new Tuio11EventEmitter();
+  const markerObservables = setupMarkerTracking(tuio11EventEmitter);
+  const slotObservables = setupSlotTracking(markerObservables);
+  setupUi(markerObservables, slotObservables);
 
   const WEBSOCKET_URL = 'ws://localhost:3339'; // local
   // const WEBSOCKET_URL = 'ws://10.0.0.20:3333'; // InteractiveScape ScapeX
@@ -252,5 +297,5 @@ function setupTuio() {
 }
 
 documentReady()
-  .then(setupTuio)
+  .then(main)
   .catch((err) => console.error(err));
