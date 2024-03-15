@@ -15,6 +15,10 @@ export class Circle {
     return new Circle(this.x, this.y, this.radius);
   }
 
+  containsPoint({ x, y }: { x: number; y: number }) {
+    return (this.x - x) ** 2 + (this.y - y) ** 2 <= this.radius ** 2;
+  }
+
   containsCircle(circle: Readonly<Circle>, threshold = 0) {
     const distance = Math.sqrt(
       (this.x - circle.x) ** 2 + (this.y - circle.y) ** 2,
