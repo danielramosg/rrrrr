@@ -16,7 +16,13 @@ import { documentReady } from './util/document-ready';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
 import { Circle } from './util/geometry/circle';
 
+const NUM_POINTER_MARKERS = 8;
+const POINTER_MARKER_COORDINATES = new Array(NUM_POINTER_MARKERS)
+  .fill(0)
+  .map(() => ({ x: 0, y: 0 }));
+
 const MARKER_CIRCLE_DIAMETER = 128;
+
 const SLOT_DEFINITIONS = [
   { id: 'slot-1', x: 0, y: 0 },
   { id: 'slot-2', x: 1920 / 2, y: 1080 / 2 },
@@ -32,10 +38,6 @@ const SLOTS: Slot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
   activeShape: new Circle(x, y, SLOT_CIRCLE_DIAMETER / 2.0),
 }));
 
-function tuio11Id(symbolId: number) {
-  return `tuio11_${symbolId}`;
-}
-
 type MarkerObservables = {
   markerAdd$: Rx.Observable<Marker>;
   markerMove$: Rx.Observable<Marker>;
@@ -50,7 +52,69 @@ type SlotObservables = {
   slotMarkerLeave$: Rx.Observable<SlotIdAndMarkerId>;
 };
 
-function setupMarkerTracking(
+function setupPointerMarkerTracking(element: HTMLElement): MarkerObservables {
+  /**
+   * Keep things simple for now:
+   * - Immediately add fixed number of markers
+   * - Markers can be moved by pointer events
+   * - Markers are never removed
+   */
+  const markerAdd$ = new Rx.Subject<Marker>(); // FIXME
+  const markerMove$ = new Rx.Subject<Marker>(); // FIXME
+  const markerRemove$ = new Rx.Subject<Marker>(); // FIXME
+
+  const pointerId = (id: number) => `pointer_${id}`;
+  const markers: Marker[] = POINTER_MARKER_COORDINATES.map(({ x, y }, i) => ({
+    id: pointerId(i),
+    activeShape: new Circle(x, y, MARKER_CIRCLE_DIAMETER / 2),
+  }));
+
+  Rx.from(markers).pipe(Rx.delay(0)).subscribe(markerAdd$);
+
+  const knownMarkerIds = new Set(markers.map(({ id }) => id));
+  const pointerToMarker = new Map<number, string>();
+
+  element.addEventListener('pointerdown', (event) => {
+    if (event.target === null || !(event.target instanceof HTMLElement)) return;
+
+    const targetElement = event.target;
+    const { markerId } = targetElement.dataset;
+    if (markerId && knownMarkerIds.has(markerId)) {
+      pointerToMarker.set(event.pointerId, markerId);
+      element.setPointerCapture(event.pointerId);
+    }
+  });
+
+  element.addEventListener('pointermove', (event) => {
+    if (pointerToMarker.has(event.pointerId)) {
+      const markerId = pointerToMarker.get(event.pointerId);
+      assert(typeof markerId !== 'undefined');
+      markerMove$.next({
+        id: markerId,
+        activeShape: new Circle(
+          event.clientX,
+          event.clientY,
+          MARKER_CIRCLE_DIAMETER / 2,
+        ),
+      });
+    }
+  });
+
+  const upOrCancelHandler = (event: PointerEvent) => {
+    element.releasePointerCapture(event.pointerId);
+    pointerToMarker.delete(event.pointerId);
+  };
+  element.addEventListener('pointerup', upOrCancelHandler);
+  element.addEventListener('pointercancel', upOrCancelHandler);
+
+  return {
+    markerAdd$,
+    markerMove$,
+    markerRemove$,
+  };
+}
+
+function setupTuioMarkerTracking(
   tuio11EventEmitter: Tuio11EventEmitter,
 ): MarkerObservables {
   const tuioObjectAdd$ = Rx.fromEvent(
@@ -72,6 +136,8 @@ function setupMarkerTracking(
       tuioObject,
   ).pipe(Rx.share());
 
+  const tuio11Id = (symbolId: number) => `tuio11_${symbolId}`;
+
   const tuioObjectToMarker = Rx.map(
     ({ sessionId, xPos, yPos }: Tuio11Object) => ({
       id: tuio11Id(sessionId),
@@ -86,6 +152,35 @@ function setupMarkerTracking(
   const markerAdd$ = tuioObjectAdd$.pipe(tuioObjectToMarker, Rx.share());
   const markerMove$ = tuioObjectUpdate$.pipe(tuioObjectToMarker, Rx.share());
   const markerRemove$ = tuioObjectRemove$.pipe(tuioObjectToMarker, Rx.share());
+
+  return {
+    markerAdd$,
+    markerMove$,
+    markerRemove$,
+  };
+}
+
+function setupMarkerTracking(
+  element: HTMLElement,
+  tuio11EventEmitter: Tuio11EventEmitter,
+): MarkerObservables {
+  const pointerMarkerTracking = setupPointerMarkerTracking(element);
+  const tuioMarkerTracking = setupTuioMarkerTracking(tuio11EventEmitter);
+
+  const markerAdd$ = Rx.merge(
+    pointerMarkerTracking.markerAdd$,
+    tuioMarkerTracking.markerAdd$,
+  ).pipe(Rx.share());
+
+  const markerMove$ = Rx.merge(
+    pointerMarkerTracking.markerMove$,
+    tuioMarkerTracking.markerMove$,
+  ).pipe(Rx.share());
+
+  const markerRemove$ = Rx.merge(
+    pointerMarkerTracking.markerRemove$,
+    tuioMarkerTracking.markerRemove$,
+  ).pipe(Rx.share());
 
   return {
     markerAdd$,
@@ -283,8 +378,10 @@ function setupUi(
 }
 
 function main(): void {
+  const panel = guardedQuerySelector(HTMLDivElement, '#panel');
+
   const tuio11EventEmitter = new Tuio11EventEmitter();
-  const markerObservables = setupMarkerTracking(tuio11EventEmitter);
+  const markerObservables = setupMarkerTracking(panel, tuio11EventEmitter);
   const slotObservables = setupSlotTracking(markerObservables);
   setupUi(markerObservables, slotObservables);
 
