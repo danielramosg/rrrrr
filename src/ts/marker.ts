@@ -306,6 +306,10 @@ function setupUi(
 
     panel.append(element);
 
+    const idElement = document.createElement('div');
+    idElement.innerText = markerId;
+    element.append(idElement);
+
     const filterMarkerId = Rx.filter(({ id }: Marker) => id === markerId);
     const thisMarkerMove$ = markerMove$.pipe(
       filterMarkerId,

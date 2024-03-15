@@ -39,6 +39,15 @@ body {
   &.active {
     background-color: rgb(0 255 0 / 50%);
   }
+
+  * {
+    pointer-events: none;
+    user-select: none;
+  }
+
+  display: grid;
+  place-items: center center;
+  font-family: sans-serif;
 }
 
 .slot {
