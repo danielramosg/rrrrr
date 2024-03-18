@@ -4,7 +4,7 @@ body {
   overscroll-behavior: none;
 }
 
-#panel {
+.slot-panel {
   position: relative;
   width: 1920px;
   height: 1080px;
@@ -12,30 +12,16 @@ body {
   touch-action: none;
 }
 
-%circle {
+@mixin circle($radius) {
   border-radius: 50%;
   position: absolute;
   transform: translate(-50%, -50%);
-  cursor: pointer;
-}
-
-%circle-128 {
-  @extend %circle;
-
-  width: 128px;
-  height: 128px;
-}
-
-%circle-256 {
-  @extend %circle;
-
-  width: 256px;
-  height: 256px;
 }
 
 .marker {
-  @extend %circle-128;
+  @include circle(128px);
 
+  cursor: pointer;
   background-color: rgb(0 0 255 / 50%);
 
   &.active {
@@ -53,7 +39,7 @@ body {
 }
 
 .slot {
-  @extend %circle-256;
+  @include circle(256px);
 
   border: solid 10px gray;
 
@@ -61,24 +47,4 @@ body {
     border-color: green;
     background-color: red;
   }
-}
-
-#marker-1 {
-  left: 25%;
-  top: 25%;
-}
-
-#marker-2 {
-  left: 75%;
-  top: 75%;
-}
-
-#slot-1 {
-  left: 50%;
-  top: 25%;
-}
-
-#slot-2 {
-  left: 50%;
-  top: 75%;
 }
