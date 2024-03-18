@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import * as Rx from 'rxjs';
 
 import { Tuio11EventEmitter } from './util/input/tuio/tuio11-event-emitter';
@@ -17,6 +16,14 @@ import {
 import { TuioMarkerTracker } from './util/input/marker-tracking/tuio-marker-tracker';
 import { PointerMarkerTracker } from './util/input/marker-tracking/pointer-marker-tracker';
 import { CombinedMarkerTracker } from './util/input/marker-tracking/combined-marker-tracker';
+import {
+  SlotIdAndMarkerId,
+  SlotObservables,
+} from './util/input/slot-tracking/slot-observables';
+import {
+  CircularSlot,
+  CircularSlotTracker,
+} from './util/input/slot-tracking/circular-slot-tacker';
 
 const NUM_POINTER_MARKERS = 8;
 const POINTER_MARKER_COORDINATES = new Array(NUM_POINTER_MARKERS)
@@ -32,20 +39,10 @@ const SLOT_DEFINITIONS = [
 ];
 const SLOT_CIRCLE_DIAMETER = 160;
 
-type Slot = { id: string; activeShape: Circle };
-
-const SLOTS: Slot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
+const SLOTS: CircularSlot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
   id,
   activeShape: new Circle(x, y, SLOT_CIRCLE_DIAMETER / 2.0),
 }));
-
-type SlotIdAndMarkerId = { slotId: string; markerId: string };
-type SlotObservables = {
-  slotActivate$: Rx.Observable<SlotIdAndMarkerId>;
-  slotDeactivate$: Rx.Observable<SlotIdAndMarkerId>;
-  slotMarkerEnter$: Rx.Observable<SlotIdAndMarkerId>;
-  slotMarkerLeave$: Rx.Observable<SlotIdAndMarkerId>;
-};
 
 function setupMarkerTracking(
   element: HTMLElement,
@@ -60,87 +57,8 @@ function setupMarkerTracking(
   return new CombinedMarkerTracker(pointerMarkerTracking, tuioMarkerTracking);
 }
 
-function setupSlotTracking({
-  markerAdd$,
-  markerMove$,
-  markerRemove$,
-}: MarkerObservables<Marker>): SlotObservables {
-  const slotActivate$ = new Rx.Subject<SlotIdAndMarkerId>();
-  const slotDeactivate$ = new Rx.Subject<SlotIdAndMarkerId>();
-  const slotMarkerEnter$ = new Rx.Subject<SlotIdAndMarkerId>();
-  const slotMarkerLeave$ = new Rx.Subject<SlotIdAndMarkerId>();
-
-  const markersForSlots = new Map<string, Set<string>>(
-    SLOTS.map(({ id }) => [id, new Set<string>()]),
-  );
-
-  markerAdd$.pipe(Rx.delay(0)).subscribe((addedMarker) => {
-    const { id: markerId } = addedMarker;
-
-    const filterMarkerId = Rx.filter(({ id }: Marker) => id === markerId);
-    const thisMarkerMove$ = Rx.concat(
-      Rx.from([addedMarker]),
-      markerMove$.pipe(
-        filterMarkerId,
-        Rx.takeUntil(markerRemove$.pipe(filterMarkerId)),
-      ),
-    ).pipe(Rx.shareReplay({ bufferSize: 1, refCount: true }));
-    SLOTS.forEach((slot) => {
-      const { id: slotId } = slot;
-      const markerAndSlotId = {
-        markerId,
-        slotId,
-      };
-      const markersForSlot = markersForSlots.get(slotId);
-      assert(typeof markersForSlot !== 'undefined');
-
-      thisMarkerMove$.subscribe({
-        next: (movedMarker) => {
-          const localMarkerCoords = {
-            x: 1920 * movedMarker.x,
-            y: 1080 * movedMarker.y,
-          }; // FIXME: depends on game board size
-          const contained = slot.activeShape.containsPoint(localMarkerCoords);
-          const registered = markersForSlot.has(markerId);
-          if (contained && !registered) {
-            // enter
-            markersForSlot.add(markerId);
-            slotMarkerEnter$.next(markerAndSlotId);
-            if (markersForSlot.size === 1) {
-              // activate
-              slotActivate$.next(markerAndSlotId);
-            }
-          } else if (!contained && registered) {
-            // leave
-            markersForSlot.delete(markerId);
-            slotMarkerLeave$.next(markerAndSlotId);
-            if (markersForSlot.size === 0) {
-              // deactivate
-              slotDeactivate$.next(markerAndSlotId);
-            }
-          }
-        },
-        complete: () => {
-          if (markersForSlot.has(markerId)) {
-            // leave
-            markersForSlot.delete(markerId);
-            slotMarkerLeave$.next(markerAndSlotId);
-            if (markersForSlot.size === 0) {
-              // deactivate
-              slotDeactivate$.next(markerAndSlotId);
-            }
-          }
-        },
-      });
-    });
-  });
-
-  return {
-    slotMarkerEnter$,
-    slotMarkerLeave$,
-    slotActivate$,
-    slotDeactivate$,
-  };
+function setupSlotTracking(mo: MarkerObservables<Marker>): SlotObservables {
+  return new CircularSlotTracker(SLOTS, mo);
 }
 
 function setupUi(
