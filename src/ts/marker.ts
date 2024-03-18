@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { strict as assert } from 'assert';
 import * as Rx from 'rxjs';
 
@@ -245,15 +244,12 @@ function setupSlotTracking({
             movedMarker.activeShape,
           );
           const registered = markersForSlot.has(markerId);
-          console.log(markerAndSlotId, movedMarker);
           if (contained && !registered) {
             // enter
-            console.log('enter', markerAndSlotId);
             markersForSlot.add(markerId);
             slotMarkerEnter$.next(markerAndSlotId);
             if (markersForSlot.size === 1) {
               // activate
-              console.log('activate', markerAndSlotId);
               slotActivate$.next(markerAndSlotId);
             }
           } else if (!contained && registered) {
@@ -341,18 +337,9 @@ function setupUi(
     );
     const slotEnterSubscription = slotMarkerEnter$
 
-      .pipe(
-        Rx.tap((...args) =>
-          console.log('slot-marker-enter-5', markerId, ...args),
-        ),
-        filterSlotAndMarkerId,
-        Rx.tap((...args) =>
-          console.log('slot-marker-enter-6', markerId, ...args),
-        ),
-      )
+      .pipe(filterSlotAndMarkerId)
       .subscribe(({ slotId }) => {
         enteredSlots.add(slotId);
-        console.log('slot-marker-enter-5', slotId, markerId, enteredSlots);
         if (enteredSlots.size === 1) element.classList.add('active');
       });
     const slotLeaveSubscription = slotMarkerLeave$
@@ -375,10 +362,6 @@ function setupUi(
       },
     });
   });
-
-  slotMarkerEnter$.subscribe((slotAndMarkerId) =>
-    console.log('slot-marker-enter-4', slotAndMarkerId),
-  );
 
   slotActivate$.subscribe(({ slotId }) => {
     const slotElement = guardedQuerySelector(
@@ -415,4 +398,7 @@ function main(): void {
 
 documentReady()
   .then(main)
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  });
