@@ -1,19 +1,22 @@
 import { strict as assert } from 'assert';
 import * as Rx from 'rxjs';
 
-import {
-  Tuio11EventEmitter,
-  type Tuio11Events,
-} from './util/input/tuio/tuio11-event-emitter';
+import { Tuio11EventEmitter } from './util/input/tuio/tuio11-event-emitter';
 import {
   WebsocketTuioReceiver,
   Tuio11Client,
-  Tuio11Object,
 } from './util/input/tuio/tuio_client_js';
 
 import { documentReady } from './util/document-ready';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
 import { Circle } from './util/geometry/circle';
+import {
+  type Marker,
+  type MarkerObservables,
+} from './util/input/marker-tracking/marker-observables';
+import { TuioMarkerTracker } from './util/input/marker-tracking/tuio-marker-tracker';
+import { PointerMarkerTracker } from './util/input/marker-tracking/pointer-marker-tracker';
+import { CombinedMarkerTracker } from './util/input/marker-tracking/combined-marker-tracker';
 
 const NUM_POINTER_MARKERS = 8;
 const POINTER_MARKER_COORDINATES = new Array(NUM_POINTER_MARKERS)
@@ -30,18 +33,11 @@ const SLOT_DEFINITIONS = [
 const SLOT_CIRCLE_DIAMETER = 160;
 
 type Slot = { id: string; activeShape: Circle };
-type Marker = { id: string; activeShape: Circle };
 
 const SLOTS: Slot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
   id,
   activeShape: new Circle(x, y, SLOT_CIRCLE_DIAMETER / 2.0),
 }));
-
-type MarkerObservables = {
-  markerAdd$: Rx.Observable<Marker>;
-  markerMove$: Rx.Observable<Marker>;
-  markerRemove$: Rx.Observable<Marker>;
-};
 
 type SlotIdAndMarkerId = { slotId: string; markerId: string };
 type SlotObservables = {
@@ -51,164 +47,24 @@ type SlotObservables = {
   slotMarkerLeave$: Rx.Observable<SlotIdAndMarkerId>;
 };
 
-function setupPointerMarkerTracking(element: HTMLElement): MarkerObservables {
-  /**
-   * Keep things simple for now:
-   * - Immediately add fixed number of markers
-   * - Markers can be moved by pointer events
-   * - Markers are never removed
-   */
-  const markerAdd$ = new Rx.Subject<Marker>(); // FIXME
-  const markerMove$ = new Rx.Subject<Marker>(); // FIXME
-  const markerRemove$ = new Rx.Subject<Marker>(); // FIXME
-
-  const pointerId = (id: number) => `pointer_${id}`;
-  const markers = new Map<string, Marker>(
-    POINTER_MARKER_COORDINATES.map(({ x, y }, i) => [
-      pointerId(i),
-      {
-        id: pointerId(i),
-        activeShape: new Circle(x, y, MARKER_CIRCLE_DIAMETER / 2),
-      },
-    ]),
-  );
-
-  Rx.from(markers.values()).pipe(Rx.delay(0)).subscribe(markerAdd$);
-
-  const pointerToMarker = new Map<
-    number,
-    { markerId: string; offset: { x: number; y: number } }
-  >();
-
-  element.addEventListener('pointerdown', (event) => {
-    if (event.target === null || !(event.target instanceof HTMLElement)) return;
-
-    const targetElement = event.target;
-    const { markerId } = targetElement.dataset;
-    if (markerId && markers.has(markerId)) {
-      const marker = markers.get(markerId);
-      assert(typeof marker !== 'undefined');
-      const offset = {
-        x: event.clientX - marker.activeShape.x,
-        y: event.clientY - marker.activeShape.y,
-      };
-      pointerToMarker.set(event.pointerId, { markerId, offset });
-      element.setPointerCapture(event.pointerId);
-    }
-  });
-
-  element.addEventListener('pointermove', (event) => {
-    if (pointerToMarker.has(event.pointerId)) {
-      const marker = pointerToMarker.get(event.pointerId);
-      assert(typeof marker !== 'undefined');
-      const { markerId, offset } = marker;
-      const updatedMarker = {
-        id: markerId,
-        activeShape: new Circle(
-          event.clientX - offset.x,
-          event.clientY - offset.y,
-          MARKER_CIRCLE_DIAMETER / 2,
-        ),
-      };
-      markers.set(markerId, updatedMarker);
-      markerMove$.next(updatedMarker);
-    }
-  });
-
-  const upOrCancelHandler = (event: PointerEvent) => {
-    element.releasePointerCapture(event.pointerId);
-    pointerToMarker.delete(event.pointerId);
-  };
-  element.addEventListener('pointerup', upOrCancelHandler);
-  element.addEventListener('pointercancel', upOrCancelHandler);
-
-  return {
-    markerAdd$,
-    markerMove$,
-    markerRemove$,
-  };
-}
-
-function setupTuioMarkerTracking(
-  tuio11EventEmitter: Tuio11EventEmitter,
-): MarkerObservables {
-  const tuioObjectAdd$ = Rx.fromEvent(
-    tuio11EventEmitter,
-    'tuio-object-add',
-    (...[tuioObject]: Parameters<Tuio11Events['tuio-object-add']>) =>
-      tuioObject,
-  ).pipe(Rx.share());
-  const tuioObjectUpdate$ = Rx.fromEvent(
-    tuio11EventEmitter,
-    'tuio-object-update',
-    (...[tuioObject]: Parameters<Tuio11Events['tuio-object-update']>) =>
-      tuioObject,
-  ).pipe(Rx.share());
-  const tuioObjectRemove$ = Rx.fromEvent(
-    tuio11EventEmitter,
-    'tuio-object-remove',
-    (...[tuioObject]: Parameters<Tuio11Events['tuio-object-remove']>) =>
-      tuioObject,
-  ).pipe(Rx.share());
-
-  const tuio11Id = (symbolId: number) => `tuio11_${symbolId}`;
-
-  const tuioObjectToMarker = Rx.map(
-    ({ sessionId, xPos, yPos }: Tuio11Object) => ({
-      id: tuio11Id(sessionId),
-      activeShape: new Circle(
-        1920 * xPos,
-        1080 * yPos,
-        MARKER_CIRCLE_DIAMETER / 2,
-      ),
-    }),
-  );
-
-  const markerAdd$ = tuioObjectAdd$.pipe(tuioObjectToMarker, Rx.share());
-  const markerMove$ = tuioObjectUpdate$.pipe(tuioObjectToMarker, Rx.share());
-  const markerRemove$ = tuioObjectRemove$.pipe(tuioObjectToMarker, Rx.share());
-
-  return {
-    markerAdd$,
-    markerMove$,
-    markerRemove$,
-  };
-}
-
 function setupMarkerTracking(
   element: HTMLElement,
   tuio11EventEmitter: Tuio11EventEmitter,
-): MarkerObservables {
-  const pointerMarkerTracking = setupPointerMarkerTracking(element);
-  const tuioMarkerTracking = setupTuioMarkerTracking(tuio11EventEmitter);
+): MarkerObservables<Marker> {
+  const pointerMarkerTracking = new PointerMarkerTracker(
+    element,
+    POINTER_MARKER_COORDINATES,
+  );
+  const tuioMarkerTracking = new TuioMarkerTracker(tuio11EventEmitter);
 
-  const markerAdd$ = Rx.merge(
-    pointerMarkerTracking.markerAdd$,
-    tuioMarkerTracking.markerAdd$,
-  ).pipe(Rx.share());
-
-  const markerMove$ = Rx.merge(
-    pointerMarkerTracking.markerMove$,
-    tuioMarkerTracking.markerMove$,
-  ).pipe(Rx.share());
-
-  const markerRemove$ = Rx.merge(
-    pointerMarkerTracking.markerRemove$,
-    tuioMarkerTracking.markerRemove$,
-  ).pipe(Rx.share());
-
-  return {
-    markerAdd$,
-    markerMove$,
-    markerRemove$,
-  };
+  return new CombinedMarkerTracker(pointerMarkerTracking, tuioMarkerTracking);
 }
 
 function setupSlotTracking({
   markerAdd$,
   markerMove$,
   markerRemove$,
-}: MarkerObservables): SlotObservables {
+}: MarkerObservables<Marker>): SlotObservables {
   const slotActivate$ = new Rx.Subject<SlotIdAndMarkerId>();
   const slotDeactivate$ = new Rx.Subject<SlotIdAndMarkerId>();
   const slotMarkerEnter$ = new Rx.Subject<SlotIdAndMarkerId>();
@@ -240,9 +96,11 @@ function setupSlotTracking({
 
       thisMarkerMove$.subscribe({
         next: (movedMarker) => {
-          const contained = slot.activeShape.containsPoint(
-            movedMarker.activeShape,
-          );
+          const localMarkerCoords = {
+            x: 1920 * movedMarker.x,
+            y: 1080 * movedMarker.y,
+          }; // FIXME: depends on game board size
+          const contained = slot.activeShape.containsPoint(localMarkerCoords);
           const registered = markersForSlot.has(markerId);
           if (contained && !registered) {
             // enter
@@ -286,7 +144,7 @@ function setupSlotTracking({
 }
 
 function setupUi(
-  { markerAdd$, markerMove$, markerRemove$ }: MarkerObservables,
+  { markerAdd$, markerMove$, markerRemove$ }: MarkerObservables<Marker>,
   {
     slotMarkerEnter$,
     slotMarkerLeave$,
@@ -351,9 +209,9 @@ function setupUi(
 
     thisMarkerMove$.subscribe({
       next: (movedMarker) => {
-        const { x, y } = movedMarker.activeShape;
-        element.style.left = `${x}px`;
-        element.style.top = `${y}px`;
+        const { x, y } = movedMarker;
+        element.style.left = `${1920 * x}px`; // FIXME: depends on game board size
+        element.style.top = `${1080 * y}px`; // FIXME: depends on game board size
       },
       complete: () => {
         element.remove();
