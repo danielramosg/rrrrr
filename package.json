@@ -16,8 +16,7 @@
   },
   "homepage": "https://github.com/IMAGINARY/circular-economy#readme",
   "source": [
-    "src/html/index.html",
-    "src/html/marker.html"
+    "src/html/index.html"
   ],
   "engines": {
     "npm": ">=10.1.0",

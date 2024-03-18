@@ -53,7 +53,7 @@ function setupUi(
     slotActivate$,
   }: SlotObservables,
 ) {
-  const panel = guardedQuerySelector(HTMLDivElement, '#panel');
+  const panel = guardedQuerySelector(HTMLDivElement, '#slot-panel');
   SLOTS.forEach(({ id, activeShape }) => {
     const element = document.createElement('div');
     element.classList.add('slot');
@@ -139,8 +139,8 @@ function setupUi(
   });
 }
 
-function main(): void {
-  const panel = guardedQuerySelector(HTMLDivElement, '#panel');
+export function setupMarkerPanel(): void {
+  const panel = guardedQuerySelector(HTMLDivElement, '#slot-panel');
   const pointerMarkerTracking = new PointerMarkerTracker(
     panel,
     POINTER_MARKER_COORDINATES,
@@ -166,7 +166,7 @@ function main(): void {
 }
 
 documentReady()
-  .then(main)
+  .then(setupMarkerPanel)
   .catch((err) => {
     // eslint-disable-next-line no-console
     console.error(err);
