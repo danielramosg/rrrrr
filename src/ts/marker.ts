@@ -44,23 +44,6 @@ const SLOTS: CircularSlot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
   activeShape: new Circle(x, y, SLOT_CIRCLE_DIAMETER / 2.0),
 }));
 
-function setupMarkerTracking(
-  element: HTMLElement,
-  tuio11EventEmitter: Tuio11EventEmitter,
-): MarkerObservables<Marker> {
-  const pointerMarkerTracking = new PointerMarkerTracker(
-    element,
-    POINTER_MARKER_COORDINATES,
-  );
-  const tuioMarkerTracking = new TuioMarkerTracker(tuio11EventEmitter);
-
-  return new CombinedMarkerTracker(pointerMarkerTracking, tuioMarkerTracking);
-}
-
-function setupSlotTracking(mo: MarkerObservables<Marker>): SlotObservables {
-  return new CircularSlotTracker(SLOTS, mo);
-}
-
 function setupUi(
   { markerAdd$, markerMove$, markerRemove$ }: MarkerObservables<Marker>,
   {
@@ -158,11 +141,21 @@ function setupUi(
 
 function main(): void {
   const panel = guardedQuerySelector(HTMLDivElement, '#panel');
+  const pointerMarkerTracking = new PointerMarkerTracker(
+    panel,
+    POINTER_MARKER_COORDINATES,
+  );
 
   const tuio11EventEmitter = new Tuio11EventEmitter();
-  const markerObservables = setupMarkerTracking(panel, tuio11EventEmitter);
-  const slotObservables = setupSlotTracking(markerObservables);
-  setupUi(markerObservables, slotObservables);
+  const tuioMarkerTracking = new TuioMarkerTracker(tuio11EventEmitter);
+
+  const markerTracker = new CombinedMarkerTracker(
+    pointerMarkerTracking,
+    tuioMarkerTracking,
+  );
+  const slotTracker = new CircularSlotTracker(SLOTS, markerTracker);
+
+  setupUi(markerTracker, slotTracker);
 
   const WEBSOCKET_URL = 'ws://localhost:3339'; // local
   // const WEBSOCKET_URL = 'ws://10.0.0.20:3333'; // InteractiveScape ScapeX
