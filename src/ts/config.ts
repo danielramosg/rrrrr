@@ -1,3 +1,4 @@
+import yaml from 'js-yaml';
 import type { DeepReadonly } from 'ts-essentials';
 import { CircularEconomyModel } from './circular-economy-model';
 import type { GameConfig } from './game';
@@ -6,7 +7,13 @@ const configBaseUrl = new URL('./config/', window.location.href);
 
 async function loadConfigFile(url: string | URL): Promise<unknown> {
   const response = await fetch(url);
-  const json = (await response.json()) as unknown;
+  if (!response.ok) {
+    throw new Error(
+      `Failed to load config file '${url.toString()}': ${response.statusText}`,
+    );
+  }
+  const text = await response.text();
+  const json = yaml.load(text, { schema: yaml.JSON_SCHEMA });
   return json;
 }
 
@@ -59,15 +66,15 @@ function preprocessParameterTransformsGroups(
 
 export async function loadConfig(): Promise<ReadOnlyConfig> {
   const modelConfig = (await loadConfigFile(
-    new URL('model.json', configBaseUrl),
+    new URL('model.yaml', configBaseUrl),
   )) as GameConfig['model']; // FIXME: Validate instead of casting
 
   const simulationConfig = (await loadConfigFile(
-    new URL('simulation.json', configBaseUrl),
+    new URL('simulation.yaml', configBaseUrl),
   )) as GameConfig['simulation']; // FIXME: Validate instead of casting
 
   const parameterTransformsGroups = (await loadConfigFile(
-    new URL('parameter-transforms.json', configBaseUrl),
+    new URL('parameter-transforms.yaml', configBaseUrl),
   )) as ParameterTransformsGroupsConfig; // FIXME: Validate instead of casting
 
   return {
