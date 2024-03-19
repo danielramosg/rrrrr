@@ -1,3 +1,5 @@
+import hotkeys from 'hotkeys-js';
+
 import './side-effects';
 
 import { loadConfig } from './config';
@@ -15,9 +17,23 @@ type CircularEconomyApi = {
   controlPanel: ControlPanel;
 };
 
+function toggleControlPanel() {
+  const controlPanel = guardedQuerySelector(HTMLElement, '#control-panel');
+  controlPanel.classList.toggle('hidden');
+}
+
+function configureHotkeys() {
+  hotkeys('c', () => {
+    toggleControlPanel();
+    return false;
+  });
+}
+
 async function init(): Promise<CircularEconomyApi> {
   const config = await loadConfig();
   console.log(config);
+
+  configureHotkeys();
 
   const fixedSizeContainer = guardedQuerySelector(
     HTMLDivElement,
