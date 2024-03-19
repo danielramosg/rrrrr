@@ -1,4 +1,2 @@
-{
-  "deltaPerSecond": 0.005,
-  "maxStepSize": 0.0002
-}
+deltaPerSecond: 0.005
+maxStepSize: 0.0002

@@ -1,39 +1,35 @@
-{
-  "initialStocks": {
-    "capacityOfNewlyProducedPhones": 0,
-    "capacityOfRecycledMaterials": 0,
-    "capacityOfRefurbishedPhones": 0,
-    "capacityOfRepairedPhones": 0,
-    "phonesInUse": 0,
-    "supplyOfBrokenPhones": 0,
-    "supplyOfDisposedPhones": 0,
-    "supplyOfHibernatingPhones": 0,
-    "supplyOfNewlyProducedPhones": 0,
-    "supplyOfRecycledMaterials": 0,
-    "supplyOfRefurbishedPhones": 0,
-    "supplyOfRepairedPhones": 0
-  },
-  "initialParameters": {
-    "abandonExcessRate": 0.5,
-    "abandonRate": 0.1,
-    "acquireRate": 1,
-    "breakRate": 0.1,
-    "capacityAdjustmentRate": 0.1,
-    "disposeIncentive": 0.5,
-    "disposeRate": 0.5,
-    "landfillIncentive": 0.5,
-    "landfillRate": 1,
-    "naturalResourcesIncentive": 0.5,
-    "newPhoneProductionRate": 0.5,
-    "newlyProducedPhoneIncentive": 0.82,
-    "numberOfUsers": 1000000,
-    "phonesPerUserGoal": 1,
-    "recycleRate": 1,
-    "recyclingIncentive": 0.89,
-    "refurbishmentIncentive": 0.5,
-    "refurbishmentRate": 1,
-    "repairIncentive": 0.5,
-    "repairRate": 1,
-    "reuseIncentive": 0.86
-  }
-}
+initialStocks:
+  capacityOfNewlyProducedPhones: 0
+  capacityOfRecycledMaterials: 0
+  capacityOfRefurbishedPhones: 0
+  capacityOfRepairedPhones: 0
+  phonesInUse: 0
+  supplyOfBrokenPhones: 0
+  supplyOfDisposedPhones: 0
+  supplyOfHibernatingPhones: 0
+  supplyOfNewlyProducedPhones: 0
+  supplyOfRecycledMaterials: 0
+  supplyOfRefurbishedPhones: 0
+  supplyOfRepairedPhones: 0
+initialParameters:
+  abandonExcessRate: 0.5
+  abandonRate: 0.1
+  acquireRate: 1
+  breakRate: 0.1
+  capacityAdjustmentRate: 0.1
+  disposeIncentive: 0.5
+  disposeRate: 0.5
+  landfillIncentive: 0.5
+  landfillRate: 1
+  naturalResourcesIncentive: 0.5
+  newPhoneProductionRate: 0.5
+  newlyProducedPhoneIncentive: 0.82
+  numberOfUsers: 1000000
+  phonesPerUserGoal: 1
+  recycleRate: 1
+  recyclingIncentive: 0.89
+  refurbishmentIncentive: 0.5
+  refurbishmentRate: 1
+  repairIncentive: 0.5
+  repairRate: 1
+  reuseIncentive: 0.86
