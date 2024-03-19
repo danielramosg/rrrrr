@@ -15,7 +15,9 @@
     "url": "https://github.com/IMAGINARY/circular-economy/issues"
   },
   "homepage": "https://github.com/IMAGINARY/circular-economy#readme",
-  "source": "src/html/index.html",
+  "source": [
+    "src/html/index.html"
+  ],
   "engines": {
     "npm": ">=10.1.0",
     "node": ">=20.9.0"
@@ -25,6 +27,7 @@
     "last 2 major versions",
     "not dead",
     "not Explorer <= 11",
+    "not KaiOS > 0",
     "not OperaMini all"
   ],
   "devDependencies": {
@@ -46,7 +49,6 @@
     "npm-run-all": "^4.1.5",
     "parcel": "^2.12.0",
     "parcel-namer-rewrite": "^2.10.3-rc.2",
-    "path-browserify": "^1.0.1",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "serve-static": "^1.15.0",
@@ -89,23 +91,36 @@
     "fix:scripts": "eslint --fix src",
     "fix:styles": "stylelint --fix 'src/{**/*,*}.{css,scss}'",
     "check-updates": "npm-check-updates",
-    "convert-insightmaker-model": "tsx ./tools/convert-from-insight-maker.ts < src/insight-maker/CircularEconomyOfSmartPhones.InsightMaker > ./src/ts/circular-economy-model.ts; prettier --write ./src/ts/circular-economy-model.ts"
+    "convert-insightmaker-model": "tsx ./tools/convert-from-insight-maker.ts < src/insight-maker/CircularEconomyOfSmartPhones.InsightMaker > ./src/ts/circular-economy-model.ts; prettier --write ./src/ts/circular-economy-model.ts",
+    "udp-websocket-bridge": "npm run udp-websocket-bridge:node",
+    "udp-websocket-bridge:websocat": "websocat -E -b ws-l:127.0.0.1:3339 udp-l:127.0.0.1:3333",
+    "udp-websocket-bridge:node": "tsx ./tools/udp-websocket-bridge.ts"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "@types/assert": "^1.5.10",
     "@types/bootstrap": "^5.2.10",
     "@types/lodash": "^4.14.202",
+    "@types/long": "^5.0.0",
     "@types/node": "^20.11.24",
     "@types/sortablejs": "^1.15.8",
+    "@types/ws": "^8.5.10",
     "assert": "^2.1.0",
     "bootstrap": "^5.3.3",
+    "buffer": "^6.0.3",
     "chart.js": "^4.4.2",
     "events": "^3.3.0",
     "lodash": "^4.17.21",
+    "long": "^5.2.3",
+    "os-browserify": "^0.3.0",
+    "osc": "^2.4.4",
+    "path-browserify": "^1.0.1",
     "process": "^0.11.10",
+    "rxjs": "^7.8.1",
     "sortablejs": "^1.15.2",
+    "stream-browserify": "^3.0.0",
     "ts-essentials": "^9.4.1",
-    "typed-emitter": "^2.1.0"
+    "typed-emitter": "^2.1.0",
+    "ws": "^8.16.0"
   }
 }

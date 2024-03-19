@@ -7,6 +7,7 @@ import { guardedQuerySelector } from './util/guarded-query-selectors';
 import { Game } from './game';
 import { Scores } from './scores';
 import { ControlPanel } from './control-panel';
+import { setupMarkerPanel } from './marker';
 
 type CircularEconomyApi = {
   game: Game;
@@ -71,6 +72,8 @@ async function init(): Promise<CircularEconomyApi> {
   );
 
   game.runner.tick();
+
+  setupMarkerPanel();
 
   const circularEconomyApi: CircularEconomyApi = {
     game,
