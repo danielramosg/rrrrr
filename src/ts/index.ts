@@ -3,6 +3,7 @@ import './side-effects';
 import { loadConfig } from './config';
 import { Parameters, Record } from './circular-economy-model';
 import { documentReady } from './util/document-ready';
+import { ScaleToFitParent } from './util/scale-to-fit';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
 import { Game } from './game';
 import { Scores } from './scores';
@@ -17,6 +18,16 @@ type CircularEconomyApi = {
 async function init(): Promise<CircularEconomyApi> {
   const config = await loadConfig();
   console.log(config);
+
+  const fixedSizeContainer = guardedQuerySelector(
+    HTMLDivElement,
+    '#fixed-size-container',
+  );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const scaleToFitParent = new ScaleToFitParent(fixedSizeContainer, {
+    width: 1920,
+    height: 1080,
+  });
 
   const modelVisualizationContainer = guardedQuerySelector(
     HTMLDivElement,
