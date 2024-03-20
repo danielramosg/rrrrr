@@ -87,6 +87,10 @@ function setupUi(
     element.style.top = `${activeShape.y}px`;
 
     panel.append(element);
+
+    const idElement = document.createElement('div');
+    idElement.innerText = id;
+    element.append(idElement);
   });
 
   markerAdd$.subscribe((addedMarker) => {

@@ -44,4 +44,13 @@
     border-color: green;
     background-color: red;
   }
+
+  * {
+    pointer-events: none;
+    user-select: none;
+  }
+
+  display: grid;
+  place-items: center center;
+  font-family: sans-serif;
 }
