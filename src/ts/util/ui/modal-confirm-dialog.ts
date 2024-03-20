@@ -29,9 +29,7 @@ class ModalConfirmDialog {
 
   protected constructor() {
     this.elements = ModalConfirmDialog.queryElements();
-    this.modalDialog = new Modal(this.elements.modalDialogElement, {
-      backdrop: 'static',
-    });
+    this.modalDialog = new Modal(this.elements.modalDialogElement);
 
     const confirm = this.confirm.bind(this);
     const dismiss = this.dismiss.bind(this);
