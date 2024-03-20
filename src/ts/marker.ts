@@ -1,4 +1,5 @@
 import * as Rx from 'rxjs';
+import { strict as assert } from 'assert';
 
 import { Tuio11EventEmitter } from './util/input/tuio/tuio11-event-emitter';
 import {
@@ -23,44 +24,12 @@ import {
   CircularSlot,
   CircularSlotTracker,
 } from './util/input/slot-tracking/circular-slot-tacker';
-
-const BOARD_WIDTH = 1920;
-const BOARD_HEIGHT = 1080;
-const BOARD_WIDTH_MM = 1209.6;
-const MARKER_DIAMETER_MM = 74.3;
-const MARKER_CIRCLE_DIAMETER =
-  (BOARD_WIDTH * MARKER_DIAMETER_MM) / BOARD_WIDTH_MM;
-
-const NUM_POINTER_MARKERS = 8;
-const POINTER_MARKER_COORDINATES = new Array(NUM_POINTER_MARKERS)
-  .fill(0)
-  .map(() => ({ x: 90 / BOARD_WIDTH, y: 130 / BOARD_HEIGHT }));
-
-const SLOT_DEFINITIONS = [
-  { id: 'manufacturer-1', x: 94.35, y: 659.11 },
-  { id: 'manufacturer-2', x: 94.35, y: 532.9 },
-  { id: 'manufacturer-3', x: 94.35, y: 405.4 },
-  { id: 'government-1', x: 684.3, y: 1004.2 },
-  { id: 'government-2', x: 812.15, y: 1004.2 },
-  { id: 'government-3', x: 938.2, y: 1004.2 },
-  { id: 'reduce-1', x: 788.2, y: 616.4 },
-  { id: 'reduce-2', x: 915.4, y: 622.4 },
-  { id: 'reduce-3', x: 1041.4, y: 628.4 },
-  { id: 'reuse-1', x: 1756, y: 696 },
-  { id: 'reuse-2', x: 1751.2, y: 568.4 },
-  { id: 'reuse-3', x: 1746.4, y: 442.4 },
-  { id: 'repair-1', x: 652.2, y: 421.4 },
-  { id: 'repair-2', x: 778.4, y: 402.4 },
-  { id: 'repair-3', x: 903, y: 384 },
-  { id: 'refurbish-1', x: 1479.4, y: 1000.4 },
-  { id: 'refurbish-2', x: 1596.4, y: 949 },
-  { id: 'refurbish-3', x: 1712, y: 898.4 },
-  { id: 'recycle-1', x: 232.4, y: 221.4 },
-  { id: 'recycle-2', x: 345.5, y: 163 },
-  { id: 'recycle-3', x: 458, y: 105.4 },
-  { id: 'event', x: 1033.4, y: 77.4 },
-];
-const SLOT_CIRCLE_DIAMETER = MARKER_CIRCLE_DIAMETER;
+import {
+  MARKER_CIRCLE_DIAMETER,
+  POINTER_MARKER_COORDINATES,
+  SLOT_CIRCLE_DIAMETER,
+  SLOT_DEFINITIONS,
+} from './builtin-config';
 
 const SLOTS: CircularSlot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
   id,
@@ -88,8 +57,16 @@ function setupUi(
 
     panel.append(element);
 
+    const transformId = SLOT_DEFINITIONS.find(
+      (sd) => sd.id === id,
+    )?.transformId;
+    assert(typeof transformId !== 'undefined');
     const idElement = document.createElement('div');
-    idElement.innerText = id;
+    idElement.append(
+      id,
+      document.createElement('br'),
+      transformId.replaceAll(' ', '\u00A0'),
+    );
     element.append(idElement);
   });
 
@@ -166,7 +143,7 @@ function setupUi(
   });
 }
 
-export function setupMarkerPanel(): void {
+export function setupMarkerPanel(): CircularSlotTracker {
   const panel = guardedQuerySelector(HTMLDivElement, '#slot-panel');
   const pointerMarkerTracking = new PointerMarkerTracker(
     panel,
@@ -190,4 +167,6 @@ export function setupMarkerPanel(): void {
 
   client.addTuioListener(tuio11EventEmitter);
   client.connect();
+
+  return slotTracker;
 }

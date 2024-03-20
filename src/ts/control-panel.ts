@@ -64,6 +64,8 @@ class ControlPanel {
     clear: () => void;
   };
 
+  readonly updateParameters: () => void;
+
   readonly chart: Chart;
 
   constructor(config: ReadOnlyConfig) {
@@ -109,7 +111,7 @@ class ControlPanel {
       return result;
     }
 
-    const updateParameters = () => {
+    this.updateParameters = () => {
       const parameters = { ...initialParameters };
       [...activeParameterTransformsContainer.children].forEach((e) => {
         assert(e instanceof HTMLElement);
@@ -153,8 +155,8 @@ class ControlPanel {
     Sortable.create(this.elements.activeParameterTransformsContainer, {
       group: { name: 'sharedParameterTransforms' },
       removeOnSpill: true,
-      onEnd: updateParameters,
-      onAdd: updateParameters,
+      onEnd: this.updateParameters.bind(this),
+      onAdd: this.updateParameters.bind(this),
     });
 
     this.parameterTransforms = {
@@ -169,7 +171,7 @@ class ControlPanel {
           ),
         );
         if (exists) {
-          updateParameters();
+          this.updateParameters();
         } else {
           const parameterTransformElement = document.createElement('div');
           parameterTransformElement.classList.add('parameter-transform');
@@ -198,13 +200,13 @@ class ControlPanel {
           `[data-id="${id}"]`,
           activeParameterTransformsContainer,
         ).forEach((element) => element.remove());
-        updateParameters();
+        this.updateParameters();
       },
       clear: () => {
         availableParameterTransforms.clear();
         availableParameterTransformsContainer.innerHTML = '';
         activeParameterTransformsContainer.innerHTML = '';
-        updateParameters();
+        this.updateParameters();
       },
     };
 
@@ -215,7 +217,7 @@ class ControlPanel {
             'Do you really want to clear all active parameter transformations?';
           if (await confirm(message)) {
             activeParameterTransformsContainer.innerHTML = '';
-            updateParameters();
+            this.updateParameters();
           }
         })(),
       );
@@ -288,11 +290,11 @@ class ControlPanel {
         sliderElement.step = '0.001';
         sliderElement.value = `${initialParameters[id]}`;
 
-        function updateSliderValue() {
+        const updateSliderValue = () => {
           initialParameters[id] = Number.parseFloat(sliderElement.value);
           sliderElementLabel.innerText = `${id} = ${initialParameters[id]}`;
-          updateParameters();
-        }
+          this.updateParameters();
+        };
         updateSliderValue();
 
         sliderElement.addEventListener('input', updateSliderValue);
@@ -316,6 +318,7 @@ class ControlPanel {
       ),
     );
 
+    // TODO: Sync button state and running state
     runCheckBox.addEventListener('input', () =>
       runCheckBox.checked
         ? this.events.emit('play')
@@ -325,6 +328,28 @@ class ControlPanel {
 
   update(record: Record) {
     this.chart.update(record);
+  }
+
+  activateParameterTransform(id: string) {
+    const parameterTransformElement = guardedQuerySelector(
+      HTMLElement,
+      `[data-id="${id}"]`,
+      this.elements.availableParameterTransformsContainer,
+    );
+    this.elements.activeParameterTransformsContainer.append(
+      parameterTransformElement.cloneNode(true),
+    );
+    this.updateParameters();
+  }
+
+  deactivateParameterTransform(id: string) {
+    const parameterTransformElement = guardedQuerySelector(
+      HTMLElement,
+      `[data-id="${id}"]`,
+      this.elements.activeParameterTransformsContainer,
+    );
+    parameterTransformElement.remove();
+    this.updateParameters();
   }
 
   protected static queryElements(): ControlPanelElements {

@@ -1,4 +1,5 @@
 import hotkeys from 'hotkeys-js';
+import { strict as assert } from 'assert';
 
 import './side-effects';
 
@@ -11,6 +12,7 @@ import { Game } from './game';
 import { Scores } from './scores';
 import { ControlPanel } from './control-panel';
 import { setupMarkerPanel } from './marker';
+import { SLOT_DEFINITIONS } from './builtin-config';
 
 type CircularEconomyApi = {
   game: Game;
@@ -102,7 +104,17 @@ async function init(): Promise<CircularEconomyApi> {
 
   game.runner.tick();
 
-  setupMarkerPanel();
+  const slotTracker = setupMarkerPanel();
+  slotTracker.slotActivate$.subscribe(({ slotId }) => {
+    const slot = SLOT_DEFINITIONS.find((sd) => sd.id === slotId);
+    assert(typeof slot !== 'undefined');
+    controlPanel.activateParameterTransform(slot.transformId);
+  });
+  slotTracker.slotDeactivate$.subscribe(({ slotId }) => {
+    const slot = SLOT_DEFINITIONS.find((sd) => sd.id === slotId);
+    assert(typeof slot !== 'undefined');
+    controlPanel.deactivateParameterTransform(slot.transformId);
+  });
 
   configureHotkeys(game);
 
