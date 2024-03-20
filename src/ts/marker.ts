@@ -24,17 +24,17 @@ import {
   CircularSlotTracker,
 } from './util/input/slot-tracking/circular-slot-tacker';
 
-const NUM_POINTER_MARKERS = 8;
-const POINTER_MARKER_COORDINATES = new Array(NUM_POINTER_MARKERS)
-  .fill(0)
-  .map(() => ({ x: 0, y: 0 }));
-
 const BOARD_WIDTH = 1920;
 const BOARD_HEIGHT = 1080;
 const BOARD_WIDTH_MM = 1209.6;
 const MARKER_DIAMETER_MM = 74.3;
 const MARKER_CIRCLE_DIAMETER =
   (BOARD_WIDTH * MARKER_DIAMETER_MM) / BOARD_WIDTH_MM;
+
+const NUM_POINTER_MARKERS = 8;
+const POINTER_MARKER_COORDINATES = new Array(NUM_POINTER_MARKERS)
+  .fill(0)
+  .map(() => ({ x: 90 / BOARD_WIDTH, y: 130 / BOARD_HEIGHT }));
 
 const SLOT_DEFINITIONS = [
   { id: 'manufacturer-1', x: 94.35, y: 659.11 },
