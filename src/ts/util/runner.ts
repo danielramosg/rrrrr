@@ -65,6 +65,11 @@ class Runner extends (EventEmitter as new () => TypedEmitter<RunnerEvents>) {
     return !this.shouldRun;
   }
 
+  togglePlayPause() {
+    if (this.shouldRun) this.pause();
+    else this.play();
+  }
+
   tick() {
     if (this.isPlaying()) {
       assert(this.cancelAnimationFrameCallback !== null);

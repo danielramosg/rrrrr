@@ -22,9 +22,13 @@ function toggleControlPanel() {
   controlPanel.classList.toggle('hidden');
 }
 
-function configureHotkeys() {
+function configureHotkeys(game: Game) {
   hotkeys('c', () => {
     toggleControlPanel();
+    return false;
+  });
+  hotkeys('space', () => {
+    game.runner.togglePlayPause();
     return false;
   });
 }
@@ -32,8 +36,6 @@ function configureHotkeys() {
 async function init(): Promise<CircularEconomyApi> {
   const config = await loadConfig();
   console.log(config);
-
-  configureHotkeys();
 
   const fixedSizeContainer = guardedQuerySelector(
     HTMLDivElement,
@@ -101,6 +103,8 @@ async function init(): Promise<CircularEconomyApi> {
   game.runner.tick();
 
   setupMarkerPanel();
+
+  configureHotkeys(game);
 
   const circularEconomyApi: CircularEconomyApi = {
     game,
