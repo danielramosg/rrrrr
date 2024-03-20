@@ -6,7 +6,6 @@ import {
   Tuio11Client,
 } from './util/input/tuio/tuio_client_js';
 
-import { documentReady } from './util/document-ready';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
 import { Circle } from './util/geometry/circle';
 import {
@@ -164,10 +163,3 @@ export function setupMarkerPanel(): void {
   client.addTuioListener(tuio11EventEmitter);
   client.connect();
 }
-
-documentReady()
-  .then(setupMarkerPanel)
-  .catch((err) => {
-    // eslint-disable-next-line no-console
-    console.error(err);
-  });
