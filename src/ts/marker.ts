@@ -29,14 +29,38 @@ const POINTER_MARKER_COORDINATES = new Array(NUM_POINTER_MARKERS)
   .fill(0)
   .map(() => ({ x: 0, y: 0 }));
 
-const MARKER_CIRCLE_DIAMETER = 128;
+const BOARD_WIDTH = 1920;
+const BOARD_HEIGHT = 1080;
+const BOARD_WIDTH_MM = 1209.6;
+const MARKER_DIAMETER_MM = 74.3;
+const MARKER_CIRCLE_DIAMETER =
+  (BOARD_WIDTH * MARKER_DIAMETER_MM) / BOARD_WIDTH_MM;
 
 const SLOT_DEFINITIONS = [
-  { id: 'slot-1', x: 0, y: 0 },
-  { id: 'slot-2', x: 1920 / 2, y: 1080 / 2 },
-  { id: 'slot-3', x: 1920 - 100, y: 1080 - 100 },
+  { id: 'manufacturer-1', x: 94.35, y: 659.11 },
+  { id: 'manufacturer-2', x: 94.35, y: 532.9 },
+  { id: 'manufacturer-3', x: 94.35, y: 405.4 },
+  { id: 'government-1', x: 684.3, y: 1004.2 },
+  { id: 'government-2', x: 812.15, y: 1004.2 },
+  { id: 'government-3', x: 938.2, y: 1004.2 },
+  { id: 'reduce-1', x: 788.2, y: 616.4 },
+  { id: 'reduce-2', x: 915.4, y: 622.4 },
+  { id: 'reduce-3', x: 1041.4, y: 628.4 },
+  { id: 'reuse-1', x: 1756, y: 696 },
+  { id: 'reuse-2', x: 1751.2, y: 568.4 },
+  { id: 'reuse-3', x: 1746.4, y: 442.4 },
+  { id: 'repair-1', x: 652.2, y: 421.4 },
+  { id: 'repair-2', x: 778.4, y: 402.4 },
+  { id: 'repair-3', x: 903, y: 384 },
+  { id: 'refurbish-1', x: 1479.4, y: 1000.4 },
+  { id: 'refurbish-2', x: 1596.4, y: 949 },
+  { id: 'refurbish-3', x: 1712, y: 898.4 },
+  { id: 'recycle-1', x: 232.4, y: 221.4 },
+  { id: 'recycle-2', x: 345.5, y: 163 },
+  { id: 'recycle-3', x: 458, y: 105.4 },
+  { id: 'event', x: 1033.4, y: 77.4 },
 ];
-const SLOT_CIRCLE_DIAMETER = 160;
+const SLOT_CIRCLE_DIAMETER = 0.97 * MARKER_CIRCLE_DIAMETER;
 
 const SLOTS: CircularSlot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
   id,
