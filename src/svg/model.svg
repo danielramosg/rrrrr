@@ -2,606 +2,217 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-  width="512"
-  height="600"
-  viewBox="0 0 512 600"
-  version="1.1"
-  id="svg1"
-  xmlns="http://www.w3.org/2000/svg"
-  xmlns:svg="http://www.w3.org/2000/svg"
->
-  <defs id="defs1" />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="m 57.873126,453.53633 c 74.074864,-93.36373 74.085354,-93.7624 74.085354,-93.7624"
-    id="produce-from-natural-resources"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="M 76.770473,76.179931 54.558428,243.97204 132.08567,359.58206"
-    id="produce-from-recycled-materials"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="m 133.81749,358.53867 120.11561,95.5882"
-    id="acquire-newly-produced"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="M 385.03345,151.17878 264.39754,85.724274 76.179931,76.770473"
-    id="recycle"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="M 249.20877,165.94233 C 382.67128,150.58824 382.67128,150.58824 382.67128,150.58824"
-    id="dispose-hibernating"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="m 377.94694,297.63322 c 5.31488,-147.04498 5.31488,-147.04498 5.31488,-147.04498"
-    id="dispose-broken"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="m 250.38985,165.94233 54.01031,139.35911 -51.0576,148.82543"
-    id="abandon"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="m 249.79931,165.35179 -26.33396,141.71548 29.28667,145.28798"
-    id="acquire-used"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="m 378.00212,297.18094 c 58.46367,139.95848 56.04632,138.63913 56.04632,138.63913"
-    id="repair"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="M 248.61822,165.94233 140.0299,242.60858"
-    id="refurbish"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="M 382.67128,150.58824 C 453.53633,53.739331 453.53633,53.739331 453.53633,53.739331"
-    id="landfill"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="M 252.75202,452.35525 C 377.3564,296.45213 377.3564,296.45213 377.3564,296.45213"
-    id="go-broken"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="M 432.27682,434.63899 C 253.34256,452.35525 253.34256,452.35525 253.34256,452.35525"
-    id="acquire-repaired"
-  />
-  <path
-    style="
-      fill: none;
-      stroke: #000000;
-      stroke-width: 1px;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      stroke-opacity: 1;
-    "
-    d="M 137.69089,240.94118 251.57093,452.35525"
-    id="acquire-refurbished"
-  />
-  <circle
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.23969;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-      stroke-dasharray: none;
-    "
-    id="recycled-materials"
-    cx="77.795685"
-    cy="77.795685"
-    r="37.175842"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="77.744308"
-    y="74.26799"
-    id="text1"
-  >
-    <tspan
-      id="tspan1"
-      x="77.744308"
-      y="74.26799"
-      style="stroke-width: 0.809342"
-    >
-      Recycling
-    </tspan>
-    <tspan
-      x="77.744308"
-      y="91.803741"
-      id="tspan2"
-      style="stroke-width: 0.809342"
-    >
-      center
-    </tspan>
-  </text>
-  <circle
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.23886;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-    "
-    id="hibernating-phones"
-    cx="251.4158"
-    cy="165.20602"
-    r="37.175842"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="251.36443"
-    y="169.08649"
-    id="text1-8"
-  >
-    <tspan
-      x="251.36443"
-      y="169.08649"
-      id="tspan2-5"
-      style="stroke-width: 0.809342"
-    >
-      Hibernating
-    </tspan>
-  </text>
-  <circle
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.23886;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-    "
-    id="disposed-phones"
-    cx="383.90485"
-    cy="152.62111"
-    r="37.175842"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="383.85349"
-    y="156.53925"
-    id="text1-4"
-  >
-    <tspan
-      x="383.85349"
-      y="156.53925"
-      id="tspan2-2"
-      style="stroke-width: 0.809342"
-    >
-      Disposed
-    </tspan>
-  </text>
-  <circle
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.23886;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-    "
-    id="broken-phones"
-    cx="378.66956"
-    cy="298.97751"
-    r="37.175842"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="378.59079"
-    y="304.20056"
-    id="text1-3"
-  >
-    <tspan
-      x="378.59079"
-      y="304.20056"
-      id="tspan2-0"
-      style="stroke-width: 0.809342"
-    >
-      Broken
-    </tspan>
-  </text>
-  <circle
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.23886;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-    "
-    id="repaired-phones"
-    cx="434.20474"
-    cy="434.20474"
-    r="37.175842"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="433.49234"
-    y="429.15979"
-    id="text1-6"
-  >
-    <tspan
-      x="433.49234"
-      y="429.15979"
-      id="tspan2-1"
-      style="stroke-width: 0.809342"
-    >
-      Repair
-    </tspan>
-    <tspan
-      x="433.49234"
-      y="446.69553"
-      style="stroke-width: 0.809342"
-      id="tspan3"
-    >
-      shop
-    </tspan>
-  </text>
-  <circle
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.23886;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-    "
-    id="phones-in-use"
-    cx="256"
-    cy="454.20474"
-    r="37.175842"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="255.94862"
-    y="450.65991"
-    id="text1-0"
-  >
-    <tspan
-      x="255.94862"
-      y="450.65991"
-      id="tspan2-4"
-      style="stroke-width: 0.809342"
-    >
-      Phones
-    </tspan>
-    <tspan
-      x="255.94862"
-      y="468.19565"
-      style="stroke-width: 0.809342"
-      id="tspan4"
-    >
-      in use
-    </tspan>
-  </text>
-  <circle
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.23886;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-    "
-    id="refurbished-phones"
-    cx="141.50578"
-    cy="243.27542"
-    r="37.175842"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="143.97174"
-    y="239.78198"
-    id="text1-0-0"
-  >
-    <tspan
-      id="tspan1-8-0"
-      x="143.97174"
-      y="239.78198"
-      style="stroke-width: 0.809342"
-    >
-      Refurbishment
-    </tspan>
-    <tspan
-      x="143.97174"
-      y="257.31772"
-      id="tspan2-4-9"
-      style="stroke-width: 0.809342"
-    >
-      center
-    </tspan>
-  </text>
-  <circle
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.23886;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-    "
-    id="newly-produced-phones"
-    cx="132.27829"
-    cy="358.93597"
-    r="37.175842"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="133.80222"
-    y="364.62463"
-    id="text1-0-0-9"
-  >
-    <tspan
-      x="133.80222"
-      y="364.62463"
-      id="tspan2-4-9-6"
-      style="stroke-width: 0.809342"
-    >
-      Factory
-    </tspan>
-  </text>
-  <rect
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.32295;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-      stroke-dasharray: none;
-    "
-    id="natural-resources"
-    width="74.267601"
-    height="74.267601"
-    x="20.661474"
-    y="417.07092"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="57.44936"
-    y="450.65991"
-    id="text1-2"
-  >
-    <tspan
-      x="57.44936"
-      y="450.65991"
-      id="tspan2-9"
-      style="stroke-width: 0.809342"
-    >
-      Natural
-    </tspan>
-    <tspan
-      x="57.44936"
-      y="468.19565"
-      style="stroke-width: 0.809342"
-      id="tspan5"
-    >
-      resources
-    </tspan>
-  </text>
-  <rect
-    style="
-      fill: none;
-      fill-opacity: 0.983437;
-      fill-rule: evenodd;
-      stroke: #000000;
-      stroke-width: 1.32295;
-      stroke-linecap: round;
-      stroke-miterlimit: 0;
-      stroke-dasharray: none;
-    "
-    id="landfilled-phones"
-    width="74.267601"
-    height="74.267601"
-    x="417.07092"
-    y="20.661476"
-  />
-  <text
-    xml:space="preserve"
-    style="
-      font-size: 14.0286px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      text-align: center;
-      text-anchor: middle;
-      stroke-width: 0.809342;
-    "
-    x="454.16019"
-    y="63.052578"
-    id="text1-2-9"
-  >
-    <tspan
-      x="454.16019"
-      y="63.052578"
-      style="stroke-width: 0.809342"
-      id="tspan5-3"
-    >
-      Landfill
-    </tspan>
-  </text>
-</svg>
+   width="3840"
+   height="2160"
+   viewBox="0 0 3840 2160"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1" /><g
+     id="layer1"><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 221.81997,1800.6703 c 178.05642,-111.5777 434.8148,-225.6108 434.8148,-225.6108"
+       id="produce-from-natural-resources" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 656.38089,685.03743 C 563.06476,801.17383 503.27714,913.13807 494.06407,1047.4346"
+       id="produce-from-recycled-materials" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 833.12813,1494.8522 c 0,0 42.54057,-26.9117 68.76213,-38.5871 78.28404,-34.857 157.23534,-59.279 235.85304,-102.2933"
+       id="acquire-newly-produced" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 2925.9135,398.43028 C 2187.233,245.67194 1363.4403,307.78046 1048.8918,424.48683"
+       id="recycle" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 3238.7201,1003.355 -1.3437,-349.81743"
+       id="dispose-hibernating" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 2562.2741,723.25088 c 122.1761,-73.55976 253.053,-143.63917 412.9223,-202.12164"
+       id="dispose-broken" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 3195.2549,1273.605 c -113.5766,103.1476 -390.9364,167.6096 -651.2381,225.4981 -261.5735,58.1713 -477.1618,74.7058 -761.6206,19.4633"
+       id="abandon" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 3050.5939,1091.3878 -423.9151,-21.951 c -66.228,234.6285 -197.99,334.6261 -822.8365,383.8507"
+       id="acquire-used" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 2317.7088,652.98111 C 2071.9514,539.85475 1845.1776,519.92628 1765.4741,542.69871"
+       id="repair" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 3312.9046,1283.7979 c 22.1495,81.2263 -101.9158,345.4074 -153.2359,387.1266"
+       id="refurbish" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 3208.9109,401.57402 c 91.157,-32.52755 176.7765,-70.59263 260.3818,-110.67197"
+       id="landfill" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 1199.15,1143.5405 c 381.4761,-119.845 758.9649,-247.66446 1132.8505,-382.69014"
+       id="go-broken" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 1260.5276,670.84475 C 1150.3669,740.05289 923.86907,889.36352 1060.3193,1116.3515"
+       id="acquire-repaired" /><path
+       style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 2529.1812,1824.1719 c -341.9694,60.1999 -695.5073,-85.7087 -917.6243,-247.8761"
+       id="acquire-refurbished" /><circle
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:#000000;stroke-width:5.35178;stroke-linecap:round;stroke-miterlimit:0;stroke-dasharray:none"
+       id="recycled-materials"
+       cx="847.99335"
+       cy="552.95978"
+       r="85.614594" /><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="1048.3287"
+       y="596.56073"
+       id="text1">     <tspan
+   id="tspan1"
+   x="1048.3287"
+   y="596.56073"
+   style="stroke-width:3.49395">       Recycling    </tspan>     <tspan
+   x="1048.3287"
+   y="672.26306"
+   id="tspan2"
+   style="stroke-width:3.49395">       center    </tspan>  </text><circle
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:#000000;stroke-width:5.3482;stroke-linecap:round;stroke-miterlimit:0"
+       id="hibernating-phones"
+       r="98.985062"
+       cy="1144.2405"
+       cx="3250.1074" /><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="3004.4983"
+       y="991.24323"
+       id="text1-8">     <tspan
+   x="3004.4983"
+   y="991.24323"
+   id="tspan2-5"
+   style="stroke-width:3.49395">       Hibernating    </tspan>  </text><circle
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:#000000;stroke-width:5.348;stroke-linecap:round;stroke-miterlimit:0;stroke-dasharray:none"
+       id="disposed-phones"
+       cx="3117.4536"
+       cy="481.51382"
+       r="96.09153" /><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="3046.0679"
+       y="272.09048"
+       id="text1-4">     <tspan
+   x="3046.0679"
+   y="272.09048"
+   id="tspan2-2"
+   style="stroke-width:3.49395">       Disposed    </tspan>  </text><circle
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:#000000;stroke-width:5.348;stroke-linecap:round;stroke-miterlimit:0;stroke-dasharray:none"
+       id="broken-phones"
+       cx="2476.9546"
+       cy="753.71533"
+       r="77.892174" /><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="2482.5034"
+       y="603.58142"
+       id="text1-3">     <tspan
+   x="2482.5034"
+   y="603.58142"
+   id="tspan2-0"
+   style="stroke-width:3.49395">       Broken    </tspan>  </text><circle
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:#000000;stroke-width:5.348;stroke-linecap:round;stroke-miterlimit:0;stroke-dasharray:none"
+       id="repaired-phones"
+       cx="1528.2377"
+       cy="570.02869"
+       r="88.288689" /><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="1763.1567"
+       y="406.52237"
+       id="text1-6">     <tspan
+   x="1763.1567"
+   y="406.52237"
+   id="tspan2-1"
+   style="stroke-width:3.49395">       Repair    </tspan>     <tspan
+   x="1763.1567"
+   y="482.22476"
+   style="stroke-width:3.49395"
+   id="tspan3">       shop    </tspan>  </text><circle
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:#000000;stroke-width:5.3482;stroke-linecap:round;stroke-miterlimit:0"
+       id="phones-in-use"
+       cx="1387.3347"
+       cy="1415.8121"
+       r="93.636871" /><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="1237.3635"
+       y="1445.9686"
+       id="text1-0">     <tspan
+   x="1237.3635"
+   y="1445.9686"
+   id="tspan2-4"
+   style="stroke-width:3.49395">       Phones    </tspan>     <tspan
+   x="1237.3635"
+   y="1521.6709"
+   style="stroke-width:3.49395"
+   id="tspan4">       in use    </tspan>  </text><circle
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:#000000;stroke-width:5.3482;stroke-linecap:round;stroke-miterlimit:0"
+       id="refurbished-phones"
+       cx="2847.823"
+       cy="1772.7448"
+       r="93.636871" /><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="2505.488"
+       y="1990.3097"
+       id="text1-0-0">     <tspan
+   id="tspan1-8-0"
+   x="2505.488"
+   y="1990.3097"
+   style="stroke-width:3.49395">       Refurbishment    </tspan>     <tspan
+   x="2505.488"
+   y="2066.012"
+   id="tspan2-4-9"
+   style="stroke-width:3.49395">       center    </tspan>  </text><circle
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:#000000;stroke-width:5.3482;stroke-linecap:round;stroke-miterlimit:0"
+       id="newly-produced-phones"
+       cx="548.3775"
+       cy="1304.0326"
+       r="77.592308" /><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="694.00928"
+       y="1224.301"
+       id="text1-0-0-9">     <tspan
+   x="694.00928"
+   y="1224.301"
+   id="tspan2-4-9-6"
+   style="stroke-width:3.49395">       Factory    </tspan>  </text><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="466.00726"
+       y="2039.6177"
+       id="text1-2">     <tspan
+   x="466.00726"
+   y="2039.6177"
+   id="tspan2-9"
+   style="stroke-width:3.49395">       Natural    </tspan>     <tspan
+   x="466.00726"
+   y="2115.3201"
+   style="stroke-width:3.49395"
+   id="tspan5">       resources    </tspan>  </text><text
+       xml:space="preserve"
+       style="font-size:60.5619px;line-height:1.25;font-family:sans-serif;text-align:center;text-anchor:middle;stroke-width:3.49395"
+       x="3334.2295"
+       y="85.441772"
+       id="text1-2-9">     <tspan
+   x="3334.2295"
+   y="85.441772"
+   style="stroke-width:3.49395"
+   id="tspan5-3">       Landfill    </tspan>  </text><rect
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:none;stroke-width:5.348;stroke-linecap:round;stroke-miterlimit:0;stroke-dasharray:none"
+       id="landfilled-phones"
+       width="109.63789"
+       height="109.63789"
+       x="3487.0193"
+       y="176.49025" /><rect
+       style="fill:none;fill-opacity:0.983437;fill-rule:evenodd;stroke:none;stroke-width:5.348;stroke-linecap:round;stroke-miterlimit:0;stroke-dasharray:none"
+       id="natural-resources"
+       width="109.63789"
+       height="109.63789"
+       x="123"
+       y="1824" /></g></svg>

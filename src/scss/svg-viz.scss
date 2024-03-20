@@ -24,7 +24,7 @@ svg.model-visualization {
   #natural-resources,
   #landfilled-phones {
     stroke: none;
-    fill: gray;
+    fill: none;
   }
 
   .flow {
@@ -64,7 +64,7 @@ svg.model-visualization {
   }
 
   .label {
-    font-size: 14px;
+    font-size: 48px;
     font-family: sans-serif;
     text-align: center;
     text-anchor: middle;
