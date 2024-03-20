@@ -2,6 +2,14 @@ $schema: http://json-schema.org/draft-07/schema#
 title: Config
 type: object
 properties:
+  general:
+    type: object
+    properties:
+      backgroundImage:
+        type: string
+    required:
+      - backgroundImage
+    additionalProperties: false
   parameterTransforms:
     type: array
     items:
@@ -29,6 +37,7 @@ properties:
       - maxStepSize
     additionalProperties: false
 required:
+  - general
   - parameterTransforms
   - model
   - simulation

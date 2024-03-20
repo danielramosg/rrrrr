@@ -2,6 +2,7 @@ import { DeepReadonly } from 'ts-essentials';
 
 const CONFIG_BASE_URL = new URL('./config/', window.location.href);
 const CONFIG_FILENAMES = [
+  'general.yaml',
   'model.yaml',
   'simulation.yaml',
   'parameter-transforms.yaml',

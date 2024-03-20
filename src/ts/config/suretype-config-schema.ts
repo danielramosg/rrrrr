@@ -33,6 +33,10 @@ const ConfigSchema = suretype(
   { name: CONFIG_SCHEMA_NAME },
   v
     .object({
+      general: v
+        .object({ backgroundImage: v.string().required() })
+        .additional(false)
+        .required(),
       parameterTransforms: ParameterTransformsSchema.required(),
       model: v
         .object({

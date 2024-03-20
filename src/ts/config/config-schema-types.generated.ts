@@ -52,6 +52,9 @@ export interface InitialStocks {
 }
 
 export interface Config {
+  general: {
+    backgroundImage: string;
+  };
   parameterTransforms: ParameterTransform[];
   model: {
     initialParameters: InitialParameters;
