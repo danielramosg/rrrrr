@@ -3,10 +3,9 @@
 :root {
   --app-width: 1920;
   --app-height: 1080;
-  --viz-panel-height: var(--app-height);
   --svg-width: 3840;
   --svg-height: 2160;
-  --svg-scale-factor: calc(var(--viz-panel-height) / var(--svg-height));
+  --svg-scale-factor: calc(var(--app-height) / var(--svg-height));
 }
 
 html,
@@ -48,8 +47,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: auto;
-    height: calc(1px * var(--viz-panel-height));
+    width: 100%;
+    height: 100%;
 
     & > #model-viz-container {
       width: calc(1px * var(--svg-width));
@@ -57,14 +56,20 @@ body {
       transform-origin: top left;
     }
 
-    & > #indices {
-      position: absolute;
-      width: calc(1px * var(--svg-scale-factor) * var(--svg-width));
-      bottom: 0;
-      left: 0;
+    & > .score {
       font-size: xx-large;
-      padding: 1ex;
-      text-align: center;
+      position: absolute;
+      padding: 0.5ex;
+    }
+
+    & > #circularity-index-container {
+      top: 0;
+      left: 0;
+    }
+
+    & > #user-satisfaction-container {
+      bottom: 0;
+      right: 0;
     }
   }
 
