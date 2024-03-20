@@ -249,9 +249,9 @@ class ControlPanel {
       ),
     );
 
-    config.parameterTransformsGroups
-      .flatMap(({ transforms }) => transforms)
-      .forEach(({ id, script }) => this.parameterTransforms.create(id, script));
+    config.parameterTransforms.forEach(({ id, script }) =>
+      this.parameterTransforms.create(id, script),
+    );
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     importButton.addEventListener('click', async () => {
