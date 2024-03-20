@@ -60,7 +60,7 @@ const SLOT_DEFINITIONS = [
   { id: 'recycle-3', x: 458, y: 105.4 },
   { id: 'event', x: 1033.4, y: 77.4 },
 ];
-const SLOT_CIRCLE_DIAMETER = 0.97 * MARKER_CIRCLE_DIAMETER;
+const SLOT_CIRCLE_DIAMETER = MARKER_CIRCLE_DIAMETER;
 
 const SLOTS: CircularSlot[] = SLOT_DEFINITIONS.map(({ id, x, y }) => ({
   id,
