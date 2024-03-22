@@ -3,7 +3,7 @@ import { strict as assert } from 'assert';
 
 import './side-effects';
 
-import { loadConfig } from './config/config-loader';
+import { ConfigLoader } from './config/config-loader';
 import { Parameters, Record } from './circular-economy-model';
 import { documentReady } from './util/document-ready';
 import { ScaleToFitParent } from './util/scale-to-fit';
@@ -41,7 +41,7 @@ function configureHotkeys(game: Game) {
 }
 
 async function init(): Promise<CircularEconomyApi> {
-  const config = await loadConfig(...CONFIG_URLS);
+  const config = await ConfigLoader.load(...CONFIG_URLS);
   console.log(config);
 
   const rootStyle = document.documentElement.style;
