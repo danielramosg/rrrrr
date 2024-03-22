@@ -1,8 +1,8 @@
 @import 'bootstrap/scss/bootstrap';
 
 :root {
-  --app-width: 1920;
-  --app-height: 1080;
+  --app-width: 3840; // overwritten by JS
+  --app-height: 2160; // overwritten by JS
   --svg-width: 3840;
   --svg-height: 2160;
   --svg-scale-factor: calc(var(--app-height) / var(--svg-height));
@@ -57,7 +57,7 @@ body {
     }
 
     & > .score {
-      font-size: xx-large;
+      font-size: 64px;
       position: absolute;
       padding: 0.5ex;
     }
@@ -74,14 +74,17 @@ body {
   }
 
   & > #control-panel {
+    // this node is designed for 1920x1080 and than scaled up 2x
     position: absolute;
     top: 0;
     right: 0;
-    width: calc(1px * var(--app-width) / 2);
-    height: 100%;
+    width: calc(1px * var(--app-width) / 4);
+    height: 50%;
     box-sizing: border-box;
     border-left: solid 1px;
     background-color: white;
+    transform-origin: top right;
+    transform: scale(2);
 
     & nav {
       padding-top: 1ex;

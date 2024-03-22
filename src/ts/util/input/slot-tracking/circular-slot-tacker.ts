@@ -7,6 +7,7 @@ import type {
 } from '../marker-tracking/marker-observables';
 import { SlotIdAndMarkerId, SlotObservables } from './slot-observables';
 import { Circle } from '../../geometry/circle';
+import { BOARD_HEIGHT, BOARD_WIDTH } from '../../../builtin-config';
 
 export type CircularSlot = { id: string; activeShape: Circle };
 
@@ -55,8 +56,8 @@ export class CircularSlotTracker implements SlotObservables {
         thisMarkerMove$.subscribe({
           next: (movedMarker) => {
             const localMarkerCoords = {
-              x: 1920 * movedMarker.x,
-              y: 1080 * movedMarker.y,
+              x: BOARD_WIDTH * movedMarker.x,
+              y: BOARD_HEIGHT * movedMarker.y,
             }; // FIXME: depends on game board size
             const contained = slot.activeShape.containsPoint(localMarkerCoords);
             const registered = markersForSlot.has(markerId);

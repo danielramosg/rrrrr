@@ -25,6 +25,8 @@ import {
   CircularSlotTracker,
 } from './util/input/slot-tracking/circular-slot-tacker';
 import {
+  BOARD_HEIGHT,
+  BOARD_WIDTH,
   MARKER_CIRCLE_DIAMETER,
   POINTER_MARKER_COORDINATES,
   SLOT_CIRCLE_DIAMETER,
@@ -115,8 +117,8 @@ function setupUi(
     thisMarkerMove$.subscribe({
       next: (movedMarker) => {
         const { x, y } = movedMarker;
-        element.style.left = `${1920 * x}px`; // FIXME: depends on game board size
-        element.style.top = `${1080 * y}px`; // FIXME: depends on game board size
+        element.style.left = `${BOARD_WIDTH * x}px`;
+        element.style.top = `${BOARD_HEIGHT * y}px`;
       },
       complete: () => {
         element.remove();

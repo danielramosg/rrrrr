@@ -12,7 +12,7 @@ import { Game } from './game';
 import { Scores } from './scores';
 import { ControlPanel } from './control-panel';
 import { setupMarkerPanel } from './marker';
-import { SLOT_DEFINITIONS } from './builtin-config';
+import { BOARD_WIDTH, BOARD_HEIGHT, SLOT_DEFINITIONS } from './builtin-config';
 
 type CircularEconomyApi = {
   game: Game;
@@ -39,14 +39,18 @@ async function init(): Promise<CircularEconomyApi> {
   const config = await loadConfig();
   console.log(config);
 
+  const rootStyle = document.documentElement.style;
+  rootStyle.setProperty('--app-width', `${BOARD_WIDTH}`);
+  rootStyle.setProperty('--app-height', `${BOARD_HEIGHT}`);
+
   const fixedSizeContainer = guardedQuerySelector(
     HTMLDivElement,
     '#fixed-size-container',
   );
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const scaleToFitParent = new ScaleToFitParent(fixedSizeContainer, {
-    width: 1920,
-    height: 1080,
+    width: BOARD_WIDTH,
+    height: BOARD_HEIGHT,
   });
 
   const modelVisualizationContainer = guardedQuerySelector(
