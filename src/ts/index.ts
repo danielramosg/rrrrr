@@ -12,7 +12,12 @@ import { Game } from './game';
 import { Scores } from './scores';
 import { ControlPanel } from './control-panel';
 import { setupMarkerPanel } from './marker';
-import { BOARD_WIDTH, BOARD_HEIGHT, SLOT_DEFINITIONS } from './builtin-config';
+import {
+  BOARD_WIDTH,
+  BOARD_HEIGHT,
+  SLOT_DEFINITIONS,
+  CONFIG_URLS,
+} from './builtin-config';
 
 type CircularEconomyApi = {
   game: Game;
@@ -36,7 +41,7 @@ function configureHotkeys(game: Game) {
 }
 
 async function init(): Promise<CircularEconomyApi> {
-  const config = await loadConfig();
+  const config = await loadConfig(...CONFIG_URLS);
   console.log(config);
 
   const rootStyle = document.documentElement.style;
