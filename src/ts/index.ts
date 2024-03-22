@@ -3,7 +3,7 @@ import { strict as assert } from 'assert';
 
 import './side-effects';
 
-import { loadConfig } from './config';
+import { loadConfig } from './config/config-loader';
 import { Parameters, Record } from './circular-economy-model';
 import { documentReady } from './util/document-ready';
 import { ScaleToFitParent } from './util/scale-to-fit';

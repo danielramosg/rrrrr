@@ -1,2 +1,3 @@
-deltaPerSecond: 0.005
-maxStepSize: 0.0002
+simulation:
+  deltaPerSecond: 0.005
+  maxStepSize: 0.0002
