@@ -35,15 +35,15 @@ export type ReadOnlyConfig = DeepReadonly<Config>;
 
 export async function loadConfig(): Promise<ReadOnlyConfig> {
   const modelConfig = (await loadConfigFile(
-    new URL('model.yaml', configBaseUrl),
+    new URL('00-model.yaml', configBaseUrl),
   )) as GameConfig['model']; // FIXME: Validate instead of casting
 
   const simulationConfig = (await loadConfigFile(
-    new URL('simulation.yaml', configBaseUrl),
+    new URL('10-simulation.yaml', configBaseUrl),
   )) as GameConfig['simulation']; // FIXME: Validate instead of casting
 
   const parameterTransformsGroups = (await loadConfigFile(
-    new URL('parameter-transforms.yaml', configBaseUrl),
+    new URL('20-parameter-transforms.yaml', configBaseUrl),
   )) as ParameterTransformsConfig; // FIXME: Validate instead of casting
 
   return {
