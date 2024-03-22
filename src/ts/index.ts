@@ -41,7 +41,14 @@ function configureHotkeys(game: Game) {
 }
 
 async function init(): Promise<CircularEconomyApi> {
-  const config = await ConfigLoader.load(...CONFIG_URLS);
+  const configLoaderResult = await ConfigLoader.safeLoad(...CONFIG_URLS);
+  if (!configLoaderResult.success) {
+    const { config, issues } = configLoaderResult.error;
+    console.error('Invalid configuration:', config);
+    console.error('Issues:', ...issues);
+    throw new Error('Error loading configuration. See console for details.');
+  }
+  const config = configLoaderResult.data;
   console.log(config);
 
   const rootStyle = document.documentElement.style;

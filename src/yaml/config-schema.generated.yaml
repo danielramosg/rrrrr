@@ -1,0 +1,156 @@
+$schema: http://json-schema.org/draft-07/schema#
+title: Config
+type: object
+properties:
+  parameterTransforms:
+    type: array
+    items:
+      $ref: '#/definitions/ParameterTransform'
+  model:
+    type: object
+    properties:
+      initialParameters:
+        $ref: '#/definitions/InitialParameters'
+      initialStocks:
+        $ref: '#/definitions/InitialStocks'
+    required:
+      - initialParameters
+      - initialStocks
+    additionalProperties: false
+  simulation:
+    type: object
+    properties:
+      deltaPerSecond:
+        type: number
+      maxStepSize:
+        type: number
+    required:
+      - deltaPerSecond
+      - maxStepSize
+    additionalProperties: false
+required:
+  - parameterTransforms
+  - model
+  - simulation
+additionalProperties: false
+definitions:
+  ParameterTransform:
+    type: object
+    properties:
+      id:
+        type: string
+      script:
+        type: string
+    required:
+      - id
+      - script
+    additionalProperties: false
+  InitialParameters:
+    type: object
+    properties:
+      abandonExcessRate:
+        type: number
+      abandonRate:
+        type: number
+      acquireRate:
+        type: number
+      breakRate:
+        type: number
+      capacityAdjustmentRate:
+        type: number
+      disposeIncentive:
+        type: number
+      disposeRate:
+        type: number
+      landfillIncentive:
+        type: number
+      landfillRate:
+        type: number
+      naturalResourcesIncentive:
+        type: number
+      newPhoneProductionRate:
+        type: number
+      newlyProducedPhoneIncentive:
+        type: number
+      numberOfUsers:
+        type: number
+      phonesPerUserGoal:
+        type: number
+      recycleRate:
+        type: number
+      recyclingIncentive:
+        type: number
+      refurbishmentIncentive:
+        type: number
+      refurbishmentRate:
+        type: number
+      repairIncentive:
+        type: number
+      repairRate:
+        type: number
+      reuseIncentive:
+        type: number
+    required:
+      - abandonExcessRate
+      - abandonRate
+      - acquireRate
+      - breakRate
+      - capacityAdjustmentRate
+      - disposeIncentive
+      - disposeRate
+      - landfillIncentive
+      - landfillRate
+      - naturalResourcesIncentive
+      - newPhoneProductionRate
+      - newlyProducedPhoneIncentive
+      - numberOfUsers
+      - phonesPerUserGoal
+      - recycleRate
+      - recyclingIncentive
+      - refurbishmentIncentive
+      - refurbishmentRate
+      - repairIncentive
+      - repairRate
+      - reuseIncentive
+    additionalProperties: false
+  InitialStocks:
+    type: object
+    properties:
+      capacityOfNewlyProducedPhones:
+        type: number
+      capacityOfRecycledMaterials:
+        type: number
+      capacityOfRefurbishedPhones:
+        type: number
+      capacityOfRepairedPhones:
+        type: number
+      phonesInUse:
+        type: number
+      supplyOfBrokenPhones:
+        type: number
+      supplyOfDisposedPhones:
+        type: number
+      supplyOfHibernatingPhones:
+        type: number
+      supplyOfNewlyProducedPhones:
+        type: number
+      supplyOfRecycledMaterials:
+        type: number
+      supplyOfRefurbishedPhones:
+        type: number
+      supplyOfRepairedPhones:
+        type: number
+    required:
+      - capacityOfNewlyProducedPhones
+      - capacityOfRecycledMaterials
+      - capacityOfRefurbishedPhones
+      - capacityOfRepairedPhones
+      - phonesInUse
+      - supplyOfBrokenPhones
+      - supplyOfDisposedPhones
+      - supplyOfHibernatingPhones
+      - supplyOfNewlyProducedPhones
+      - supplyOfRecycledMaterials
+      - supplyOfRefurbishedPhones
+      - supplyOfRepairedPhones
+    additionalProperties: false

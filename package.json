@@ -60,6 +60,9 @@
     "stylelint-config-standard-scss": "^13.0.0",
     "tsx": "^4.7.1"
   },
+  "@parcel/resolver-default": {
+    "packageExports": true
+  },
   "@parcel/bundler-default": {
     "manualSharedBundles": [
       {
@@ -106,6 +109,7 @@
     "@types/node": "^20.11.24",
     "@types/sortablejs": "^1.15.8",
     "@types/ws": "^8.5.10",
+    "@typeschema/suretype": "^0.1.0",
     "assert": "^2.1.0",
     "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
@@ -123,7 +127,9 @@
     "rxjs": "^7.8.1",
     "sortablejs": "^1.15.2",
     "stream-browserify": "^3.0.0",
+    "suretype": "^3.3.1",
     "ts-essentials": "^9.4.1",
+    "typeconv": "^2.3.1",
     "typed-emitter": "^2.1.0",
     "ws": "^8.16.0"
   }

@@ -1,19 +1,19 @@
-import type { DeepReadonly } from 'ts-essentials';
-import { CircularEconomyModel } from '../circular-economy-model';
+import { wrap } from '@typeschema/suretype';
+import type { ElementOf, StrictExclude, DeepReadonly } from 'ts-essentials';
 
-export type ParameterTransformConfig = { id: string; script: string };
-export type ParameterTransformsConfig = ParameterTransformConfig[];
+import { SuretypeConfigSchema } from './suretype-config-schema';
+import { type Config } from './config-schema-types.generated';
 
-type Config = {
-  parameterTransforms: ParameterTransformsConfig;
-  model: {
-    initialParameters: typeof CircularEconomyModel.defaultParameters;
-    initialStocks: typeof CircularEconomyModel.initialStocks;
-  };
-  simulation: {
-    deltaPerSecond: number;
-    maxStepSize: number;
-  };
-};
+const ConfigSchema = wrap(SuretypeConfigSchema);
 
-export type ReadOnlyConfig = DeepReadonly<Config>;
+type ReadonlyConfig = DeepReadonly<Config>;
+
+type ValidationResult = Awaited<ReturnType<typeof ConfigSchema.validate>>;
+type ValidationIssue = ElementOf<
+  StrictExclude<ValidationResult, { data: unknown }>['issues']
+>;
+
+export { ReadonlyConfig, ValidationIssue };
+export { ConfigSchema };
+
+export * from './config-schema-types.generated';
