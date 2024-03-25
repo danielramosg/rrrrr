@@ -7,11 +7,18 @@ import {
 import { extractJsonSchema } from 'suretype';
 import yaml from 'js-yaml';
 import { writeFileSync } from 'node:fs';
+// The following import is not part of the final distribution and is only used during development.
+// eslint-disable-next-line import/no-extraneous-dependencies
+import * as prettier from 'prettier';
 
 import {
   SuretypeConfigSchema,
   CONFIG_SCHEMA_NAME,
 } from '../src/ts/config/suretype-config-schema';
+
+const CONFIG_SCHEMA_TYPESCRIPT_FILENAME =
+  'src/ts/config/config-schema-types.generated.ts';
+const CONFIG_SCHEMA_YAML_FILENAME = 'src/yaml/config-schema.generated.yaml';
 
 async function main() {
   const jsonSchemeReader = getJsonSchemaReader();
@@ -36,10 +43,15 @@ async function main() {
     await jsonSchemaToTypeScriptConverter.convert({
       data: inputJsonSchemaString,
     });
-  writeFileSync(
-    'src/ts/config/config-schema-types.generated.ts',
+  const prettierTypeScriptOptions =
+    (await prettier.resolveConfig(CONFIG_SCHEMA_TYPESCRIPT_FILENAME)) ??
+    undefined;
+
+  const formattedTypeScriptString = await prettier.format(
     outputTypeScriptString,
+    { parser: 'typescript', ...prettierTypeScriptOptions },
   );
+  writeFileSync(CONFIG_SCHEMA_TYPESCRIPT_FILENAME, formattedTypeScriptString);
 
   // generate and export JSON schema, but use YAML syntax
   const { definitions: jsonSchemaDefinitions } = inputJsonSchema;
@@ -65,10 +77,15 @@ async function main() {
   };
 
   const outputJsonSchemaString = yaml.dump(outputJsonSchema);
-  writeFileSync(
-    'src/yaml/config-schema.generated.yaml',
+
+  const prettierYamlOptions =
+    (await prettier.resolveConfig(CONFIG_SCHEMA_YAML_FILENAME)) ?? undefined;
+  const formattedJsonSchemaString = await prettier.format(
     outputJsonSchemaString,
+    { parser: 'yaml', ...prettierYamlOptions },
   );
+
+  writeFileSync(CONFIG_SCHEMA_YAML_FILENAME, formattedJsonSchemaString);
 }
 
 void main();
