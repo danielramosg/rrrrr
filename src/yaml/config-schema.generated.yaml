@@ -10,10 +10,6 @@ properties:
     required:
       - backgroundImage
     additionalProperties: false
-  parameterTransforms:
-    type: array
-    items:
-      $ref: '#/definitions/ParameterTransform'
   model:
     type: object
     properties:
@@ -36,24 +32,34 @@ properties:
       - deltaPerSecond
       - maxStepSize
     additionalProperties: false
-required:
-  - general
-  - parameterTransforms
-  - model
-  - simulation
-additionalProperties: false
-definitions:
-  ParameterTransform:
+  parameterTransforms:
+    type: array
+    items:
+      $ref: '#/definitions/ParameterTransform'
+  interaction:
     type: object
     properties:
-      id:
-        type: string
-      script:
-        type: string
+      slotActivationDelay:
+        type: number
+      slotDeactivationDelay:
+        type: number
+      slotGroups:
+        type: array
+        items:
+          $ref: '#/definitions/SlotGroup'
     required:
-      - id
-      - script
+      - slotActivationDelay
+      - slotDeactivationDelay
+      - slotGroups
     additionalProperties: false
+required:
+  - general
+  - model
+  - simulation
+  - parameterTransforms
+  - interaction
+additionalProperties: false
+definitions:
   InitialParameters:
     type: object
     properties:
@@ -163,3 +169,175 @@ definitions:
       - supplyOfRefurbishedPhones
       - supplyOfRepairedPhones
     additionalProperties: false
+  ParameterTransform:
+    type: object
+    properties:
+      id:
+        type: string
+      script:
+        type: string
+    required:
+      - id
+      - script
+    additionalProperties: false
+  BasicSlot:
+    type: object
+    properties:
+      id:
+        type: string
+      x:
+        type: number
+      'y':
+        type: number
+      angle:
+        type: number
+        default: 0
+    required:
+      - id
+      - x
+      - 'y'
+    additionalProperties: false
+  BasicSlotGroup:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+          - basic
+      slots:
+        type: array
+        items:
+          $ref: '#/definitions/BasicSlot'
+      parameterTransformIds:
+        type: array
+        items:
+          type: string
+    required:
+      - id
+      - type
+      - slots
+      - parameterTransformIds
+    additionalProperties: false
+  SlotWithCard:
+    type: object
+    properties:
+      id:
+        type: string
+      x:
+        type: number
+      'y':
+        type: number
+      angle:
+        type: number
+        default: 0
+      card:
+        type: object
+        properties:
+          x:
+            type: number
+          'y':
+            type: number
+          angle:
+            type: number
+            default: 0
+        required:
+          - x
+          - 'y'
+        additionalProperties: false
+    required:
+      - id
+      - x
+      - 'y'
+      - card
+    additionalProperties: false
+  I18NString:
+    type: object
+    additionalProperties:
+      type: string
+  ActionCard:
+    type: object
+    properties:
+      id:
+        type: string
+      url:
+        type: string
+      title:
+        $ref: '#/definitions/I18NString'
+      description:
+        $ref: '#/definitions/I18NString'
+    required:
+      - id
+      - url
+      - title
+      - description
+    additionalProperties: false
+  ActionCardSlotGroup:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+          - action-card
+      slots:
+        type: array
+        items:
+          $ref: '#/definitions/SlotWithCard'
+      cards:
+        type: array
+        items:
+          $ref: '#/definitions/ActionCard'
+    required:
+      - id
+      - type
+      - slots
+      - cards
+    additionalProperties: false
+  EventCard:
+    type: object
+    properties:
+      id:
+        type: string
+      url:
+        type: string
+      title:
+        $ref: '#/definitions/I18NString'
+      description:
+        $ref: '#/definitions/I18NString'
+    required:
+      - id
+      - url
+      - title
+      - description
+    additionalProperties: false
+  EventCardSlotGroup:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+        enum:
+          - event-card
+      slots:
+        type: array
+        items:
+          $ref: '#/definitions/SlotWithCard'
+      cards:
+        type: array
+        items:
+          $ref: '#/definitions/EventCard'
+    required:
+      - id
+      - type
+      - slots
+      - cards
+    additionalProperties: false
+  SlotGroup:
+    anyOf:
+      - $ref: '#/definitions/BasicSlotGroup'
+      - $ref: '#/definitions/ActionCardSlotGroup'
+      - $ref: '#/definitions/EventCardSlotGroup'

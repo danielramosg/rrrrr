@@ -7,11 +7,6 @@
  *  - {@link https://github.com/grantila/typeconv}
  */
 
-export interface ParameterTransform {
-  id: string;
-  script: string;
-}
-
 export interface InitialParameters {
   abandonExcessRate: number;
   abandonRate: number;
@@ -51,11 +46,78 @@ export interface InitialStocks {
   supplyOfRepairedPhones: number;
 }
 
+export interface ParameterTransform {
+  id: string;
+  script: string;
+}
+
+export interface BasicSlot {
+  id: string;
+  x: number;
+  y: number;
+  angle?: number;
+}
+
+export interface BasicSlotGroup {
+  id: string;
+  type: 'basic';
+  slots: BasicSlot[];
+  parameterTransformIds: string[];
+}
+
+export interface SlotWithCard {
+  id: string;
+  x: number;
+  y: number;
+  angle?: number;
+  card: {
+    x: number;
+    y: number;
+    angle?: number;
+  };
+}
+
+export interface I18NString {
+  [key: string]: string;
+}
+
+export interface ActionCard {
+  id: string;
+  url: string;
+  title: I18NString;
+  description: I18NString;
+}
+
+export interface ActionCardSlotGroup {
+  id: string;
+  type: 'action-card';
+  slots: SlotWithCard[];
+  cards: ActionCard[];
+}
+
+export interface EventCard {
+  id: string;
+  url: string;
+  title: I18NString;
+  description: I18NString;
+}
+
+export interface EventCardSlotGroup {
+  id: string;
+  type: 'event-card';
+  slots: SlotWithCard[];
+  cards: EventCard[];
+}
+
+export type SlotGroup =
+  | BasicSlotGroup
+  | ActionCardSlotGroup
+  | EventCardSlotGroup;
+
 export interface Config {
   general: {
     backgroundImage: string;
   };
-  parameterTransforms: ParameterTransform[];
   model: {
     initialParameters: InitialParameters;
     initialStocks: InitialStocks;
@@ -63,5 +125,11 @@ export interface Config {
   simulation: {
     deltaPerSecond: number;
     maxStepSize: number;
+  };
+  parameterTransforms: ParameterTransform[];
+  interaction: {
+    slotActivationDelay: number;
+    slotDeactivationDelay: number;
+    slotGroups: SlotGroup[];
   };
 }
