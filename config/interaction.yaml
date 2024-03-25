@@ -1,0 +1,172 @@
+interaction:
+  slotActivationDelay: 1
+  slotDeactivationDelay: 1
+  slotGroups:
+    - id: technology
+      type: action-card
+      slots:
+        - {
+            id: technology-1,
+            x: 0,
+            y: 0,
+            angle: 0,
+            card: { x: 0, y: 0, angle: 0 },
+          }
+        - {
+            id: technology-2,
+            x: 0,
+            y: 0,
+            angle: 0,
+            card: { x: 0, y: 0, angle: 0 },
+          }
+        - {
+            id: technology-3,
+            x: 0,
+            y: 0,
+            angle: 0,
+            card: { x: 0, y: 0, angle: 0 },
+          }
+      cards:
+        - id: technology-card-1
+          url: technology-card-1.png
+          title:
+            en: 'T-Tech-en-1'
+            de: 'T-Tech-de-1'
+          description:
+            en: 'D-Tech-en-1'
+            de: 'D-Tech-de-1'
+        - id: technology-card-2
+          url: technology-card-2.png
+          title:
+            en: 'T-Tech-en-2'
+            de: 'T-Tech-de-2'
+          description:
+            en: 'D-Tech-en-2'
+            de: 'D-Tech-de-2'
+        - id: technology-card-3
+          url: technology-card-3.png
+          title:
+            en: 'T-Tech-en-3'
+            de: 'T-Tech-de-3'
+          description:
+            en: 'D-Tech-en-3'
+            de: 'D-Tech-de-3'
+        - id: technology-card-4
+          url: technology-card-4.png
+          title:
+            en: 'T-Tech-en-4'
+            de: 'T-Tech-de-4'
+          description:
+            en: 'D-Tech-en-4'
+            de: 'D-Tech-de-4'
+    - id: policy
+      type: action-card
+      slots:
+        - { id: policy-1, x: 0, y: 0, angle: 0, card: { x: 0, y: 0, angle: 0 } }
+        - { id: policy-2, x: 0, y: 0, angle: 0, card: { x: 0, y: 0, angle: 0 } }
+        - { id: policy-3, x: 0, y: 0, angle: 0, card: { x: 0, y: 0, angle: 0 } }
+      cards:
+        - id: policy-card-1
+          url: policy-card-1.png
+          title:
+            en: 'T-Pol-en-1'
+            de: 'T-Pol-de-1'
+          description:
+            en: 'D-Pol-en-1'
+            de: 'D-Pol-de-1'
+        - id: policy-card-2
+          url: policy-card-2.png
+          title:
+            en: 'T-Pol-en-2'
+            de: 'T-Pol-de-2'
+          description:
+            en: 'D-Pol-en-2'
+            de: 'D-Pol-de-2'
+        - id: policy-card-3
+          url: policy-card-3.png
+          title:
+            en: 'T-Pol-en-3'
+            de: 'T-Pol-de-3'
+          description:
+            en: 'D-Pol-en-3'
+            de: 'D-Pol-de-3'
+        - id: policy-card-4
+          url: policy-card-4.png
+          title:
+            en: 'T-Pol-en-4'
+            de: 'T-Pol-de-4'
+          description:
+            en: 'D-Pol-en-4'
+            de: 'D-Pol-de-4'
+    - id: event
+      type: event-card
+      slots:
+        - { id: event, x: 0, y: 0, angle: 0, card: { x: 0, y: 0, angle: 0 } }
+      cards:
+        - id: event-card-1
+          url: event-card-1.png
+          title:
+            en: 'T-Ev-en-1'
+            de: 'T-Ev-de-1'
+          description:
+            en: 'D-Ev-en-1'
+            de: 'D-Ev-de-1'
+        - id: event-card-2
+          url: event-card-2.png
+          title:
+            en: 'T-Ev-en-2'
+            de: 'T-Ev-de-2'
+          description:
+            en: 'D-Ev-en-2'
+            de: 'D-Ev-de-2'
+        - id: event-card-3
+          url: event-card-3.png
+          title:
+            en: 'T-Ev-en-3'
+            de: 'T-Ev-de-3'
+          description:
+            en: 'D-Ev-en-3'
+            de: 'D-Ev-de-3'
+        - id: event-card-4
+          url: event-card-4.png
+          title:
+            en: 'T-Ev-en-4'
+            de: 'T-Ev-de-4'
+          description:
+            en: 'D-Ev-en-4'
+            de: 'D-Ev-de-4'
+    - id: reduce
+      type: basic
+      slots:
+        - { id: reduce-1, x: 0, y: 0, angle: 0 }
+        - { id: reduce-2, x: 0, y: 0, angle: 0 }
+        - { id: reduce-3, x: 0, y: 0, angle: 0 }
+      parameterTransformIds: [reduce, reduce, reduce]
+    - id: reuse
+      type: basic
+      slots:
+        - { id: reuse-1, x: 0, y: 0, angle: 0 }
+        - { id: reuse-2, x: 0, y: 0, angle: 0 }
+        - { id: reuse-3, x: 0, y: 0, angle: 0 }
+      parameterTransformIds: [reuse, reuse, reuse]
+    - id: repair
+      type: basic
+      slots:
+        - { id: repair-1, x: 0, y: 0, angle: 0 }
+        - { id: repair-2, x: 0, y: 0, angle: 0 }
+        - { id: repair-3, x: 0, y: 0, angle: 0 }
+      parameterTransformIds: [repair, repair, repair]
+    - id: refurbish
+      type: basic
+      slots:
+        - { id: refurbish-1, x: 0, y: 0, angle: 0 }
+        - { id: refurbish-2, x: 0, y: 0, angle: 0 }
+        - { id: refurbish-3, x: 0, y: 0, angle: 0 }
+      parameterTransformIds: [refurbish, refurbish, refurbish]
+    - id: recycle
+      type: basic
+      slots:
+        - { id: recycle-1, x: 0, y: 0, angle: 0 }
+        - { id: recycle-2, x: 0, y: 0, angle: 0 }
+        - { id: recycle-3, x: 0, y: 0, angle: 0 }
+      parameterTransformIds: [recycle, recycle, recycle]
