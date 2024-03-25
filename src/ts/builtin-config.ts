@@ -7,6 +7,7 @@ const CONFIG_FILENAMES = [
   'simulation.yaml',
   'parameter-transforms.yaml',
   'interaction.yaml',
+  'triggers.yaml',
 ] as const;
 
 const CONFIG_URLS = CONFIG_FILENAMES.map(

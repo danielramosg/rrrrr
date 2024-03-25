@@ -114,6 +114,16 @@ export type SlotGroup =
   | ActionCardSlotGroup
   | EventCardSlotGroup;
 
+export interface TriggerCondition {
+  condition: string;
+  url: string;
+}
+
+export interface Trigger {
+  id: string;
+  events: TriggerCondition[];
+}
+
 export interface Config {
   general: {
     backgroundImage: string;
@@ -132,4 +142,5 @@ export interface Config {
     slotDeactivationDelay: number;
     slotGroups: SlotGroup[];
   };
+  triggers: Trigger[];
 }

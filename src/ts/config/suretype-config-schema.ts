@@ -122,6 +122,28 @@ const SlotGroupSchema = suretype(
   ]),
 );
 
+const TriggerCondition = suretype(
+  { name: 'TriggerCondition' },
+  v
+    .object({
+      condition: v.string().required(),
+      url: v.string().required(),
+    })
+    .additional(false)
+    .required(),
+);
+
+const TriggerSchema = suretype(
+  { name: 'Trigger' },
+  v
+    .object({
+      id: v.string().required(),
+      events: v.array(TriggerCondition).required(),
+    })
+    .additional(false)
+    .required(),
+);
+
 const CONFIG_SCHEMA_NAME = 'Config';
 
 const ConfigSchema = suretype(
@@ -155,6 +177,7 @@ const ConfigSchema = suretype(
         })
         .additional(false)
         .required(),
+      triggers: v.array(TriggerSchema).required(),
     })
     .additional(false)
     .required(),

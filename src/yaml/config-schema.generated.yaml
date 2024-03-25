@@ -52,12 +52,17 @@ properties:
       - slotDeactivationDelay
       - slotGroups
     additionalProperties: false
+  triggers:
+    type: array
+    items:
+      $ref: '#/definitions/Trigger'
 required:
   - general
   - model
   - simulation
   - parameterTransforms
   - interaction
+  - triggers
 additionalProperties: false
 definitions:
   InitialParameters:
@@ -341,3 +346,27 @@ definitions:
       - $ref: '#/definitions/BasicSlotGroup'
       - $ref: '#/definitions/ActionCardSlotGroup'
       - $ref: '#/definitions/EventCardSlotGroup'
+  TriggerCondition:
+    type: object
+    properties:
+      condition:
+        type: string
+      url:
+        type: string
+    required:
+      - condition
+      - url
+    additionalProperties: false
+  Trigger:
+    type: object
+    properties:
+      id:
+        type: string
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/TriggerCondition'
+    required:
+      - id
+      - events
+    additionalProperties: false
