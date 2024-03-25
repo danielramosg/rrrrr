@@ -3,7 +3,7 @@ import { strict as assert } from 'assert';
 
 import './side-effects';
 
-import { loadConfig } from './config';
+import { ConfigLoader } from './config/config-loader';
 import { Parameters, Record } from './circular-economy-model';
 import { documentReady } from './util/document-ready';
 import { ScaleToFitParent } from './util/scale-to-fit';
@@ -12,7 +12,12 @@ import { Game } from './game';
 import { Scores } from './scores';
 import { ControlPanel } from './control-panel';
 import { setupMarkerPanel } from './marker';
-import { BOARD_WIDTH, BOARD_HEIGHT, SLOT_DEFINITIONS } from './builtin-config';
+import {
+  BOARD_WIDTH,
+  BOARD_HEIGHT,
+  SLOT_DEFINITIONS,
+  CONFIG_URLS,
+} from './builtin-config';
 
 type CircularEconomyApi = {
   game: Game;
@@ -36,7 +41,14 @@ function configureHotkeys(game: Game) {
 }
 
 async function init(): Promise<CircularEconomyApi> {
-  const config = await loadConfig();
+  const configLoaderResult = await ConfigLoader.safeLoad(...CONFIG_URLS);
+  if (!configLoaderResult.success) {
+    const { config, issues } = configLoaderResult.error;
+    console.error('Invalid configuration:', config);
+    console.error('Issues:', ...issues);
+    throw new Error('Error loading configuration. See console for details.');
+  }
+  const config = configLoaderResult.data;
   console.log(config);
 
   const rootStyle = document.documentElement.style;

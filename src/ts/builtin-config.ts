@@ -1,5 +1,16 @@
 import { DeepReadonly } from 'ts-essentials';
 
+const CONFIG_BASE_URL = new URL('./config/', window.location.href);
+const CONFIG_FILENAMES = [
+  '00-model.yaml',
+  '10-simulation.yaml',
+  '20-parameter-transforms.yaml',
+] as const;
+
+const CONFIG_URLS = CONFIG_FILENAMES.map(
+  (name) => new URL(name, CONFIG_BASE_URL),
+);
+
 const BOARD_WIDTH = 2 * 1920;
 const BOARD_HEIGHT = 2 * 1080;
 const BOARD_WIDTH_MM = 1209.6;
@@ -84,6 +95,9 @@ const TECHNOLOGY_ACTION_CARDS: DeepReadonly<ActionCard[]> = [];
 export type { Card, EventCard, ActionCard };
 
 export {
+  CONFIG_BASE_URL,
+  CONFIG_FILENAMES,
+  CONFIG_URLS,
   BOARD_WIDTH,
   BOARD_HEIGHT,
   BOARD_WIDTH_MM,
