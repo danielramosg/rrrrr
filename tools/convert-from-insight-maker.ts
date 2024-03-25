@@ -5,8 +5,6 @@ import { strict as assert } from 'assert';
 import lodash from 'lodash';
 import { Console } from 'node:console';
 
-// The following import is not part of the final distribution and is only used during development.
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { loadInsightMaker } from 'simulation';
 
 const logger = new Console(process.stderr);

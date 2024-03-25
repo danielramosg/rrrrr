@@ -7,8 +7,6 @@ import {
 import { extractJsonSchema } from 'suretype';
 import yaml from 'js-yaml';
 import { writeFileSync } from 'node:fs';
-// The following import is not part of the final distribution and is only used during development.
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as prettier from 'prettier';
 
 import {

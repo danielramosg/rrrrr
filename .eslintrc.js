@@ -46,5 +46,16 @@ module.exports = {
         'import/prefer-default-export': 'off',
       },
     },
+    {
+      files: ['tools/**/*.ts'],
+      rules: {
+        'import/no-extraneous-dependencies': [
+          'error',
+          {
+            devDependencies: true,
+          },
+        ],
+      },
+    },
   ],
 };
