@@ -93,6 +93,8 @@
     "fix": "npm-run-all -s -c fix:**",
     "fix:scripts": "eslint --fix src",
     "fix:styles": "stylelint --fix 'src/{**/*,*}.{css,scss}'",
+    "generate": "npm-run-all -s -c generate:**",
+    "generate:config-schema": "tsx ./tools/generate-config-types-and-schema.ts",
     "check-updates": "npm-check-updates",
     "convert-insightmaker-model": "tsx ./tools/convert-from-insight-maker.ts < src/insight-maker/CircularEconomyOfSmartPhones.InsightMaker > ./src/ts/circular-economy-model.ts; prettier --write ./src/ts/circular-economy-model.ts",
     "udp-websocket-bridge": "npm run udp-websocket-bridge:node",
