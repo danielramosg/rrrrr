@@ -33,7 +33,12 @@ const SLOT_DEFINITIONS_RW = [
     y: 1318.22,
     transformId: 'Triple Diamantglas (T)',
   },
-  { id: 'manufacturer-2', x: 94.35, y: 532.9, transformId: 'Sim Card 4.0 (T)' },
+  {
+    id: 'manufacturer-2',
+    x: 188.7,
+    y: 1064.51,
+    transformId: 'Sim Card 4.0 (T)',
+  },
   {
     id: 'manufacturer-3',
     x: 188.7,
