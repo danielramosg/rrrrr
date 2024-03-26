@@ -14,8 +14,8 @@ type ConvertTupleItemType<T extends readonly unknown[], V> = [
 ];
 
 type SafeResult<SuccessType, ErrorType> =
-  | { success: true; data: SuccessType }
-  | { success: false; error: ErrorType };
+  | { ok: true; data: SuccessType }
+  | { ok: false; error: ErrorType };
 
 type Callable<T> = T extends (...args: infer A) => infer R
   ? (...args: A) => R
@@ -26,9 +26,9 @@ function makeSafe<T extends Array<unknown>, U>(
 ): (...args: T) => SafeResult<U, unknown> {
   return (...args): SafeResult<U, unknown> => {
     try {
-      return { success: true, data: f(...args) };
+      return { ok: true, data: f(...args) };
     } catch (error) {
-      return { success: false, error };
+      return { ok: false, error };
     }
   };
 }
@@ -38,9 +38,9 @@ function makeSafeAsync<T extends Array<unknown>, U>(
 ): (...args: T) => Promise<SafeResult<U, unknown>> {
   return async (...args: T): Promise<SafeResult<U, unknown>> => {
     try {
-      return { success: true, data: await f(...args) };
+      return { ok: true, data: await f(...args) };
     } catch (error) {
-      return { success: false, error };
+      return { ok: false, error };
     }
   };
 }

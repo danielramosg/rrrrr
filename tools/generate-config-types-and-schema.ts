@@ -12,7 +12,7 @@ import * as prettier from 'prettier';
 import {
   SuretypeConfigSchema,
   CONFIG_SCHEMA_NAME,
-} from '../src/ts/config/suretype-config-schema';
+} from '../src/ts/config/config-schema-suretype';
 
 const CONFIG_SCHEMA_TYPESCRIPT_FILENAME =
   'src/ts/config/config-schema-types.generated.ts';

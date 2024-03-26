@@ -42,10 +42,17 @@ function configureHotkeys(game: Game) {
 
 async function init(): Promise<CircularEconomyApi> {
   const configLoaderResult = await ConfigLoader.safeLoad(...CONFIG_URLS);
-  if (!configLoaderResult.success) {
-    const { config, issues } = configLoaderResult.error;
+  if (!configLoaderResult.ok) {
+    const {
+      config,
+      error: { errors, explanation },
+    } = configLoaderResult.error;
     console.error('Invalid configuration:', config);
-    console.error('Issues:', ...issues);
+    console.error(explanation);
+    console.error(
+      'Issues reported by the configuration validator:',
+      ...(errors ?? []),
+    );
     throw new Error('Error loading configuration. See console for details.');
   }
   const config = configLoaderResult.data;

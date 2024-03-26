@@ -1,19 +1,41 @@
-import { wrap } from '@typeschema/suretype';
-import type { ElementOf, StrictExclude, DeepReadonly } from 'ts-essentials';
+import type { StrictExtract, DeepReadonly } from 'ts-essentials';
+import { compile } from 'suretype';
 
-import { SuretypeConfigSchema } from './suretype-config-schema';
+import { SuretypeConfigSchema } from './config-schema-suretype';
 import { type Config } from './config-schema-types.generated';
+import { SafeResult } from '../util/type-helpers';
 
-const ConfigSchema = wrap(SuretypeConfigSchema);
+const ConfigSchema = SuretypeConfigSchema;
+
+const validateConfigSuretype = compile(ConfigSchema);
+const ensureConfigSuretype = compile(ConfigSchema, { ensure: true });
+const isValidConfigSuretype = compile(ConfigSchema, { simple: true });
+
+type ValidationResult = Awaited<ReturnType<typeof validateConfigSuretype>>;
+type ValidationIssue = Omit<
+  StrictExtract<ValidationResult, { ok: true }>,
+  'ok'
+>;
+
+const validateConfig: (data: unknown) => SafeResult<Config, ValidationIssue> = (
+  data: unknown,
+) => {
+  const validationResult = validateConfigSuretype(data);
+  if (!validationResult.ok) {
+    const { errors, explanation } = validationResult;
+    return { ok: false, error: { errors, explanation } };
+  }
+
+  return { ok: true, data: data as Config };
+};
+
+const ensureConfig = (data: unknown) => ensureConfigSuretype(data) as Config;
+const isValidConfig = (data: unknown): data is Config =>
+  isValidConfigSuretype(data);
 
 type ReadonlyConfig = DeepReadonly<Config>;
 
-type ValidationResult = Awaited<ReturnType<typeof ConfigSchema.validate>>;
-type ValidationIssue = ElementOf<
-  StrictExclude<ValidationResult, { data: unknown }>['issues']
->;
-
 export { ReadonlyConfig, ValidationIssue };
-export { ConfigSchema };
+export { ConfigSchema, validateConfig, ensureConfig, isValidConfig };
 
 export * from './config-schema-types.generated';
