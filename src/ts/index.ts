@@ -1,7 +1,10 @@
 import hotkeys from 'hotkeys-js';
 import { strict as assert } from 'assert';
+import { createApp } from 'vue';
 
 import './side-effects';
+
+import App from '../vue/App.vue';
 
 import { ConfigLoader } from './config/config-loader';
 import { type Parameters, type Record } from './circular-economy-model';
@@ -18,6 +21,18 @@ import {
   SLOT_DEFINITIONS,
   CONFIG_URLS,
 } from './builtin-config';
+
+// eslint-disable-next-line no-lone-blocks
+{
+  // This is for setting global Vue.js option that should actually be set by the bundler, but aren't.
+  /* eslint-disable */
+  // @ts-ignore
+  globalThis.__VUE_OPTIONS_API__ = true;
+  // @ts-ignore
+  globalThis.__VUE_PROD_DEVTOOLS__ = true;
+  // @ts-ignore
+  globalThis.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = true;
+}
 
 type CircularEconomyApi = {
   game: Game;
@@ -154,6 +169,9 @@ async function init(): Promise<CircularEconomyApi> {
     game,
     controlPanel,
   };
+
+  const app = createApp(App);
+  // app.mount(document.body);
 
   return circularEconomyApi;
 }
