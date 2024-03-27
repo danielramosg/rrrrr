@@ -2,12 +2,12 @@ import { v, suretype } from 'suretype';
 import { stockIds, parameterIds } from '../circular-economy-model';
 
 const I18NStringSchema = suretype(
-  { name: 'I18NString' },
+  { name: 'I18NStringConfig' },
   v.object({}).additional(v.string()),
 );
 
 const ParameterTransformSchema = suretype(
-  { name: 'ParameterTransform' },
+  { name: 'ParameterTransformConfig' },
   v
     .object({ id: v.string().required(), script: v.string().required() })
     .additional(false)
@@ -17,7 +17,7 @@ const ParameterTransformSchema = suretype(
 const ParameterTransformsSchema = v.array(ParameterTransformSchema);
 
 const InitialParametersSchema = suretype(
-  { name: 'InitialParameters' },
+  { name: 'InitialParametersConfig' },
   v
     .object(
       Object.fromEntries(parameterIds.map((p) => [p, v.number().required()])),
@@ -26,14 +26,14 @@ const InitialParametersSchema = suretype(
 );
 
 const InitialStocksSchema = suretype(
-  { name: 'InitialStocks' },
+  { name: 'InitialStocksConfig' },
   v
     .object(Object.fromEntries(stockIds.map((p) => [p, v.number().required()])))
     .additional(false),
 );
 
 const BasicSlotSchema = suretype(
-  { name: 'BasicSlot' },
+  { name: 'BasicSlotConfig' },
   v
     .object({
       id: v.string().required(),
@@ -45,7 +45,7 @@ const BasicSlotSchema = suretype(
 );
 
 const SlotWithCardSchema = suretype(
-  { name: 'SlotWithCard' },
+  { name: 'SlotWithCardConfig' },
   v
     .object({
       id: v.string().required(),
@@ -73,12 +73,12 @@ const CardSchema = v
   })
   .additional(false);
 
-const ActionCardSchema = suretype({ name: 'ActionCard' }, CardSchema);
+const ActionCardSchema = suretype({ name: 'ActionCardConfig' }, CardSchema);
 
-const EventCardSchema = suretype({ name: 'EventCard' }, CardSchema);
+const EventCardSchema = suretype({ name: 'EventCardConfig' }, CardSchema);
 
 const BasicSlotGroupSchema = suretype(
-  { name: 'BasicSlotGroup' },
+  { name: 'BasicSlotGroupConfig' },
   v
     .object({
       id: v.string().required(),
@@ -90,7 +90,7 @@ const BasicSlotGroupSchema = suretype(
 );
 
 const ActionCardSlotGroupSchema = suretype(
-  { name: 'ActionCardSlotGroup' },
+  { name: 'ActionCardSlotGroupConfig' },
   v
     .object({
       id: v.string().required(),
@@ -102,7 +102,7 @@ const ActionCardSlotGroupSchema = suretype(
 );
 
 const EventCardSlotGroupSchema = suretype(
-  { name: 'EventCardSlotGroup' },
+  { name: 'EventCardSlotGroupConfig' },
   v
     .object({
       id: v.string().required(),
@@ -122,8 +122,8 @@ const SlotGroupSchema = suretype(
   ]),
 );
 
-const TriggerCondition = suretype(
-  { name: 'TriggerCondition' },
+const TriggerConditionSchema = suretype(
+  { name: 'TriggerConditionConfig' },
   v
     .object({
       condition: v.string().required(),
@@ -134,11 +134,11 @@ const TriggerCondition = suretype(
 );
 
 const TriggerSchema = suretype(
-  { name: 'Trigger' },
+  { name: 'TriggerConfig' },
   v
     .object({
       id: v.string().required(),
-      events: v.array(TriggerCondition).required(),
+      events: v.array(TriggerConditionSchema).required(),
     })
     .additional(false)
     .required(),

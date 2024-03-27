@@ -2,7 +2,7 @@ import type { StrictExtract, DeepReadonly } from 'ts-essentials';
 import { compile } from 'suretype';
 
 import { SuretypeConfigSchema } from './config-schema-suretype';
-import { type Config } from './config-schema-types.generated';
+import { type Config } from './config-schema-types';
 import { SafeResult } from '../util/type-helpers';
 
 const ConfigSchema = SuretypeConfigSchema;
@@ -38,4 +38,4 @@ type ReadonlyConfig = DeepReadonly<Config>;
 export { ReadonlyConfig, ValidationIssue };
 export { ConfigSchema, validateConfig, ensureConfig, isValidConfig };
 
-export * from './config-schema-types.generated';
+export * from './config-schema-types';

@@ -14,9 +14,9 @@ properties:
     type: object
     properties:
       initialParameters:
-        $ref: '#/definitions/InitialParameters'
+        $ref: '#/definitions/InitialParametersConfig'
       initialStocks:
-        $ref: '#/definitions/InitialStocks'
+        $ref: '#/definitions/InitialStocksConfig'
     required:
       - initialParameters
       - initialStocks
@@ -35,7 +35,7 @@ properties:
   parameterTransforms:
     type: array
     items:
-      $ref: '#/definitions/ParameterTransform'
+      $ref: '#/definitions/ParameterTransformConfig'
   interaction:
     type: object
     properties:
@@ -55,7 +55,7 @@ properties:
   triggers:
     type: array
     items:
-      $ref: '#/definitions/Trigger'
+      $ref: '#/definitions/TriggerConfig'
 required:
   - general
   - model
@@ -65,7 +65,7 @@ required:
   - triggers
 additionalProperties: false
 definitions:
-  InitialParameters:
+  InitialParametersConfig:
     type: object
     properties:
       abandonExcessRate:
@@ -133,7 +133,7 @@ definitions:
       - repairRate
       - reuseIncentive
     additionalProperties: false
-  InitialStocks:
+  InitialStocksConfig:
     type: object
     properties:
       capacityOfNewlyProducedPhones:
@@ -174,7 +174,7 @@ definitions:
       - supplyOfRefurbishedPhones
       - supplyOfRepairedPhones
     additionalProperties: false
-  ParameterTransform:
+  ParameterTransformConfig:
     type: object
     properties:
       id:
@@ -185,7 +185,7 @@ definitions:
       - id
       - script
     additionalProperties: false
-  BasicSlot:
+  BasicSlotConfig:
     type: object
     properties:
       id:
@@ -202,7 +202,7 @@ definitions:
       - x
       - 'y'
     additionalProperties: false
-  BasicSlotGroup:
+  BasicSlotGroupConfig:
     type: object
     properties:
       id:
@@ -214,7 +214,7 @@ definitions:
       slots:
         type: array
         items:
-          $ref: '#/definitions/BasicSlot'
+          $ref: '#/definitions/BasicSlotConfig'
       parameterTransformIds:
         type: array
         items:
@@ -225,7 +225,7 @@ definitions:
       - slots
       - parameterTransformIds
     additionalProperties: false
-  SlotWithCard:
+  SlotWithCardConfig:
     type: object
     properties:
       id:
@@ -257,11 +257,11 @@ definitions:
       - 'y'
       - card
     additionalProperties: false
-  I18NString:
+  I18NStringConfig:
     type: object
     additionalProperties:
       type: string
-  ActionCard:
+  ActionCardConfig:
     type: object
     properties:
       id:
@@ -269,16 +269,16 @@ definitions:
       url:
         type: string
       title:
-        $ref: '#/definitions/I18NString'
+        $ref: '#/definitions/I18NStringConfig'
       description:
-        $ref: '#/definitions/I18NString'
+        $ref: '#/definitions/I18NStringConfig'
     required:
       - id
       - url
       - title
       - description
     additionalProperties: false
-  ActionCardSlotGroup:
+  ActionCardSlotGroupConfig:
     type: object
     properties:
       id:
@@ -290,18 +290,18 @@ definitions:
       slots:
         type: array
         items:
-          $ref: '#/definitions/SlotWithCard'
+          $ref: '#/definitions/SlotWithCardConfig'
       cards:
         type: array
         items:
-          $ref: '#/definitions/ActionCard'
+          $ref: '#/definitions/ActionCardConfig'
     required:
       - id
       - type
       - slots
       - cards
     additionalProperties: false
-  EventCard:
+  EventCardConfig:
     type: object
     properties:
       id:
@@ -309,16 +309,16 @@ definitions:
       url:
         type: string
       title:
-        $ref: '#/definitions/I18NString'
+        $ref: '#/definitions/I18NStringConfig'
       description:
-        $ref: '#/definitions/I18NString'
+        $ref: '#/definitions/I18NStringConfig'
     required:
       - id
       - url
       - title
       - description
     additionalProperties: false
-  EventCardSlotGroup:
+  EventCardSlotGroupConfig:
     type: object
     properties:
       id:
@@ -330,11 +330,11 @@ definitions:
       slots:
         type: array
         items:
-          $ref: '#/definitions/SlotWithCard'
+          $ref: '#/definitions/SlotWithCardConfig'
       cards:
         type: array
         items:
-          $ref: '#/definitions/EventCard'
+          $ref: '#/definitions/EventCardConfig'
     required:
       - id
       - type
@@ -343,10 +343,10 @@ definitions:
     additionalProperties: false
   SlotGroup:
     anyOf:
-      - $ref: '#/definitions/BasicSlotGroup'
-      - $ref: '#/definitions/ActionCardSlotGroup'
-      - $ref: '#/definitions/EventCardSlotGroup'
-  TriggerCondition:
+      - $ref: '#/definitions/BasicSlotGroupConfig'
+      - $ref: '#/definitions/ActionCardSlotGroupConfig'
+      - $ref: '#/definitions/EventCardSlotGroupConfig'
+  TriggerConditionConfig:
     type: object
     properties:
       condition:
@@ -357,7 +357,7 @@ definitions:
       - condition
       - url
     additionalProperties: false
-  Trigger:
+  TriggerConfig:
     type: object
     properties:
       id:
@@ -365,7 +365,7 @@ definitions:
       events:
         type: array
         items:
-          $ref: '#/definitions/TriggerCondition'
+          $ref: '#/definitions/TriggerConditionConfig'
     required:
       - id
       - events
