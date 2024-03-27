@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Record } from './circular-economy-model';
+import type { Record } from './circular-economy-model';
 
 class Scores {
   static circularity(record: Record) {

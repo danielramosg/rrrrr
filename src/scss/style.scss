@@ -28,12 +28,6 @@ body {
 }
 
 #top-level-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
   & > #illustration-panel {
     position: absolute;
     top: 0;
@@ -54,22 +48,6 @@ body {
       width: calc(1px * var(--svg-width));
       transform: scale(var(--svg-scale-factor));
       transform-origin: top left;
-    }
-
-    & > .score {
-      font-size: 64px;
-      position: absolute;
-      padding: 0.5ex;
-    }
-
-    & > #circularity-index-container {
-      top: 0;
-      left: 0;
-    }
-
-    & > #user-satisfaction-container {
-      bottom: 0;
-      right: 0;
     }
   }
 

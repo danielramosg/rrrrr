@@ -1,18 +1,19 @@
 import hotkeys from 'hotkeys-js';
 import { strict as assert } from 'assert';
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 
 import './side-effects';
 
-import App from '../vue/App.vue';
+import { useModelStore } from './stores/model';
+import App from '../vue/components/App.vue';
 
 import { ConfigLoader } from './config/config-loader';
-import { type Parameters, type Record } from './circular-economy-model';
+import { type Parameters } from './circular-economy-model';
 import { documentReady } from './util/document-ready';
 import { ScaleToFitParent } from './util/scale-to-fit';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
 import { Game } from './game';
-import { Scores } from './scores';
 import { ControlPanel } from './control-panel';
 import { setupMarkerPanel } from './marker';
 import {
@@ -87,51 +88,25 @@ async function init(): Promise<CircularEconomyApi> {
     height: BOARD_HEIGHT,
   });
 
+  const pinia = createPinia();
+
+  const app = createApp(App);
+  app.use(pinia);
+  app.mount(fixedSizeContainer);
+
+  const modelStore = useModelStore();
+
   const modelVisualizationContainer = guardedQuerySelector(
     HTMLDivElement,
     '#model-viz-container',
   );
-
-  let circularityIndex = 0;
-  const circularityIndexElement = guardedQuerySelector(
-    HTMLElement,
-    '#circularity-index',
-  );
-
-  let userSatisfaction = 0;
-  const userSatisfactionElement = guardedQuerySelector(
-    HTMLElement,
-    '#user-satisfaction',
-  );
-
-  function updateIndices(record: Record) {
-    const smoothingFactor = 0.5;
-
-    const {
-      circularity: circularityTarget,
-      userSatisfaction: userSatisfactionTarget,
-    } = Scores.all(record);
-
-    circularityIndex +=
-      (circularityTarget - circularityIndex) * smoothingFactor;
-    circularityIndexElement.innerText = `${(circularityIndex * 100).toFixed(
-      1,
-    )}%`;
-
-    userSatisfaction +=
-      (userSatisfactionTarget - userSatisfaction) * smoothingFactor;
-    userSatisfactionElement.innerText = `${(userSatisfaction * 100).toFixed(
-      1,
-    )}%`;
-  }
 
   const controlPanel = new ControlPanel(config);
   const game = await Game.create(modelVisualizationContainer, config);
 
   game.runner.on('tick', () => {
     const { record } = game.modelSimulator;
-    updateIndices(record);
-    controlPanel.update(record);
+    modelStore.$patch({ record });
   });
 
   controlPanel.events.on('play', game.runner.play.bind(game.runner));
@@ -139,7 +114,6 @@ async function init(): Promise<CircularEconomyApi> {
   controlPanel.events.on('update-parameters', (parameters: Parameters) =>
     Object.assign(game.modelSimulator.parameters, parameters),
   );
-
   game.runner.tick();
 
   const backgroundElement = document.createElement('img');
@@ -169,9 +143,6 @@ async function init(): Promise<CircularEconomyApi> {
     game,
     controlPanel,
   };
-
-  const app = createApp(App);
-  // app.mount(document.body);
 
   return circularEconomyApi;
 }
