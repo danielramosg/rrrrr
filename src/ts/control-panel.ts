@@ -21,9 +21,8 @@ import {
 import { ScriptedParameterTransform } from './parameter-transform/scripted-parameter-transform';
 import type {
   ReadonlyConfig,
-  ParameterTransformsConfig,
+  ParameterTransformConfig,
 } from './config/config-schema';
-import { ModalConfirmDialog } from './util/ui/modal-confirm-dialog';
 import { ignorePromise } from './util/ignore-promise';
 import { Chart } from './chart';
 
@@ -73,9 +72,14 @@ class ControlPanel {
 
   constructor(config: ReadonlyConfig) {
     this.config = config;
-
-    const confirmDialog = ModalConfirmDialog.instance();
-    const confirm = confirmDialog.open.bind(confirmDialog);
+    const confirm = async (
+      message: string,
+      title?: string,
+    ): Promise<boolean> => {
+      /* eslint-disable */ // FIXME: Something is wrong with Vue component types
+      const { app } = await window.circularEconomy;
+      return await app.openConfirmDialog(message, title);
+    };
 
     this.elements = ControlPanel.queryElements();
     const {
@@ -261,7 +265,7 @@ class ControlPanel {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     importButton.addEventListener('click', async () => {
       const text = importExportElement.value;
-      const data = JSON.parse(text) as ParameterTransformsConfig; // TODO: Validate input
+      const data = JSON.parse(text) as ParameterTransformConfig[]; // TODO: Validate input
       const message =
         'Are you sure you want to import the parameter transformations? This will clear all existing parameter transformations.';
       if (await confirm(message)) {

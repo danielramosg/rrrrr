@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { strict as assert } from 'assert';
+import { ref, computed } from 'vue';
 
+import ModalConfirmDialog from './ModalConfirmDialog.vue';
 import ScoreItem from './ScoreItem.vue';
 
 import { useModelStore } from '../../ts/stores/model';
@@ -12,6 +14,23 @@ const circularityScore = computed(() => Scores.circularity(modelStore.record));
 const userSatisfactionScore = computed(() =>
   Scores.userSatifaction(modelStore.record),
 );
+
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+const modalConfirmDialog = ref<InstanceType<typeof ModalConfirmDialog> | null>(
+  null,
+);
+
+const openConfirmDialog = async (
+  message: string,
+  title?: string,
+): Promise<boolean> => {
+  assert(modalConfirmDialog.value !== null);
+  return await modalConfirmDialog.value.open(message, title);
+};
+
+defineExpose<{ openConfirmDialog: typeof openConfirmDialog }>({
+  openConfirmDialog,
+});
 </script>
 
 <template>
@@ -200,42 +219,12 @@ const userSatisfactionScore = computed(() =>
       </div>
     </div>
   </div>
-  <div
-    class="modal fade"
-    id="modal"
-    data-bs-backdrop="false"
-    data-bs-keyboard="false"
-    tabindex="-1"
-    aria-labelledby="staticBackdropLabel"
-    aria-hidden="true"
+  <ModalConfirmDialog
+    ref="modalConfirmDialog"
+    title="my title"
+    message="my message"
   >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">...</div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Cancel
-          </button>
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-            Ok
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  </ModalConfirmDialog>
 </template>
 
 <style lang="scss" scoped>

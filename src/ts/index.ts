@@ -36,6 +36,7 @@ import {
 }
 
 type CircularEconomyApi = {
+  app: InstanceType<typeof App>;
   game: Game;
   controlPanel: ControlPanel;
 };
@@ -92,7 +93,9 @@ async function init(): Promise<CircularEconomyApi> {
 
   const app = createApp(App);
   app.use(pinia);
-  app.mount(fixedSizeContainer);
+  const appComponent = app.mount(fixedSizeContainer) as InstanceType<
+    typeof App
+  >;
 
   const modelStore = useModelStore();
 
@@ -140,6 +143,7 @@ async function init(): Promise<CircularEconomyApi> {
   configureHotkeys(game);
 
   const circularEconomyApi: CircularEconomyApi = {
+    app: appComponent,
     game,
     controlPanel,
   };
