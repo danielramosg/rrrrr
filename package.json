@@ -44,6 +44,7 @@
     "@types/long": "^5.0.0",
     "@types/node": "^20.11.24",
     "@types/sortablejs": "^1.15.8",
+    "@types/uuid": "^9.0.8",
     "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
@@ -118,6 +119,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "@vueuse/core": "^10.9.0",
     "assert": "^2.1.0",
     "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
@@ -140,6 +142,7 @@
     "ts-essentials": "^9.4.1",
     "typeconv": "^2.3.1",
     "typed-emitter": "^2.1.0",
+    "uuid": "^9.0.1",
     "vue": "^3.4.21",
     "ws": "^8.16.0"
   }

@@ -1,19 +1,59 @@
 <script setup lang="ts">
 import { strict as assert } from 'assert';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
+import { onKeyStroke } from '@vueuse/core';
 
 import ModalConfirmDialog from './ModalConfirmDialog.vue';
 import ScoreItem from './ScoreItem.vue';
+import ControlPanel from './ControlPanel.vue';
 
+import { useAppStore } from '../../ts/stores/app';
 import { useModelStore } from '../../ts/stores/model';
 import { Scores } from '../../ts/scores';
+import { ignorePromise } from '../../ts/util/ignore-promise';
 
+const appStore = useAppStore();
 const modelStore = useModelStore();
+
+watch(
+  () => appStore.isFullscreen,
+  (isFullscreen) => {
+    console.log('Fullscreen toogled');
+    ignorePromise(
+      isFullscreen
+        ? document.documentElement.requestFullscreen()
+        : document.exitFullscreen(),
+    );
+  },
+);
+
+const isControlPanelVisible = ref(false);
+
+onKeyStroke(
+  'c',
+  () => {
+    isControlPanelVisible.value = !isControlPanelVisible.value;
+  },
+  { target: document },
+);
 
 const circularityScore = computed(() => Scores.circularity(modelStore.record));
 const userSatisfactionScore = computed(() =>
   Scores.userSatifaction(modelStore.record),
 );
+
+/*
+// TODO: Sync button state and fullscreen state
+if (!document.fullscreenEnabled)
+  fullscreenToggleCheckboxBox.disabled = true;
+fullscreenToggleCheckboxBox.addEventListener('input', () =>
+    ignorePromise(
+        fullscreenToggleCheckboxBox.checked
+            ? document.documentElement.requestFullscreen()
+            : document.exitFullscreen(),
+    ),
+);
+*/
 
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 const modalConfirmDialog = ref<InstanceType<typeof ModalConfirmDialog> | null>(
@@ -50,174 +90,9 @@ defineExpose<{ openConfirmDialog: typeof openConfirmDialog }>({
       />
     </div>
     <div id="slot-panel" class="slot-panel"></div>
-    <div id="control-panel" class="hidden">
-      <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <button
-            class="nav-link"
-            id="nav-initial-parameters-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#nav-initial-parameters"
-            type="button"
-            role="tab"
-            aria-controls="nav-initial-parameters"
-            aria-selected="true"
-          >
-            Initial parameters
-          </button>
-          <button
-            class="nav-link active"
-            id="nav-parameter-transforms-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#nav-parameter-transforms"
-            type="button"
-            role="tab"
-            aria-controls="nav-parameter-transforms"
-            aria-selected="true"
-          >
-            Parameter transforms
-          </button>
-          <button
-            class="nav-link"
-            id="nav-diagrams-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#nav-diagrams"
-            type="button"
-            role="tab"
-            aria-controls="nav-diagrams"
-            aria-selected="true"
-          >
-            Diagrams
-          </button>
-          <button
-            class="nav-link"
-            id="nav-import-export-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#nav-import-export"
-            type="button"
-            role="tab"
-            aria-controls="nav-import-export"
-            aria-selected="true"
-          >
-            Import/Export
-          </button>
-          <button
-            class="nav-link"
-            id="nav-misc-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#nav-misc"
-            type="button"
-            role="tab"
-            aria-controls="nav-misc"
-            aria-selected="true"
-          >
-            Misc
-          </button>
-        </div>
-      </nav>
-      <div class="tab-content" id="nav-tabContent">
-        <div
-          class="tab-pane show"
-          id="nav-initial-parameters"
-          role="tabpanel"
-          aria-labelledby="nav-initial-parameters-tab"
-          tabindex="0"
-        >
-          <div id="sliders"></div>
-        </div>
-        <div
-          class="tab-pane show active"
-          id="nav-parameter-transforms"
-          role="tabpanel"
-          aria-labelledby="nav-parameter-transforms-tab"
-          tabindex="0"
-        >
-          <div id="parameter-transforms">
-            <div>
-              Active:
-              <div class="active"></div>
-              <br />
-              <input
-                type="button"
-                value="Clear all active transforms"
-                id="clear-all-active-parameter-transforms-button"
-              />
-            </div>
-            <div>
-              Available:
-              <div class="available"></div>
-            </div>
-            <div>
-              Id:<br />
-              <input type="text" id="parameter-transform-id" /><br />
-              Script:<br />
-              <textarea
-                id="parameter-transform-script"
-                rows="5"
-                cols="10"
-              ></textarea
-              ><br />
-              <input
-                type="button"
-                id="add-parameter-transform"
-                value="Add/Modify"
-              />
-              <input
-                type="button"
-                id="delete-parameter-transform"
-                value="Delete"
-              />
-            </div>
-          </div>
-        </div>
-        <div
-          class="tab-pane show"
-          id="nav-diagrams"
-          role="tabpanel"
-          aria-labelledby="nav-diagrams-tab"
-          tabindex="0"
-        >
-          <div style="width: 100%"><canvas id="chart"></canvas></div>
-        </div>
-        <div
-          class="tab-pane show"
-          id="nav-import-export"
-          role="tabpanel"
-          aria-labelledby="nav-import-export-tab"
-          tabindex="0"
-        >
-          <textarea id="import-export" rows="10" cols="80"></textarea>
-          <div>
-            <input type="button" id="import-button" value="Import" />
-            <input type="button" id="export-button" value="Export" />
-          </div>
-        </div>
-        <div
-          class="tab-pane show"
-          id="nav-misc"
-          role="tabpanel"
-          aria-labelledby="nav-misc-tab"
-          tabindex="0"
-        >
-          <input
-            type="checkbox"
-            class="btn-check"
-            id="btn-run"
-            autocomplete="off"
-          />
-          <label class="btn btn-primary" for="btn-run">Run</label>
-          <input
-            type="checkbox"
-            class="btn-check"
-            id="btn-toggle-fullscreen"
-            autocomplete="off"
-          />
-          <label class="btn btn-primary" for="btn-toggle-fullscreen"
-            >Fullscreen</label
-          >
-        </div>
-      </div>
-    </div>
+    <ControlPanel
+      :style="{ display: isControlPanelVisible ? 'block' : 'none' }"
+    />
   </div>
   <ModalConfirmDialog
     ref="modalConfirmDialog"

@@ -11,5 +11,7 @@ export const useModelStore = defineStore('model', () => {
   );
   const record = ref(initialRecord);
 
-  return { record };
+  const initialParameters = ref({ ...CircularEconomyModel.defaultParameters });
+
+  return { record, initialParameters };
 });

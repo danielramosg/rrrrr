@@ -1,10 +1,11 @@
 import hotkeys from 'hotkeys-js';
 import { strict as assert } from 'assert';
-import { createApp } from 'vue';
+import { createApp, watchEffect } from 'vue';
 import { createPinia } from 'pinia';
 
 import './side-effects';
 
+import { useAppStore } from './stores/app';
 import { useModelStore } from './stores/model';
 import App from '../vue/components/App.vue';
 
@@ -41,16 +42,7 @@ type CircularEconomyApi = {
   controlPanel: ControlPanel;
 };
 
-function toggleControlPanel() {
-  const controlPanel = guardedQuerySelector(HTMLElement, '#control-panel');
-  controlPanel.classList.toggle('hidden');
-}
-
 function configureHotkeys(game: Game) {
-  hotkeys('c', () => {
-    toggleControlPanel();
-    return false;
-  });
   hotkeys('space', () => {
     game.runner.togglePlayPause();
     return false;
@@ -97,6 +89,7 @@ async function init(): Promise<CircularEconomyApi> {
     typeof App
   >;
 
+  const appStore = useAppStore();
   const modelStore = useModelStore();
 
   const modelVisualizationContainer = guardedQuerySelector(
@@ -112,8 +105,11 @@ async function init(): Promise<CircularEconomyApi> {
     modelStore.$patch({ record });
   });
 
-  controlPanel.events.on('play', game.runner.play.bind(game.runner));
-  controlPanel.events.on('pause', game.runner.pause.bind(game.runner));
+  watchEffect(() => {
+    if (appStore.isPlaying) game.runner.play();
+    else game.runner.pause();
+  });
+
   controlPanel.events.on('update-parameters', (parameters: Parameters) =>
     Object.assign(game.modelSimulator.parameters, parameters),
   );

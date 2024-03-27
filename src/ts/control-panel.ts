@@ -10,7 +10,6 @@ import { strict as assert } from 'assert';
 import {
   type ParameterIds,
   type Parameters,
-  type Record,
   parameterIds,
 } from './circular-economy-model';
 
@@ -24,7 +23,6 @@ import type {
   ParameterTransformConfig,
 } from './config/config-schema';
 import { ignorePromise } from './util/ignore-promise';
-import { Chart } from './chart';
 
 type CircularEconomyScriptParameterTransform =
   ScriptedParameterTransform<ParameterIds>;
@@ -40,10 +38,6 @@ type ControlPanelElements = Readonly<{
   importExportElement: HTMLTextAreaElement;
   exportButton: HTMLInputElement;
   importButton: HTMLInputElement;
-  sliderContainer: HTMLElement;
-  chartCanvas: HTMLCanvasElement;
-  fullscreenToggleCheckboxBox: HTMLInputElement;
-  runCheckBox: HTMLInputElement;
 }>;
 
 type ControlPanelEvents = {
@@ -68,8 +62,6 @@ class ControlPanel {
 
   readonly updateParameters: () => void;
 
-  readonly chart: Chart;
-
   constructor(config: ReadonlyConfig) {
     this.config = config;
     const confirm = async (
@@ -93,10 +85,6 @@ class ControlPanel {
       importExportElement,
       exportButton,
       importButton,
-      sliderContainer,
-      chartCanvas,
-      fullscreenToggleCheckboxBox,
-      runCheckBox,
     } = this.elements;
 
     const initialParameters = { ...config.model.initialParameters };
@@ -285,56 +273,6 @@ class ControlPanel {
       );
       importExportElement.value = JSON.stringify(data, null, 2);
     });
-
-    parameterIds
-      .filter((id) => id !== 'numberOfUsers')
-      .forEach((id) => {
-        const sliderElementLabel = document.createElement('div');
-        const sliderElement = document.createElement('input');
-        sliderElement.type = 'range';
-        sliderElement.min = '0';
-        sliderElement.max = '4';
-        sliderElement.step = '0.001';
-        sliderElement.value = `${initialParameters[id]}`;
-
-        const updateSliderValue = () => {
-          initialParameters[id] = Number.parseFloat(sliderElement.value);
-          sliderElementLabel.innerText = `${id} = ${initialParameters[id]}`;
-          this.updateParameters();
-        };
-        updateSliderValue();
-
-        sliderElement.addEventListener('input', updateSliderValue);
-
-        const sliderWrapperElement = document.createElement('div');
-        sliderWrapperElement.append(sliderElementLabel, sliderElement);
-
-        sliderContainer.append(sliderWrapperElement);
-      });
-
-    this.chart = new Chart(chartCanvas);
-
-    // TODO: Sync button state and fullscreen state
-    if (!document.fullscreenEnabled)
-      fullscreenToggleCheckboxBox.disabled = true;
-    fullscreenToggleCheckboxBox.addEventListener('input', () =>
-      ignorePromise(
-        fullscreenToggleCheckboxBox.checked
-          ? document.documentElement.requestFullscreen()
-          : document.exitFullscreen(),
-      ),
-    );
-
-    // TODO: Sync button state and running state
-    runCheckBox.addEventListener('input', () =>
-      runCheckBox.checked
-        ? this.events.emit('play')
-        : this.events.emit('pause'),
-    );
-  }
-
-  update(record: Record) {
-    this.chart.update(record);
   }
 
   activateParameterTransform(id: string) {
@@ -406,16 +344,6 @@ class ControlPanel {
       '#import-button',
     );
 
-    const sliderContainer = guardedQuerySelector(HTMLElement, '#sliders');
-
-    const chartCanvas = guardedQuerySelector(HTMLCanvasElement, '#chart');
-
-    const fullscreenToggleCheckboxBox = guardedQuerySelector(
-      HTMLInputElement,
-      '#btn-toggle-fullscreen',
-    );
-    const runCheckBox = guardedQuerySelector(HTMLInputElement, '#btn-run');
-
     return {
       availableParameterTransformsContainer,
       activeParameterTransformsContainer,
@@ -427,10 +355,6 @@ class ControlPanel {
       importExportElement,
       exportButton,
       importButton,
-      sliderContainer,
-      chartCanvas,
-      fullscreenToggleCheckboxBox,
-      runCheckBox,
     };
   }
 }
