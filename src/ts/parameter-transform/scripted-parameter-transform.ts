@@ -2,9 +2,9 @@ import { isVarName } from '../util/is-var-name';
 
 import {
   FunctionParameterTransform,
-  PararameterTransformFunction,
+  type PararameterTransformFunction,
 } from './function-parameter-transform';
-import { ModelElementIds, ModelElementObject } from '../model';
+import type { ModelElementIds, ModelElementObject } from '../model';
 
 export class ScriptedParameterTransform<
   P extends ModelElementIds,

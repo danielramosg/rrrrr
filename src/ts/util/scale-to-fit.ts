@@ -12,7 +12,7 @@ export class ScaleToFitParent {
     this.observer = new ResizeObserver(() =>
       ScaleToFitParent.fit(element, parentElement, targetSize),
     );
-    this.observer.observe(element.parentElement);
+    this.observer.observe(parentElement);
     ScaleToFitParent.fit(element, parentElement, targetSize);
   }
 

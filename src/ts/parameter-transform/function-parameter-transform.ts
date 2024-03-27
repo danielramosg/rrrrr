@@ -1,5 +1,5 @@
 import { ParameterTransform } from './parameter-transform';
-import { ModelElementIds, ModelElementObject } from '../model';
+import type { ModelElementIds, ModelElementObject } from '../model';
 
 export type PararameterTransformFunction<P extends ModelElementIds> = <
   T extends ModelElementObject<P>,

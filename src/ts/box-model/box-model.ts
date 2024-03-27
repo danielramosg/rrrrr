@@ -1,6 +1,6 @@
 import type { FlowEvaluator, ConvergenceCriterion } from './types';
 import { step as stepImpl, converge as convergeImpl } from './engine';
-import {
+import type {
   IntegrationEngineInputArray,
   IntegrationEngineOutputArray,
   IVPIntegrator,

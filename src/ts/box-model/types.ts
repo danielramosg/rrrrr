@@ -1,4 +1,4 @@
-import { ConvertTupleItemType } from '../util/type-helpers';
+import type { ConvertTupleItemType } from '../util/type-helpers';
 
 type ToNumberArray<T extends readonly number[]> = ConvertTupleItemType<
   T,

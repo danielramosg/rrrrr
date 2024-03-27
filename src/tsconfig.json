@@ -10,6 +10,7 @@
     "module": "es2022",
     "target": "es2022",
     "moduleResolution": "node",
+    "verbatimModuleSyntax": true,
     "lib": ["ES2022", "dom", "dom.iterable"],
     "typeRoots": ["./@types", "../node_modules/@types"],
     "plugins": [{ "name": "typescript-plugin-css-modules" }]

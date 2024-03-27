@@ -3,7 +3,7 @@ import { compile } from 'suretype';
 
 import { SuretypeConfigSchema } from './config-schema-suretype';
 import { type Config } from './config-schema-types';
-import { SafeResult } from '../util/type-helpers';
+import type { SafeResult } from '../util/type-helpers';
 
 const ConfigSchema = SuretypeConfigSchema;
 
@@ -35,7 +35,7 @@ const isValidConfig = (data: unknown): data is Config =>
 
 type ReadonlyConfig = DeepReadonly<Config>;
 
-export { ReadonlyConfig, ValidationIssue };
+export type { ReadonlyConfig, ValidationIssue };
 export { ConfigSchema, validateConfig, ensureConfig, isValidConfig };
 
 export * from './config-schema-types';

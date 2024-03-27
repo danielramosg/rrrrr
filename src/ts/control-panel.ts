@@ -9,8 +9,8 @@ import { strict as assert } from 'assert';
 
 import {
   type ParameterIds,
-  Parameters,
-  Record,
+  type Parameters,
+  type Record,
   parameterIds,
 } from './circular-economy-model';
 
@@ -20,9 +20,9 @@ import {
 } from './util/guarded-query-selectors';
 import { ScriptedParameterTransform } from './parameter-transform/scripted-parameter-transform';
 import type {
-  ReadOnlyConfig,
+  ReadonlyConfig,
   ParameterTransformsConfig,
-} from './config/config-loader';
+} from './config/config-schema';
 import { ModalConfirmDialog } from './util/ui/modal-confirm-dialog';
 import { ignorePromise } from './util/ignore-promise';
 import { Chart } from './chart';
@@ -59,7 +59,7 @@ class ControlPanel {
 
   readonly elements: ControlPanelElements;
 
-  readonly config: ReadOnlyConfig;
+  readonly config: ReadonlyConfig;
 
   readonly parameterTransforms: {
     create: (id: string, script: string) => void;
@@ -71,7 +71,7 @@ class ControlPanel {
 
   readonly chart: Chart;
 
-  constructor(config: ReadOnlyConfig) {
+  constructor(config: ReadonlyConfig) {
     this.config = config;
 
     const confirmDialog = ModalConfirmDialog.instance();

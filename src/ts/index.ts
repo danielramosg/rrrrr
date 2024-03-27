@@ -4,7 +4,7 @@ import { strict as assert } from 'assert';
 import './side-effects';
 
 import { ConfigLoader } from './config/config-loader';
-import { Parameters, Record } from './circular-economy-model';
+import { type Parameters, type Record } from './circular-economy-model';
 import { documentReady } from './util/document-ready';
 import { ScaleToFitParent } from './util/scale-to-fit';
 import { guardedQuerySelector } from './util/guarded-query-selectors';

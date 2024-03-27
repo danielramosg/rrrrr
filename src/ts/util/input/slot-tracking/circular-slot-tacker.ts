@@ -5,7 +5,7 @@ import type {
   Marker,
   MarkerObservables,
 } from '../marker-tracking/marker-observables';
-import { SlotIdAndMarkerId, SlotObservables } from './slot-observables';
+import type { SlotIdAndMarkerId, SlotObservables } from './slot-observables';
 import { Circle } from '../../geometry/circle';
 import { BOARD_HEIGHT, BOARD_WIDTH } from '../../../builtin-config';
 

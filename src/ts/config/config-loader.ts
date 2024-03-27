@@ -1,12 +1,11 @@
 import yaml from 'js-yaml';
 import deepmerge from 'deepmerge';
 import {
-  ConfigSchema,
   validateConfig,
   type ReadonlyConfig,
   type ValidationIssue,
 } from './config-schema';
-import { SafeResult } from '../util/type-helpers';
+import type { SafeResult } from '../util/type-helpers';
 
 function overwriteMerge<T>(destination: unknown, source: T): T {
   return source;

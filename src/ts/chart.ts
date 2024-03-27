@@ -5,7 +5,7 @@ import {
   flowIds,
   variableIds,
   parameterIds,
-  Record,
+  type Record,
 } from './circular-economy-model';
 
 class Chart {

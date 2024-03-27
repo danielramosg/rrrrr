@@ -17,11 +17,11 @@ import { TuioMarkerTracker } from './util/input/marker-tracking/tuio-marker-trac
 import { PointerMarkerTracker } from './util/input/marker-tracking/pointer-marker-tracker';
 import { CombinedMarkerTracker } from './util/input/marker-tracking/combined-marker-tracker';
 import {
-  SlotIdAndMarkerId,
-  SlotObservables,
+  type SlotIdAndMarkerId,
+  type SlotObservables,
 } from './util/input/slot-tracking/slot-observables';
 import {
-  CircularSlot,
+  type CircularSlot,
   CircularSlotTracker,
 } from './util/input/slot-tracking/circular-slot-tacker';
 import {
