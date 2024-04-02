@@ -82,7 +82,7 @@ export interface I18NStringConfig {
 }
 
 export interface ActionCardConfig {
-  id: string;
+  parameterTransformId: string;
   url: string;
   title: I18NStringConfig;
   description: I18NStringConfig;
@@ -96,7 +96,7 @@ export interface ActionCardSlotGroupConfig {
 }
 
 export interface EventCardConfig {
-  id: string;
+  parameterTransformId: string;
   url: string;
   title: I18NStringConfig;
   description: I18NStringConfig;

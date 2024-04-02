@@ -66,7 +66,7 @@ const SlotWithCardSchema = suretype(
 
 const CardSchema = v
   .object({
-    id: v.string().required(),
+    parameterTransformId: v.string().required(),
     url: v.string().required(),
     title: I18NStringSchema.required(),
     description: I18NStringSchema.required(),

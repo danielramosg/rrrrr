@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { useParameterTransformsStore } from '../../ts/stores/parameter-transforms';
+
+const parameterTransformsStore = useParameterTransformsStore();
+console.log(parameterTransformsStore);
+</script>
+
 <template>
   <div id="parameter-transforms" class="parameter-transforms">
     <div>

@@ -22,6 +22,7 @@ import {
   BOARD_HEIGHT,
   SLOT_DEFINITIONS,
   CONFIG_URLS,
+  CONFIG_INJECTION_KEY,
 } from './builtin-config';
 
 // eslint-disable-next-line no-lone-blocks
@@ -84,6 +85,7 @@ async function init(): Promise<CircularEconomyApi> {
   const pinia = createPinia();
 
   const app = createApp(App);
+  app.provide(CONFIG_INJECTION_KEY, config);
   app.use(pinia);
   const appComponent = app.mount(fixedSizeContainer) as InstanceType<
     typeof App

@@ -14,6 +14,8 @@ const CONFIG_URLS = CONFIG_FILENAMES.map(
   (name) => new URL(name, CONFIG_BASE_URL),
 );
 
+const CONFIG_INJECTION_KEY = Symbol('config injection key');
+
 const BOARD_WIDTH = 2 * 1920;
 const BOARD_HEIGHT = 2 * 1080;
 const BOARD_WIDTH_MM = 1209.6;
@@ -104,6 +106,7 @@ export type { Card, EventCard, ActionCard };
 
 export {
   CONFIG_BASE_URL,
+  CONFIG_INJECTION_KEY,
   CONFIG_FILENAMES,
   CONFIG_URLS,
   BOARD_WIDTH,

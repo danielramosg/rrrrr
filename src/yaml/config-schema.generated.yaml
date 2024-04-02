@@ -264,7 +264,7 @@ definitions:
   ActionCardConfig:
     type: object
     properties:
-      id:
+      parameterTransformId:
         type: string
       url:
         type: string
@@ -273,7 +273,7 @@ definitions:
       description:
         $ref: '#/definitions/I18NStringConfig'
     required:
-      - id
+      - parameterTransformId
       - url
       - title
       - description
@@ -304,7 +304,7 @@ definitions:
   EventCardConfig:
     type: object
     properties:
-      id:
+      parameterTransformId:
         type: string
       url:
         type: string
@@ -313,7 +313,7 @@ definitions:
       description:
         $ref: '#/definitions/I18NStringConfig'
     required:
-      - id
+      - parameterTransformId
       - url
       - title
       - description
