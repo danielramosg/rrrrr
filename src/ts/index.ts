@@ -40,7 +40,6 @@ import {
 type CircularEconomyApi = {
   app: InstanceType<typeof App>;
   game: Game;
-  controlPanel: ControlPanel;
 };
 
 function configureHotkeys(game: Game) {
@@ -99,7 +98,6 @@ async function init(): Promise<CircularEconomyApi> {
     '#model-viz-container',
   );
 
-  const controlPanel = new ControlPanel(config);
   const game = await Game.create(modelVisualizationContainer, config);
 
   game.runner.on('tick', () => {
@@ -112,9 +110,6 @@ async function init(): Promise<CircularEconomyApi> {
     else game.runner.pause();
   });
 
-  controlPanel.events.on('update-parameters', (parameters: Parameters) =>
-    Object.assign(game.modelSimulator.parameters, parameters),
-  );
   game.runner.tick();
 
   const backgroundElement = document.createElement('img');
@@ -143,7 +138,6 @@ async function init(): Promise<CircularEconomyApi> {
   const circularEconomyApi: CircularEconomyApi = {
     app: appComponent,
     game,
-    controlPanel,
   };
 
   return circularEconomyApi;
