@@ -1,11 +1,41 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import { useParameterTransformsStore } from '../../ts/stores/parameter-transforms';
 
 const parameterTransformsStore = useParameterTransformsStore();
-console.log(parameterTransformsStore);
+
+const newId = ref('');
+const newScript = ref('');
+
+function select({ id, script }: { id: string; script: string }) {
+  newId.value = id;
+  newScript.value = script;
+}
+
+function addOrModify(id: string, script: string) {
+  parameterTransformsStore.addOrModify(id, script);
+}
+
+function remove(id: string) {
+  parameterTransformsStore.remove(id);
+}
 </script>
 
 <template>
+  <!--
+  <div v-for="parameterId in parameterIds" :key="parameterId">
+    <div>{{ parameterId }} = {{ initialParameters[parameterId] }}</div>
+    <input
+      type="range"
+      min="0"
+      max="4"
+      step="0.001"
+      v-model="initialParameters[parameterId]"
+    />
+  </div>
+  -->
+
   <div id="parameter-transforms" class="parameter-transforms">
     <div>
       Active:
@@ -19,16 +49,31 @@ console.log(parameterTransformsStore);
     </div>
     <div>
       Available:
-      <div class="available"></div>
+      <div
+        class="available"
+        v-for="parameterTransform in parameterTransformsStore.parameterTransforms"
+        :key="parameterTransform.id"
+      >
+        <div
+          class="parameter-transform"
+          :data-id="parameterTransform.id"
+          @click="select(parameterTransform)"
+        >
+          {{ parameterTransform.id }}
+        </div>
+      </div>
     </div>
     <div>
       Id:<br />
-      <input type="text" id="parameter-transform-id" /><br />
+      <input type="text" v-model="newId" /><br />
       Script:<br />
-      <textarea id="parameter-transform-script" rows="5" cols="10"></textarea
-      ><br />
-      <input type="button" id="add-parameter-transform" value="Add/Modify" />
-      <input type="button" id="delete-parameter-transform" value="Delete" />
+      <textarea v-model="newScript" rows="5" cols="10"></textarea><br />
+      <input
+        type="button"
+        value="Add/Modify"
+        @click="addOrModify(newId, newScript)"
+      />
+      <input type="button" value="Delete" @click="remove(newId)" />
     </div>
   </div>
 </template>
