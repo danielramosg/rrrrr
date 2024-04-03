@@ -1,10 +1,14 @@
+import type { DeepReadonly } from 'ts-essentials';
 import type { Ref } from 'vue';
 
 import { strict as assert } from 'assert';
 import { defineStore } from 'pinia';
 import { reactive, ref, computed, inject } from 'vue';
 
-import type { ReadonlyConfig } from '../config/config-schema';
+import type {
+  ReadonlyConfig,
+  ParameterTransformConfig,
+} from '../config/config-schema';
 import type { PararameterTransformFunction } from '../parameter-transform/function-parameter-transform';
 
 import { ScriptedParameterTransform } from '../parameter-transform/scripted-parameter-transform';
@@ -66,11 +70,23 @@ export const useParameterTransformsStore = defineStore(
       parameterTransforms.splice(to, 0, removed);
     };
 
+    const replaceAll = (ptcs: DeepReadonly<ParameterTransformConfig[]>) => {
+      const newParameterTransforms = ptcs.map((ptc) =>
+        reactive(createReactiveParameterTransform(ptc)),
+      );
+      parameterTransforms.splice(
+        0,
+        parameterTransforms.length,
+        ...newParameterTransforms,
+      );
+    };
+
     return {
       parameterTransforms,
       addOrModify,
       move,
       remove,
+      replaceAll,
     };
   },
 );
