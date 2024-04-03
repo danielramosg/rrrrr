@@ -9,17 +9,51 @@ import type {
   ReadonlyConfig,
   ParameterTransformConfig,
 } from '../config/config-schema';
-import type { PararameterTransformFunction } from '../parameter-transform/function-parameter-transform';
 
-import { ScriptedParameterTransform } from '../parameter-transform/scripted-parameter-transform';
 import { parameterIds } from '../circular-economy-model';
-import { CONFIG_INJECTION_KEY } from '../builtin-config';
+import type { ModelElementIds, ModelElementObject } from '../model';
+import { isVarName } from '../util/is-var-name';
+
+export type ParameterTransformFunction<P extends ModelElementIds> = <
+  T extends ModelElementObject<P>,
+>(
+  parameters: T,
+) => T;
 
 export type ReactiveParameterTransform = {
   id: string;
   script: Ref<string>;
-  transform: Ref<PararameterTransformFunction<typeof parameterIds>>;
+  transform: Ref<ParameterTransformFunction<typeof parameterIds>>;
 };
+
+function createParameterTransformFunction<P extends ModelElementIds>(
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  parameterIds: P,
+  script: string,
+): ParameterTransformFunction<P> {
+  parameterIds.forEach((parameterId) => {
+    if (!isVarName(parameterId)) {
+      throw new Error(
+        `Parameter name '${parameterId}' can not be used as a variable`,
+      );
+    }
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-implied-eval
+  const wrappedScript = new Function(script).toString();
+
+  // eslint-disable-next-line @typescript-eslint/no-implied-eval
+  const func = new Function(
+    `{ ${parameterIds.join(', ')} }`,
+    `(${wrappedScript})(); return { ${parameterIds.join(', ')} }`,
+  ) as ParameterTransformFunction<P>;
+
+  return <T extends ModelElementObject<P>>(parameters: T) => {
+    const transformedParameters = func(parameters);
+    Object.assign(parameters, transformedParameters);
+    return parameters;
+  };
+}
 
 function createReactiveParameterTransform({
   id,
@@ -30,10 +64,7 @@ function createReactiveParameterTransform({
 }>): ReactiveParameterTransform {
   const reactiveScript = ref(script);
   const reactiveTransform = computed(() =>
-    ScriptedParameterTransform.createFunction(
-      parameterIds,
-      reactiveScript.value,
-    ),
+    createParameterTransformFunction(parameterIds, reactiveScript.value),
   );
   return { id, script: reactiveScript, transform: reactiveTransform };
 }
