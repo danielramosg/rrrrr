@@ -22,4 +22,8 @@ const initialParameters = toReactive(storeToRefs(modelStore).initialParameters);
   </div>
 </template>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+input[type='range'] {
+  width: 100%;
+}
+</style>
