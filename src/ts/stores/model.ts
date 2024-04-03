@@ -3,7 +3,8 @@ import type { Ref } from 'vue';
 
 import { strict as assert } from 'assert';
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
+import { reactiveComputed } from '@vueuse/core';
 
 import type { ParameterId, Parameters } from '../circular-economy-model';
 
@@ -13,49 +14,67 @@ import { useParameterTransformsStore } from './parameter-transforms';
 import { useSlotGroupsStore } from './slot-groups';
 
 export interface ParameterTransformStep {
+  id: string | null;
+  script: string | null;
+  active: boolean;
   before: DeepReadonly<Parameters>;
   after: DeepReadonly<Parameters>;
   diff: Partial<DeepReadonly<Parameters>>;
+}
+
+export interface SlotGroupParameterTransformsState {
+  id: string;
+  steps: ParameterTransformStep[];
 }
 
 const useTransformedParameters = (initialParameters: Ref<Parameters>) => {
   const slotGroupsStore = useSlotGroupsStore();
   const parameterTransformStore = useParameterTransformsStore();
 
-  const transformedParametersExt = computed(
-    (): Readonly<ParameterTransformStep>[] => {
-      const { activeParameterTransformIds: activeIds } = slotGroupsStore;
-      const { parameterTransforms: transforms } = parameterTransformStore;
+  const { slotGroups } = slotGroupsStore;
+  const { parameterTransforms: transforms } = parameterTransformStore;
 
-      const steps = new Array<ParameterTransformStep>();
+  const transformedParametersExt = reactiveComputed(
+    (): SlotGroupParameterTransformsState[] => {
       let before = { ...initialParameters.value };
-      steps.push({
-        before,
-        after: before,
-        diff: {},
-      });
-      activeIds.forEach((id) => {
-        const transform = transforms.find((t) => t.id === id)?.transform;
-        assert(transform, `No transform found for id ${id}`);
+      const stepGroups = slotGroups.map(({ id: sId, parameterTransforms }) => {
+        const steps = parameterTransforms.map(({ id: pId, active }) => {
+          const transformObject = transforms.find((t) => t.id === pId);
+          assert(transformObject, `No transform found for id ${pId}`);
+          const { script, transform } = transformObject;
 
-        const after = transform.applyTo({ ...before });
-        const diff = Object.fromEntries(
-          (Object.entries(after) as Array<[ParameterId, number]>).filter(
-            ([key, value]) => value !== before[key],
-          ),
-        );
-        steps.push({ before, after, diff });
-        before = after;
+          const after = active ? transform({ ...before }) : { ...before };
+          const diff = Object.fromEntries(
+            (Object.entries(after) as Array<[ParameterId, number]>).filter(
+              ([key, value]) => value !== before[key],
+            ),
+          );
+          const result = { id: pId, script, active, before, after, diff };
+          before = { ...after };
+          return result;
+        });
+        return { id: sId, steps };
       });
-      return steps;
+
+      return stepGroups;
     },
   );
 
-  const transformedParameters = computed(() => {
-    assert(transformedParametersExt.value.length > 0);
-    return transformedParametersExt.value[
-      transformedParametersExt.value.length - 1
-    ].after;
+  const transformedParameters = reactiveComputed(() => {
+    const lastWithDefault = <T>(a: Array<T>, defaultValue: T) =>
+      a.length > 0 ? a[a.length - 1] : defaultValue;
+
+    const lastStepResult = lastWithDefault(
+      transformedParametersExt.map(({ steps }) =>
+        lastWithDefault(
+          steps.map(({ after }) => after),
+          initialParameters.value,
+        ),
+      ),
+      initialParameters.value,
+    );
+
+    return lastStepResult;
   });
 
   return { transformedParametersExt, transformedParameters };

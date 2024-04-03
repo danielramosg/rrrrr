@@ -88,3 +88,37 @@ parameterTransforms:
       newlyProducedPhoneIncentive *=11;
   - id: Deponie Streik (E)
     script: landfillRate *= 0.1;
+  - id: technology-card-1
+    script: ''
+  - id: technology-card-2
+    script: ''
+  - id: technology-card-3
+    script: ''
+  - id: technology-card-4
+    script: ''
+  - id: policy-card-1
+    script: ''
+  - id: policy-card-2
+    script: ''
+  - id: policy-card-3
+    script: ''
+  - id: policy-card-4
+    script: ''
+  - id: event-card-1
+    script: ''
+  - id: event-card-2
+    script: ''
+  - id: event-card-3
+    script: ''
+  - id: event-card-4
+    script: ''
+  - id: reduce
+    script: ''
+  - id: reuse
+    script: ''
+  - id: repair
+    script: ''
+  - id: refurbish
+    script: ''
+  - id: recycle
+    script: ''

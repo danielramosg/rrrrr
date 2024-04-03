@@ -77,11 +77,13 @@ const ActionCardSchema = suretype({ name: 'ActionCardConfig' }, CardSchema);
 
 const EventCardSchema = suretype({ name: 'EventCardConfig' }, CardSchema);
 
+const SlotGroupIdSchema = v.string().matches(/^((?!internal).)*$/g);
+
 const BasicSlotGroupSchema = suretype(
   { name: 'BasicSlotGroupConfig' },
   v
     .object({
-      id: v.string().required(),
+      id: SlotGroupIdSchema.required(),
       type: v.string().enum('basic').required(),
       slots: v.array(BasicSlotSchema).required(),
       parameterTransformIds: v.array(v.string()).required(),
@@ -93,7 +95,7 @@ const ActionCardSlotGroupSchema = suretype(
   { name: 'ActionCardSlotGroupConfig' },
   v
     .object({
-      id: v.string().required(),
+      id: SlotGroupIdSchema.required(),
       type: v.string().enum('action-card').required(),
       slots: v.array(SlotWithCardSchema).required(),
       cards: v.array(ActionCardSchema).required(),
@@ -105,7 +107,7 @@ const EventCardSlotGroupSchema = suretype(
   { name: 'EventCardSlotGroupConfig' },
   v
     .object({
-      id: v.string().required(),
+      id: SlotGroupIdSchema.required(),
       type: v.string().enum('event-card').required(),
       slots: v.array(SlotWithCardSchema).required(),
       cards: v.array(EventCardSchema).required(),

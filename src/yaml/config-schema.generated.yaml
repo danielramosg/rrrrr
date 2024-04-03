@@ -207,6 +207,7 @@ definitions:
     properties:
       id:
         type: string
+        pattern: ^((?!internal).)*$
       type:
         type: string
         enum:
@@ -283,6 +284,7 @@ definitions:
     properties:
       id:
         type: string
+        pattern: ^((?!internal).)*$
       type:
         type: string
         enum:
@@ -323,6 +325,7 @@ definitions:
     properties:
       id:
         type: string
+        pattern: ^((?!internal).)*$
       type:
         type: string
         enum:

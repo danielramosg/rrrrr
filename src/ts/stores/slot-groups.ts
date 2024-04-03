@@ -1,94 +1,106 @@
+import type { DeepReadonly } from 'ts-essentials';
+import type { Ref } from 'vue';
+
 import { strict as assert } from 'assert';
 import { defineStore } from 'pinia';
-import { computed, inject } from 'vue';
+import { inject, ref } from 'vue';
+import { reactiveComputed } from '@vueuse/core';
 
-import type { ReadonlyConfig } from '../config/config-schema';
+import type {
+  ActionCardSlotGroupConfig,
+  BasicSlotGroupConfig,
+  EventCardSlotGroupConfig,
+  ReadonlyConfig,
+  SlotGroupConfig,
+} from '../config/config-schema';
 
 import { CONFIG_INJECTION_KEY } from '../builtin-config';
-import { useSlotGroup } from '../composables/slot-group';
+import { useParameterTransformsStore } from './parameter-transforms';
+import { exhaustiveGuard } from '../util/type-helpers';
 
-/* TODO:
- * - We need parameter transforms for each slot group
- * - Stores can't be parameterized (by the slot group)
- * - Turn this store into a parameterized composable?
- * - Create a store for parameterTransforms of each slot group (Map<slot:string,ParameterTransformComposable>)?
- * - Try to align the structure as much as possible with the config file!
- * - Possibly add an "internal" slot group for connecting the control panel to test parameter transforms?
- */
+export interface ParameterTransformState {
+  readonly id: string;
+  active: Ref<boolean> | boolean;
+}
+
+export interface SlotGroupParameterTransformsState {
+  readonly id: string;
+  parameterTransforms: ParameterTransformState[];
+}
+
+function useParameterTransformId(id: string): ParameterTransformState {
+  const active = ref(false);
+  return { id, active };
+}
+
+export function useInternalSlotGroup(): SlotGroupParameterTransformsState {
+  const id = 'internal';
+  const parameterTransformStore = useParameterTransformsStore();
+  const parameterTransforms: ParameterTransformState[] = reactiveComputed<
+    ParameterTransformState[]
+  >(() =>
+    parameterTransformStore.parameterTransforms.map(
+      ({ id: parameterTransformId }) =>
+        useParameterTransformId(parameterTransformId),
+    ),
+  );
+  return { id, parameterTransforms };
+}
+
+function useBasicSlotGroup(
+  config: DeepReadonly<BasicSlotGroupConfig>,
+): SlotGroupParameterTransformsState {
+  const { id } = config;
+  const parameterTransforms = config.parameterTransformIds.map(
+    useParameterTransformId,
+  );
+  return { id, parameterTransforms };
+}
+
+function useActionCardSlotGroup(
+  config: DeepReadonly<ActionCardSlotGroupConfig>,
+): SlotGroupParameterTransformsState {
+  const { id } = config;
+  const parameterTransforms = config.cards.map(({ parameterTransformId }) =>
+    useParameterTransformId(parameterTransformId),
+  );
+  return { id, parameterTransforms };
+}
+
+function useEventCardSlotGroup(
+  config: DeepReadonly<EventCardSlotGroupConfig>,
+): SlotGroupParameterTransformsState {
+  const { id } = config;
+  const parameterTransforms = config.cards.map(({ parameterTransformId }) =>
+    useParameterTransformId(parameterTransformId),
+  );
+  return { id, parameterTransforms };
+}
+
+export function useSlotGroup(
+  config: DeepReadonly<SlotGroupConfig>,
+): SlotGroupParameterTransformsState {
+  const { type } = config;
+  switch (type) {
+    case 'basic':
+      return useBasicSlotGroup(config);
+    case 'action-card':
+      return useActionCardSlotGroup(config);
+    case 'event-card':
+      return useEventCardSlotGroup(config);
+    default:
+      return exhaustiveGuard(type);
+  }
+}
 
 export const useSlotGroupsStore = defineStore('slot-groups', () => {
   const config = inject<ReadonlyConfig | null>(CONFIG_INJECTION_KEY, null);
   assert(config);
 
-  const slotGroups = config.interaction.slotGroups.map(useSlotGroup);
+  const internalSlotGroup = useInternalSlotGroup();
+  const configBasedSlotGroups = config.interaction.slotGroups.map(useSlotGroup);
 
-  const activeParameterTransformIds = computed(() => {
-    const allActive2d = slotGroups.map(({ parameterTransforms }) =>
-      parameterTransforms.filter((p) => p.active).map(({ id }) => id),
-    );
-    const allActive = allActive2d.flat();
-    return allActive;
-  });
+  const slotGroups = [internalSlotGroup, ...configBasedSlotGroups];
 
-  return { slotGroups, activeParameterTransformIds };
+  return { slotGroups, internalSlotGroup };
 });
-
-/*
-export const useParameterTransformsStore = defineStore(
-  'parameter-transforms',
-  () => {
-    const config = inject<ReadonlyConfig | null>(CONFIG_INJECTION_KEY, null);
-    assert(config);
-
-    const modelStore = useModelStore();
-
-    const parameterTransforms = config.parameterTransforms.map(
-      (p) =>
-        new ScriptedParameterTransform(p.id, parameterIds, p.script, false),
-    );
-
-    const available = ref(parameterTransforms);
-    const active = computed(() => available.value.filter((p) => p.isActive));
-
-    const { initialParameters } = modelStore;
-
-    const transformedParametersExt = computed(
-      (): Readonly<ParameterTransformStep>[] => {
-        const steps = new Array<ParameterTransformStep>();
-        let before = { ...initialParameters };
-        steps.push({
-          before,
-          after: before,
-          diff: {},
-        });
-        active.value.forEach((transform) => {
-          const after = transform.applyTo({ ...before });
-          const diff = Object.fromEntries(
-            (Object.entries(after) as Array<[ParameterId, number]>).filter(
-              ([key, value]) => value !== before[key],
-            ),
-          );
-          steps.push({ before, after, diff });
-          before = after;
-        });
-        return steps;
-      },
-    );
-
-    const transformedParameters = computed(() => {
-      assert(transformedParametersExt.value.length > 0);
-      return transformedParametersExt.value[
-        transformedParametersExt.value.length - 1
-      ].after;
-    });
-
-    return {
-      available,
-      active,
-      initialParameters,
-      transformedParametersExt,
-      transformedParameters,
-    };
-  },
-);
-*/

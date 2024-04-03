@@ -10,12 +10,10 @@ import { useModelStore } from './stores/model';
 import App from '../vue/components/App.vue';
 
 import { ConfigLoader } from './config/config-loader';
-import { type Parameters } from './circular-economy-model';
 import { documentReady } from './util/document-ready';
 import { ScaleToFitParent } from './util/scale-to-fit';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
 import { Game } from './game';
-import { ControlPanel } from './control-panel';
 import { setupMarkerPanel } from './marker';
 import {
   BOARD_WIDTH,
@@ -110,6 +108,13 @@ async function init(): Promise<CircularEconomyApi> {
     else game.runner.pause();
   });
 
+  watchEffect(() => {
+    Object.assign(game.modelSimulator.parameters, {
+      ...modelStore.transformedParameters,
+    });
+    console.log('Update model parameters', game.modelSimulator.parameters);
+  });
+
   game.runner.tick();
 
   const backgroundElement = document.createElement('img');
@@ -125,12 +130,12 @@ async function init(): Promise<CircularEconomyApi> {
   slotTracker.slotActivate$.subscribe(({ slotId }) => {
     const slot = SLOT_DEFINITIONS.find((sd) => sd.id === slotId);
     assert(typeof slot !== 'undefined');
-    controlPanel.activateParameterTransform(slot.transformId);
+    //  controlPanel.activateParameterTransform(slot.transformId);
   });
   slotTracker.slotDeactivate$.subscribe(({ slotId }) => {
     const slot = SLOT_DEFINITIONS.find((sd) => sd.id === slotId);
     assert(typeof slot !== 'undefined');
-    controlPanel.deactivateParameterTransform(slot.transformId);
+    //  controlPanel.deactivateParameterTransform(slot.transformId);
   });
 
   configureHotkeys(game);
