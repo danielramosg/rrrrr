@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { strict as assert } from 'assert';
-import { inject, ref } from 'vue';
+import { ref } from 'vue';
 import yaml from 'js-yaml';
 
-import type { ReadonlyConfig } from '../../ts/config/config-schema';
-
 import { useParameterTransformsStore } from '../../ts/stores/parameter-transforms';
+import { useConfigStore } from '../../ts/stores/config';
 import { validateConfig } from '../../ts/config/config-schema';
-import { CONFIG_INJECTION_KEY } from '../../ts/builtin-config';
 
-const config = inject<ReadonlyConfig | null>(CONFIG_INJECTION_KEY, null);
-assert(config);
+const { config } = useConfigStore();
 
 const parameterTransformsStore = useParameterTransformsStore();
 const { parameterTransforms } = parameterTransformsStore;

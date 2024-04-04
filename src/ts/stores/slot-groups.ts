@@ -1,19 +1,17 @@
 import type { DeepReadonly } from 'ts-essentials';
 
-import { strict as assert } from 'assert';
 import { defineStore } from 'pinia';
-import { inject, reactive } from 'vue';
+import { reactive } from 'vue';
 import { v4 as uuid4 } from 'uuid';
 
 import type {
   ActionCardSlotGroupConfig,
   BasicSlotGroupConfig,
   EventCardSlotGroupConfig,
-  ReadonlyConfig,
   SlotGroupConfig,
 } from '../config/config-schema';
 
-import { CONFIG_INJECTION_KEY } from '../builtin-config';
+import { useConfigStore } from './config';
 import { useParameterTransformsStore } from './parameter-transforms';
 import { exhaustiveGuard } from '../util/type-helpers';
 
@@ -97,8 +95,7 @@ export function useSlotGroup(
 }
 
 export const useSlotGroupsStore = defineStore('slot-groups', () => {
-  const config = inject<ReadonlyConfig | null>(CONFIG_INJECTION_KEY, null);
-  assert(config);
+  const { config } = useConfigStore();
 
   const internalSlotGroup = useInternalSlotGroup();
   const nonInternalSlotGroups = config.interaction.slotGroups.map(useSlotGroup);

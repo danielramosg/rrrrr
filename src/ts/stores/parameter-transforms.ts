@@ -1,18 +1,15 @@
 import type { DeepReadonly } from 'ts-essentials';
 import type { Ref } from 'vue';
 
-import { strict as assert } from 'assert';
 import { defineStore } from 'pinia';
-import { reactive, ref, computed, inject } from 'vue';
+import { reactive, ref, computed } from 'vue';
 
-import type {
-  ReadonlyConfig,
-  ParameterTransformConfig,
-} from '../config/config-schema';
+import type { ParameterTransformConfig } from '../config/config-schema';
 
 import { parameterIds } from '../circular-economy-model';
 import type { ModelElementIds, ModelElementObject } from '../model';
 import { isVarName } from '../util/is-var-name';
+import { useConfigStore } from './config';
 
 export type ParameterTransformFunction<P extends ModelElementIds> = <
   T extends ModelElementObject<P>,
@@ -72,8 +69,7 @@ function createReactiveParameterTransform({
 export const useParameterTransformsStore = defineStore(
   'parameter-transforms',
   () => {
-    const config = inject<ReadonlyConfig | null>(CONFIG_INJECTION_KEY, null);
-    assert(config);
+    const { config } = useConfigStore();
 
     const parameterTransforms = reactive(
       config.parameterTransforms.map((pt) =>
