@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { strict as assert } from 'assert';
 import { ref, computed, watch } from 'vue';
 import { onKeyStroke } from '@vueuse/core';
 
-import ModalConfirmDialog from './ModalConfirmDialog.vue';
 import ScoreItem from './ScoreItem.vue';
 import ControlPanel from './ControlPanel.vue';
 
@@ -52,23 +50,6 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
     ),
 );
 */
-
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-const modalConfirmDialog = ref<InstanceType<typeof ModalConfirmDialog> | null>(
-  null,
-);
-
-const openConfirmDialog = async (
-  message: string,
-  title?: string,
-): Promise<boolean> => {
-  assert(modalConfirmDialog.value !== null);
-  return await modalConfirmDialog.value.open(message, title);
-};
-
-defineExpose<{ openConfirmDialog: typeof openConfirmDialog }>({
-  openConfirmDialog,
-});
 </script>
 
 <template>
@@ -93,12 +74,6 @@ defineExpose<{ openConfirmDialog: typeof openConfirmDialog }>({
     :style="{ display: isControlPanelVisible ? 'block' : 'none' }"
     @keydown="$event.stopPropagation()"
   />
-  <ModalConfirmDialog
-    ref="modalConfirmDialog"
-    title="my title"
-    message="my message"
-  >
-  </ModalConfirmDialog>
 </template>
 
 <style lang="scss" scoped>
