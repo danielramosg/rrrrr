@@ -74,10 +74,10 @@ defineExpose<{ openConfirmDialog: typeof openConfirmDialog }>({
 </script>
 
 <template>
-  <div id="top-level-container" class="top-level-container">
-    <div id="illustration-panel"></div>
-    <div id="viz-panel">
-      <div id="model-viz-container"></div>
+  <div class="fill">
+    <div id="illustration-panel" class="illustration-panel fill"></div>
+    <div ref="" class="viz-panel fill">
+      <div id="model-viz-container" class="model-viz-container"></div>
       <ScoreItem
         title="Circularity"
         :value="circularityScore"
@@ -89,7 +89,7 @@ defineExpose<{ openConfirmDialog: typeof openConfirmDialog }>({
         class="score user-satisfaction"
       />
     </div>
-    <div id="slot-panel" class="slot-panel"></div>
+    <div id="slot-panel" class="slot-panel fill"></div>
     <ControlPanel
       :style="{ display: isControlPanelVisible ? 'block' : 'none' }"
     />
@@ -103,12 +103,16 @@ defineExpose<{ openConfirmDialog: typeof openConfirmDialog }>({
 </template>
 
 <style lang="scss" scoped>
-top-level-container > * {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.illustration-panel {
+  background-color: white;
+}
+
+.viz-panel {
+  & > #model-viz-container {
+    width: calc(1px * var(--svg-width));
+    transform: scale(var(--svg-scale-factor));
+    transform-origin: top left;
+  }
 }
 
 .score {
