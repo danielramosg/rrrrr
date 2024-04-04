@@ -91,6 +91,21 @@ const parameterIds = [
   'reuseIncentive',
 ] as const;
 
+const stocksFlowsMatrix = [
+  [null, null, null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, 10, null, 0, null, null, null, null],
+  [null, null, null, null, null, null, 8, null, null, null, null, 16],
+  [null, null, null, null, null, null, null, null, null, 14, null, null],
+  [null, null, null, null, 4, null, 9, null, null, null, 15, null],
+  [null, null, null, null, 1, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, 13, null, null, null],
+  [null, null, null, null, 2, null, null, null, null, null, null, null],
+  [null, null, null, null, 3, null, null, null, null, null, null, null],
+] as (number | null)[][];
+
 type StockIds = typeof stockIds;
 type StockId = ModelElementId<StockIds>;
 type Stocks = ModelElementObject<StockIds>;
@@ -441,4 +456,11 @@ export type {
   Record,
 };
 
-export { CircularEconomyModel, stockIds, flowIds, variableIds, parameterIds };
+export {
+  CircularEconomyModel,
+  stockIds,
+  flowIds,
+  variableIds,
+  parameterIds,
+  stocksFlowsMatrix,
+};

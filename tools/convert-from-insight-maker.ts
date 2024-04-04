@@ -47,6 +47,8 @@ ${'variableIdsString'}
 
 ${'parameterIdsString'}
 
+${'stocksFlowsMatrixIdsString'}
+
 type StockIds = typeof stockIds;
 type StockId = ModelElementId<StockIds>;
 type Stocks = ModelElementObject<StockIds>;
@@ -109,7 +111,7 @@ export type {
   Record,
 };
 
-export { CircularEconomyModel, stockIds, flowIds, variableIds, parameterIds };
+export { CircularEconomyModel, stockIds, flowIds, variableIds, parameterIds , stocksFlowsMatrix};
 `;
 
 const className = 'CircularEconomyModel';
@@ -146,6 +148,7 @@ type Stock = {
   name: string;
   initialValue: string;
   arcs: [];
+  IMid: number; // InsightMaker id
 };
 
 type Flow = {
@@ -155,6 +158,9 @@ type Flow = {
   arcs: string[];
   start: string;
   end: string;
+  IMid: number;
+  startIMid: number;
+  endIMid: number;
 };
 
 type Variable = {
@@ -162,6 +168,7 @@ type Variable = {
   name: string;
   formula: string;
   arcs: string[];
+  IMid: number;
 };
 
 type Parameter = {
@@ -169,6 +176,7 @@ type Parameter = {
   name: string;
   initialValue: string;
   arcs: [];
+  IMid: number;
 };
 
 type GraphNode = Stock | Flow | Variable | Parameter;
@@ -377,6 +385,7 @@ function convert(insightMakerModelXml: string) {
       name: transformNameToJs(s.name),
       initialValue: s.initial,
       arcs: [],
+      IMid: s.id,
     }),
   );
   stocks.sort(compareByName);
@@ -389,30 +398,61 @@ function convert(insightMakerModelXml: string) {
       arcs: getNamesFromExpression(f.rate),
       start: transformNameToJs(f.start?.name),
       end: transformNameToJs(f.end?.name),
+      IMid: f.id,
+      startIMid: f.start?.id,
+      endIMid: f.end?.id,
     }),
   );
   flows.sort(compareByName);
 
+  //   stocks.map((s, i) => console.log(`Stock ${i}: ${s.name} (IMid: ${s.IMid})`));
+
+  //   flows.map((f, i) =>
+  //     console.log(`
+  // Flow ${i}: ${f.name}
+  // Start: ${f.start} (IMid: ${f.startIMid}),
+  // End: ${f.end} (IMid: ${f.endIMid})`),
+  //   );
+
+  const stocksFlowsMatrix: (number | null)[][] = new Array(stocks.length)
+    .fill(null)
+    .map(() => new Array(stocks.length).fill(null) as null[]);
+  // The entry (i,j) is k whenever flow k joins stock i towards stock j, otherwise, it is null
+
+  flows.forEach((f, k) => {
+    const i = stocks.findIndex((s) => s.IMid === f.startIMid);
+    const j = stocks.findIndex((s) => s.IMid === f.endIMid);
+
+    if (i > -1 && j > -1) {
+      stocksFlowsMatrix[i][j] = k;
+      // console.log(`M(${i} ${j}) = ${k}`);
+    }
+  });
+
+  // console.log(stocksFlowsMatrix);
+
   const variables: Variable[] = im
     .findVariables()
     .filter((v) => v.value.includes('['))
-    .map((v: { name: string; value: string }) => ({
+    .map((v: { name: string; value: string; id: number }) => ({
       type: 'variable',
       name: transformNameToJs(v.name),
       formula: transformFormulaToJs(v.value),
       arcs: getNamesFromExpression(v.value),
+      IMid: v.id,
     }));
   variables.sort(compareByName);
 
   const parameters: Parameter[] = (
-    im.findVariables() as { name: string; value: string }[]
+    im.findVariables() as { name: string; value: string; id: number }[]
   )
     .filter((v) => !v.value.includes('['))
-    .map((p: { name: string; value: string }) => ({
+    .map((p: { name: string; value: string; id: number }) => ({
       type: 'parameter',
       name: transformNameToJs(p.name),
       initialValue: transformFormulaToJs(p.value),
       arcs: [],
+      IMid: p.id,
     }));
   parameters.sort(compareByName);
 
@@ -444,6 +484,10 @@ function convert(insightMakerModelXml: string) {
     parameters.map(({ name }) => name),
   );
 
+  const stocksFlowsMatrixIdsString = `const stocksFlowsMatrix = [[
+    ${stocksFlowsMatrix.map((r) => r.map((c) => (c === null ? `null` : c)).join(',')).join('],[')},
+  ]] as (number | null)[][]`;
+
   const initialStocksString = toInitialValueObject(
     'public static readonly initialStocks: Readonly<Stocks> = ',
     ';',
@@ -471,6 +515,7 @@ function convert(insightMakerModelXml: string) {
     flowIdsString,
     variableIdsString,
     parameterIdsString,
+    stocksFlowsMatrixIdsString,
     initialStocksString,
     initialParametersString,
     modelEvaluatorString,
