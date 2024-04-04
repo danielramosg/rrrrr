@@ -1,10 +1,9 @@
 import type { DeepReadonly } from 'ts-essentials';
-import type { Ref } from 'vue';
 
 import { strict as assert } from 'assert';
 import { defineStore } from 'pinia';
-import { inject, ref } from 'vue';
-import { reactiveComputed } from '@vueuse/core';
+import { inject, reactive } from 'vue';
+import { v4 as uuid4 } from 'uuid';
 
 import type {
   ActionCardSlotGroupConfig,
@@ -20,7 +19,8 @@ import { exhaustiveGuard } from '../util/type-helpers';
 
 export interface ParameterTransformState {
   readonly id: string;
-  active: Ref<boolean> | boolean;
+  readonly uuid: string;
+  active: boolean;
 }
 
 export interface SlotGroupParameterTransformsState {
@@ -28,17 +28,16 @@ export interface SlotGroupParameterTransformsState {
   parameterTransforms: ParameterTransformState[];
 }
 
-function useParameterTransformId(id: string): ParameterTransformState {
-  const active = ref(false);
-  return { id, active };
+export function useParameterTransformId(id: string): ParameterTransformState {
+  const uuid = uuid4();
+  const active = false;
+  return reactive({ id, uuid, active });
 }
 
 export function useInternalSlotGroup(): SlotGroupParameterTransformsState {
   const id = 'internal';
   const parameterTransformStore = useParameterTransformsStore();
-  const parameterTransforms: ParameterTransformState[] = reactiveComputed<
-    ParameterTransformState[]
-  >(() =>
+  const parameterTransforms: ParameterTransformState[] = reactive(
     parameterTransformStore.parameterTransforms.map(
       ({ id: parameterTransformId }) =>
         useParameterTransformId(parameterTransformId),
@@ -51,8 +50,8 @@ function useBasicSlotGroup(
   config: DeepReadonly<BasicSlotGroupConfig>,
 ): SlotGroupParameterTransformsState {
   const { id } = config;
-  const parameterTransforms = config.parameterTransformIds.map(
-    useParameterTransformId,
+  const parameterTransforms = reactive(
+    config.parameterTransformIds.map(useParameterTransformId),
   );
   return { id, parameterTransforms };
 }
@@ -61,8 +60,10 @@ function useActionCardSlotGroup(
   config: DeepReadonly<ActionCardSlotGroupConfig>,
 ): SlotGroupParameterTransformsState {
   const { id } = config;
-  const parameterTransforms = config.cards.map(({ parameterTransformId }) =>
-    useParameterTransformId(parameterTransformId),
+  const parameterTransforms = reactive(
+    config.cards.map(({ parameterTransformId }) =>
+      useParameterTransformId(parameterTransformId),
+    ),
   );
   return { id, parameterTransforms };
 }
@@ -71,8 +72,10 @@ function useEventCardSlotGroup(
   config: DeepReadonly<EventCardSlotGroupConfig>,
 ): SlotGroupParameterTransformsState {
   const { id } = config;
-  const parameterTransforms = config.cards.map(({ parameterTransformId }) =>
-    useParameterTransformId(parameterTransformId),
+  const parameterTransforms = reactive(
+    config.cards.map(({ parameterTransformId }) =>
+      useParameterTransformId(parameterTransformId),
+    ),
   );
   return { id, parameterTransforms };
 }
@@ -98,9 +101,9 @@ export const useSlotGroupsStore = defineStore('slot-groups', () => {
   assert(config);
 
   const internalSlotGroup = useInternalSlotGroup();
-  const configBasedSlotGroups = config.interaction.slotGroups.map(useSlotGroup);
+  const nonInternalSlotGroups = config.interaction.slotGroups.map(useSlotGroup);
 
-  const slotGroups = [internalSlotGroup, ...configBasedSlotGroups];
+  const slotGroups = [internalSlotGroup, ...nonInternalSlotGroups];
 
-  return { slotGroups, internalSlotGroup };
+  return { slotGroups, internalSlotGroup, nonInternalSlotGroups };
 });

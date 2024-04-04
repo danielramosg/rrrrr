@@ -1,23 +1,29 @@
 <script setup lang="ts">
+import type { ElementOf } from 'ts-essentials';
+
 import { strict as assert } from 'assert';
 import { onMounted, ref } from 'vue';
 import Sortable from 'sortablejs';
-import { v4 as uuid4 } from 'uuid';
 
 import type { Parameters } from '../../ts/circular-economy-model';
 
 import { useModelStore } from '../../ts/stores/model';
 import { useParameterTransformsStore } from '../../ts/stores/parameter-transforms';
-import { useSlotGroupsStore } from '../../ts/stores/slot-groups';
+import {
+  type ParameterTransformState,
+  useParameterTransformId,
+  useSlotGroupsStore,
+} from '../../ts/stores/slot-groups';
 
 const { transformedParametersExt } = useModelStore();
 const parameterTransformsStore = useParameterTransformsStore();
-const { slotGroups, internalSlotGroup } = useSlotGroupsStore();
+const { slotGroups, nonInternalSlotGroups, internalSlotGroup } =
+  useSlotGroupsStore();
 
 const newId = ref('');
 const newScript = ref('');
 
-function select(id: string) {
+function select({ id }: ParameterTransformState) {
   newId.value = id;
   newScript.value =
     parameterTransformsStore.parameterTransforms.find((pt) => pt.id === id)
@@ -26,9 +32,41 @@ function select(id: string) {
 
 function addOrModify(id: string, script: string) {
   parameterTransformsStore.addOrModify(id, script);
+
+  const internalIndex = internalSlotGroup.parameterTransforms.findIndex(
+    (pt) => pt.id === id,
+  );
+  if (internalIndex === -1) {
+    // The parameter transform is not yet in the internal slot group, so we add it
+    const newParameterTransformState: ParameterTransformState =
+      useParameterTransformId(id);
+    internalSlotGroup.parameterTransforms.push(newParameterTransformState);
+  }
 }
 
 function remove(id: string) {
+  const usedNonInternally =
+    nonInternalSlotGroups
+      .flatMap(({ parameterTransforms }) => parameterTransforms)
+      .findIndex((pt) => pt.id === id) !== -1;
+
+  if (usedNonInternally) {
+    alert(
+      'Cannot remove parameter transform that is still used in a non-internal slot group',
+    );
+    return;
+  }
+
+  const nextInternalIndex = () =>
+    internalSlotGroup.parameterTransforms.findIndex((pt) => pt.id === id);
+
+  for (
+    let internalIndex = nextInternalIndex();
+    internalIndex !== -1;
+    internalIndex = nextInternalIndex()
+  ) {
+    internalSlotGroup.parameterTransforms.splice(internalIndex, 1);
+  }
   parameterTransformsStore.remove(id);
 }
 
@@ -36,14 +74,28 @@ function move(from: number, to: number) {
   parameterTransformsStore.move(from, to);
 }
 
-const createTooltip = (slotGroupId: string, index: number): string => {
-  const slotGroupTransformedParametersExt = transformedParametersExt.find(
-    ({ id }) => id === slotGroupId,
-  );
-  assert(typeof slotGroupTransformedParametersExt !== 'undefined');
+function deactivateAllInternal() {
+  internalSlotGroup.parameterTransforms.forEach((pt) => {
+    // eslint-disable-next-line no-param-reassign
+    pt.active = false;
+  });
+}
 
-  const step = slotGroupTransformedParametersExt.steps[index];
-  assert(typeof step !== 'undefined');
+const createTooltip = (
+  slotGroup: ElementOf<typeof slotGroups>,
+  parameterTransformState: ParameterTransformState,
+): string => {
+  const slotGroupIndex = slotGroups.findIndex((sg) => sg === slotGroup);
+  assert(slotGroupIndex !== -1);
+  const slotGroupTransformedParametersExt =
+    transformedParametersExt[slotGroupIndex];
+
+  const parameterTransformIndex = slotGroup.parameterTransforms.findIndex(
+    (pts) => pts === parameterTransformState,
+  );
+  assert(parameterTransformIndex !== -1);
+
+  const step = slotGroupTransformedParametersExt.steps[parameterTransformIndex];
   const { active, script, diff } = step;
 
   const pToS = (p: Partial<Parameters>) => JSON.stringify(p, null, 2);
@@ -76,34 +128,27 @@ onMounted(() => {
       <div ref="availableContainer" class="available">
         <div
           class="parameter-transform"
-          v-for="(
-            { id, uuid }, index
-          ) in internalSlotGroup.parameterTransforms.map((pt) => ({
-            ...pt,
-            uuid: uuid4(),
-          }))"
-          :key="id"
-          :data-id="id"
-          :title="createTooltip(internalSlotGroup.id, index)"
+          v-for="pt in internalSlotGroup.parameterTransforms"
+          :key="pt.uuid"
+          :id="pt.uuid"
+          :data-id="pt.id"
+          :title="createTooltip(internalSlotGroup, pt)"
         >
-          <input
-            type="checkbox"
-            :id="`${internalSlotGroup.id}-${id}-checkbox-${uuid}`"
-            :value="id"
-            v-bind="() => internalSlotGroup.parameterTransforms[index].active"
-            @input="
-              internalSlotGroup.parameterTransforms[index].active =
-                !internalSlotGroup.parameterTransforms[index].active
-            "
-          />
-          <label
-            :for="`${internalSlotGroup.id}-${id}-checkbox-${uuid}`"
-            class="draggable"
-            >{{ id }}</label
+          <label class="draggable">
+            <input type="checkbox" :value="pt.id" v-model="pt.active" /><span
+              class="draggable"
+              >{{ pt.id }}</span
+            ></label
           >
-          <span class="edit" @click="select(id)">✎</span>
+          <span class="edit" @click="select(pt)">✎</span>
         </div>
       </div>
+      <br />
+      <input
+        type="button"
+        value="Deactivate active internal transforms"
+        @click="deactivateAllInternal()"
+      />
     </div>
     <div>
       <div>
@@ -127,42 +172,31 @@ onMounted(() => {
           @click="addOrModify(newId, newScript)"
         />
         <input type="button" value="Delete" @click="remove(newId)" />
-        <br />
-        <input
-          type="button"
-          value="Clear all active transforms"
-          id="clear-all-active-parameter-transforms-button"
-        />
       </div>
       <div class="slot-group-transforms">
         <div
-          v-for="{ id: sId, parameterTransforms } in slotGroups.filter(
-            ({ id }) => id !== internalSlotGroup.id,
-          )"
-          :key="sId"
-          :data-id="sId"
+          v-for="slotGroup in nonInternalSlotGroups"
+          :key="slotGroup.id"
+          :data-id="slotGroup.id"
         >
           <br />
-          Slot group '{{ sId }}':
+          Slot group '{{ slotGroup.id }}':
           <div class="available">
             <div
-              class="parameter-transform"
-              v-for="({ id: pId, uuid }, pIndex) in parameterTransforms.map(
-                (pt) => ({ ...pt, uuid: uuid4() }),
-              )"
-              :key="pId"
-              :data-id="pId"
-              :title="createTooltip(sId, pIndex)"
+              v-for="pt in slotGroup.parameterTransforms"
+              :key="pt.uuid"
+              :data-id="pt.id"
+              :title="createTooltip(slotGroup, pt)"
             >
-              <input
-                type="checkbox"
-                :id="`${sId}-${pId}-checkbox-${uuid}`"
-                :value="pId"
-                v-bind="() => parameterTransforms[pIndex].active"
-                disabled
-              />
-              <label :for="`${sId}-${pId}-checkbox-${uuid}`">{{ pId }}</label>
-              <span class="edit" @click="select(pId)">✎</span>
+              <label>
+                <input
+                  type="checkbox"
+                  :value="pt.id"
+                  v-model="pt.active"
+                  disabled
+                />{{ pt.id }}</label
+              >
+              <span class="edit" @click="select(pt)">✎</span>
             </div>
           </div>
         </div>
@@ -223,13 +257,13 @@ onMounted(() => {
         white-space: nowrap;
       }
 
-      & input,
+      & input[type='checkbox'],
       & .edit {
         margin-left: 0.5ex;
         margin-right: 0.5ex;
       }
 
-      & input:not(:disabled),
+      & input[type='checkbox']:not(:disabled),
       & .edit {
         cursor: pointer;
       }
