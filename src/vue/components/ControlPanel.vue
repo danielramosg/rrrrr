@@ -1,13 +1,19 @@
 <script setup lang="ts">
+import { defineProps, ref } from 'vue';
+
 import ControlPanelTabInitialParameters from './ControlPanelTabInitialParameters.vue';
 import ControlPanelTabParameterTransforms from './ControlPanelTabParameterTransforms.vue';
 import ControlPanelTabCharts from './ControlPanelTabCharts.vue';
 import ControlPanelTabImportExport from './ControlPanelTabImportExport.vue';
 import ControlPanelTabMisc from './ControlPanelTabMisc.vue';
+
+const props = defineProps({ disabled: Boolean });
+
+const diagramsTabDisabled = ref(true);
 </script>
 
 <template>
-  <div class="control-panel">
+  <div class="control-panel" :class="{ hidden: props.disabled }">
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button
@@ -18,7 +24,7 @@ import ControlPanelTabMisc from './ControlPanelTabMisc.vue';
           type="button"
           role="tab"
           aria-controls="nav-initial-parameters"
-          aria-selected="true"
+          aria-selected="false"
         >
           Initial parameters
         </button>
@@ -42,7 +48,11 @@ import ControlPanelTabMisc from './ControlPanelTabMisc.vue';
           type="button"
           role="tab"
           aria-controls="nav-diagrams"
-          aria-selected="true"
+          aria-selected="false"
+          v-on="{
+            'hidden.bs.tab': () => (diagramsTabDisabled = true),
+            'show.bs.tab': () => (diagramsTabDisabled = false),
+          }"
         >
           Diagrams
         </button>
@@ -54,7 +64,7 @@ import ControlPanelTabMisc from './ControlPanelTabMisc.vue';
           type="button"
           role="tab"
           aria-controls="nav-import-export"
-          aria-selected="true"
+          aria-selected="false"
         >
           Import/Export
         </button>
@@ -98,7 +108,9 @@ import ControlPanelTabMisc from './ControlPanelTabMisc.vue';
         aria-labelledby="nav-diagrams-tab"
         tabindex="0"
       >
-        <ControlPanelTabCharts />
+        <ControlPanelTabCharts
+          :disabled="props.disabled || diagramsTabDisabled"
+        />
       </div>
       <div
         class="tab-pane show"

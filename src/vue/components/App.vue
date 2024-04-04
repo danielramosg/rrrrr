@@ -25,10 +25,10 @@ watch(
   },
 );
 
-const isControlPanelVisible = ref(false);
+const enableControlPanel = ref(false);
 
 const toggleControlPanel = () => {
-  isControlPanelVisible.value = !isControlPanelVisible.value;
+  enableControlPanel.value = !enableControlPanel.value;
 };
 
 onKeyStroke('c', toggleControlPanel);
@@ -71,8 +71,8 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
     <div id="slot-panel" class="slot-panel fill"></div>
   </div>
   <ControlPanel
-    :style="{ display: isControlPanelVisible ? 'block' : 'none' }"
     @keydown="$event.stopPropagation()"
+    :disabled="!enableControlPanel"
   />
 </template>
 
