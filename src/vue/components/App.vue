@@ -29,13 +29,11 @@ watch(
 
 const isControlPanelVisible = ref(false);
 
-onKeyStroke(
-  'c',
-  () => {
-    isControlPanelVisible.value = !isControlPanelVisible.value;
-  },
-  { target: document },
-);
+const toggleControlPanel = () => {
+  isControlPanelVisible.value = !isControlPanelVisible.value;
+};
+
+onKeyStroke('c', toggleControlPanel);
 
 const circularityScore = computed(() => Scores.circularity(modelStore.record));
 const userSatisfactionScore = computed(() =>
@@ -90,10 +88,11 @@ defineExpose<{ openConfirmDialog: typeof openConfirmDialog }>({
       />
     </div>
     <div id="slot-panel" class="slot-panel fill"></div>
-    <ControlPanel
-      :style="{ display: isControlPanelVisible ? 'block' : 'none' }"
-    />
   </div>
+  <ControlPanel
+    :style="{ display: isControlPanelVisible ? 'block' : 'none' }"
+    @keydown="$event.stopPropagation()"
+  />
   <ModalConfirmDialog
     ref="modalConfirmDialog"
     title="my title"
