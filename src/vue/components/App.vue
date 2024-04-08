@@ -4,6 +4,7 @@ import { onKeyStroke } from '@vueuse/core';
 
 import ScoreItem from './ScoreItem.vue';
 import ControlPanel from './ControlPanel.vue';
+import TriggeredOverlay from './TriggeredOverlay.vue';
 import SlotGroup from './SlotGroup.vue';
 
 import { useConfigStore } from '../../ts/stores/config';
@@ -57,7 +58,14 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
 
 <template>
   <div class="fill">
-    <div id="illustration-panel" class="illustration-panel fill"></div>
+    <div id="illustration-panel" class="illustration-panel fill">
+      <TriggeredOverlay
+        v-for="triggerConfig in config.triggers"
+        :key="triggerConfig.id"
+        :trigger-config="triggerConfig"
+      >
+      </TriggeredOverlay>
+    </div>
     <div ref="" class="viz-panel fill">
       <div id="model-viz-container" class="model-viz-container"></div>
       <ScoreItem
@@ -96,6 +104,10 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
     transform: scale(var(--svg-scale-factor));
     transform-origin: top left;
   }
+}
+
+.slot-panel {
+  touch-action: none;
 }
 
 .score {

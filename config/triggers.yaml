@@ -1,23 +1,9 @@
 triggers:
-  - id: test-1
+  - id: background
     events:
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-  - id: test-2
+      - condition: 'true'
+        url: 'background_x0_y0.webp'
+  - id: government
     events:
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
+      - condition: 'parameters.breakRate > 0.5 /* just for testing */'
+        url: 'government_static_x794_y1705.webp'

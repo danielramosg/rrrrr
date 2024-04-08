@@ -124,12 +124,13 @@ const SlotGroupSchema = suretype(
   ]),
 );
 
+const POSITIONAL_ASSET_REGEX = /_x[0-9]+_y[0-9]+\.[a-zA-Z0-9]+$/g;
 const TriggerConditionSchema = suretype(
   { name: 'TriggerConditionConfig' },
   v
     .object({
       condition: v.string().required(),
-      url: v.string().required(),
+      url: v.string().matches(POSITIONAL_ASSET_REGEX).required(),
     })
     .additional(false)
     .required(),
@@ -153,7 +154,7 @@ const ConfigSchema = suretype(
   v
     .object({
       general: v
-        .object({ backgroundImage: v.string().required() })
+        .object({ assetBaseDir: v.string().required() })
         .additional(false)
         .required(),
       model: v

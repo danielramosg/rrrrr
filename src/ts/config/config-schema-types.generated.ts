@@ -126,7 +126,7 @@ export interface TriggerConfig {
 
 export interface Config {
   general: {
-    backgroundImage: string;
+    assetBaseDir: string;
   };
   model: {
     initialParameters: InitialParametersConfig;

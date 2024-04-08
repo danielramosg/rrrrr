@@ -5,10 +5,10 @@ properties:
   general:
     type: object
     properties:
-      backgroundImage:
+      assetBaseDir:
         type: string
     required:
-      - backgroundImage
+      - assetBaseDir
     additionalProperties: false
   model:
     type: object
@@ -356,6 +356,7 @@ definitions:
         type: string
       url:
         type: string
+        pattern: _x[1-9][0-9]*_y[1-9][0-9]*\.[a-zA-Z0-9]+$
     required:
       - condition
       - url

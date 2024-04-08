@@ -117,15 +117,6 @@ async function init(): Promise<CircularEconomyApi> {
 
   game.runner.tick();
 
-  const backgroundElement = document.createElement('img');
-  backgroundElement.src = config.general.backgroundImage;
-
-  const illustrationPanelElement = guardedQuerySelector(
-    HTMLElement,
-    '#illustration-panel',
-  );
-  illustrationPanelElement.appendChild(backgroundElement);
-
   const slotTracker = setupMarkerPanel();
   slotTracker.slotActivate$.subscribe(({ slotId }) => {
     const slot = SLOT_DEFINITIONS.find((sd) => sd.id === slotId);
