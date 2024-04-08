@@ -7,7 +7,9 @@ import TuioMarkerPanel from './TuioMarkerPanel.vue';
 import ScoreItem from './ScoreItem.vue';
 import ControlPanel from './ControlPanel.vue';
 import TriggeredOverlay from './TriggeredOverlay.vue';
-import SlotGroup from './SlotGroup.vue';
+import BasicSlotGroup from './BasicSlotGroup.vue';
+import ActionCardSlotGroup from './ActionCardSlotGroup.vue';
+import EventCardSlotGroup from './EventCardSlotGroup.vue';
 
 import { useOptionStore } from '../../ts/stores/options';
 import { useConfigStore } from '../../ts/stores/config';
@@ -84,17 +86,29 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
       />
     </div>
     <div class="slot-panel fill">
-      <SlotGroup
+      <template
         v-for="slotGroupConfig in config.interaction.slotGroups"
         :key="slotGroupConfig.id"
-        :slot-group-config="slotGroupConfig"
-      ></SlotGroup>
+      >
+        <BasicSlotGroup
+          :slot-group-config="slotGroupConfig"
+          v-if="slotGroupConfig.type === 'basic'"
+        ></BasicSlotGroup>
+        <ActionCardSlotGroup
+          :slot-group-config="slotGroupConfig"
+          v-if="slotGroupConfig.type === 'action-card'"
+        ></ActionCardSlotGroup>
+        <EventCardSlotGroup
+          :slot-group-config="slotGroupConfig"
+          v-if="slotGroupConfig.type === 'event-card'"
+        ></EventCardSlotGroup>
+      </template>
       <PointerMarkerPanel v-if="options.usePointerMarkers"></PointerMarkerPanel>
       <TuioMarkerPanel
-        v-if="options.useTuioMarkers"
-        class="pointer-events-fallthrough"
+          v-if="options.useTuioMarkers"
+          class="pointer-events-fallthrough"
       ></TuioMarkerPanel>
-    </div>
+      </div>
   </div>
   <ControlPanel
     @keydown="$event.stopPropagation()"
