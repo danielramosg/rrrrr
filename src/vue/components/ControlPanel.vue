@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue';
+import { ref } from 'vue';
 
 import ControlPanelTabInitialParameters from './ControlPanelTabInitialParameters.vue';
 import ControlPanelTabParameterTransforms from './ControlPanelTabParameterTransforms.vue';

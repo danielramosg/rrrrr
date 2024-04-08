@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { strict as assert } from 'assert';
-import { ref, watchEffect, onMounted, defineProps, watch } from 'vue';
+import { ref, watchEffect, onMounted } from 'vue';
 import {
   Chart as ChartJs,
   BarController,
