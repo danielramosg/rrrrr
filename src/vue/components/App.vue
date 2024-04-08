@@ -4,12 +4,15 @@ import { onKeyStroke } from '@vueuse/core';
 
 import ScoreItem from './ScoreItem.vue';
 import ControlPanel from './ControlPanel.vue';
+import SlotGroup from './SlotGroup.vue';
 
+import { useConfigStore } from '../../ts/stores/config';
 import { useAppStore } from '../../ts/stores/app';
 import { useModelStore } from '../../ts/stores/model';
 import { Scores } from '../../ts/scores';
 import { ignorePromise } from '../../ts/util/ignore-promise';
 
+const { config } = useConfigStore();
 const appStore = useAppStore();
 const modelStore = useModelStore();
 
@@ -68,7 +71,13 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
         class="score user-satisfaction"
       />
     </div>
-    <div id="slot-panel" class="slot-panel fill"></div>
+    <div id="slot-panel" class="slot-panel fill">
+      <SlotGroup
+        v-for="slotGroupConfig in config.interaction.slotGroups"
+        :key="slotGroupConfig.id"
+        :slot-group-config="slotGroupConfig"
+      ></SlotGroup>
+    </div>
   </div>
   <ControlPanel
     @keydown="$event.stopPropagation()"
