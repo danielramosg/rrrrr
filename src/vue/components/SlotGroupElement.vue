@@ -2,7 +2,7 @@
 import type { DeepReadonly, Writable } from 'ts-essentials';
 
 import { difference } from 'lodash';
-import { ref, computed, watchEffect } from 'vue';
+import { ref, computed, watchEffect, watch } from 'vue';
 import { useArrayFilter } from '@vueuse/core';
 
 import type { Marker } from '../../ts/stores/marker';
@@ -55,6 +55,23 @@ watchEffect(() => {
 });
 
 const isActive = computed(() => containedMarkers.value.length > 0);
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const emit = defineEmits<{
+  activate: [ids: { slotId: string; slotGroupId: string }];
+  deactivate: [ids: { slotId: string; slotGroupId: string }];
+}>();
+
+watch(
+  () => isActive.value,
+  (isActiveNow, isActivePrev) => {
+    if (isActiveNow && !isActivePrev) {
+      emit('activate', { slotId, slotGroupId: slotGroupId.value });
+    } else {
+      emit('deactivate', { slotId, slotGroupId: slotGroupId.value });
+    }
+  },
+);
 </script>
 
 <template>
