@@ -1,76 +1,13 @@
 import { strict as assert } from 'assert';
-import {
-  Record,
-  stocksFlowsMatrix,
-  stockIds,
-  flowIds,
-} from './circular-economy-model';
-
-console.log(stocksFlowsMatrix);
-
-// Create Stock selection vector
-
-const selectedStocks = [
-  'phonesInUse',
-  'supplyOfBrokenPhones',
-  'supplyOfDisposedPhones',
-  'supplyOfHibernatingPhones',
-  'supplyOfNewlyProducedPhones',
-  'supplyOfRecycledMaterials',
-  'supplyOfRefurbishedPhones',
-  'supplyOfRepairedPhones',
-];
-const stockSelectionVector: (number | null)[] = new Array(stockIds.length)
-  .fill(null)
-  .map((s, i) => (selectedStocks.includes(stockIds[i]) ? 1 : 0));
-
-console.log(stockSelectionVector);
-
-// Create Initial state vector
-const initialStateStocks = ['supplyOfNewlyProducedPhones'];
-const stockStateVector: (number | null)[] = new Array(stockIds.length)
-  .fill(null)
-  .map((s, i) => (initialStateStocks.includes(stockIds[i]) ? 1 : 0));
-
-console.log(stockStateVector);
+import { Record } from './circular-economy-model';
+import { expectedLifetime } from './expected-lifetime';
 
 class Scores {
   static circularity(record: Record) {
-    console.log('\n New time step');
-
-    // Create transition matrix
-    const T = stocksFlowsMatrix
-      .map((r) =>
-        r.map((k) =>
-          k !== null
-            ? record.flows[flowIds[k] as keyof typeof record.flows]
-            : 0,
-        ),
-      ) // changed flow ids by flow values from the record
-      .map((r, i) => {
-        const outFlows = r.reduce((acc, curr) => acc + curr, 0);
-        const srcStock =
-          record.stocks[stockIds[i] as keyof typeof record.stocks];
-
-        if (srcStock < outFlows) {
-          console.log(
-            `Warning: outflows surpassing stock value at row ${i} (stock: ${stockIds[i]})`,
-          );
-          return r.map((k, j) => (i === j ? 0 : k / outFlows));
-        }
-
-        return r.map((k, j) =>
-          i === j ? 1 - outFlows / srcStock : k / srcStock,
-        );
-      }); // added loops and normalization
-
-    console.log('Transition matrix:');
-    console.log(T);
-
-    console.log('Record:');
-    console.log(record);
-
-    return 0.5;
+    const timer = performance.now();
+    const value = expectedLifetime(record);
+    console.log(`Elapsed time (ms): ${performance.now() - timer}`);
+    return value;
   }
 
   static circularity_bak(record: Record) {

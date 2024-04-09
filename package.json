@@ -123,6 +123,7 @@
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "long": "^5.2.3",
+    "mathjs": "^12.4.1",
     "os-browserify": "^0.3.0",
     "osc": "^2.4.4",
     "path-browserify": "^1.0.1",
