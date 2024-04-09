@@ -77,36 +77,35 @@ export interface SlotWithCardConfig {
   };
 }
 
-export interface I18NStringConfig {
-  [key: string]: string;
-}
-
-export interface ActionCardConfig {
+export interface CardConfig {
   parameterTransformId: string;
   url: string;
-  title: I18NStringConfig;
-  description: I18NStringConfig;
 }
 
 export interface ActionCardSlotGroupConfig {
   id: string;
   type: 'action-card';
   slots: SlotWithCardConfig[];
-  cards: ActionCardConfig[];
+  cards: CardConfig[];
 }
 
-export interface EventCardConfig {
-  parameterTransformId: string;
-  url: string;
-  title: I18NStringConfig;
-  description: I18NStringConfig;
+export interface CardSlotConfig {
+  id: string;
+  x: number;
+  y: number;
+  angle: number;
 }
 
 export interface EventCardSlotGroupConfig {
   id: string;
+  minDelayMs: number;
+  maxDelayMs: number;
+  minDurationMs: number;
+  maxDurationMs: number;
   type: 'event-card';
-  slots: SlotWithCardConfig[];
-  cards: EventCardConfig[];
+  markerSlot: BasicSlotConfig;
+  cardSlots: CardSlotConfig[];
+  cards: CardConfig[];
 }
 
 export type SlotGroup =

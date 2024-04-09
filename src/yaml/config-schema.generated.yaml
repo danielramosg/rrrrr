@@ -258,26 +258,17 @@ definitions:
       - 'y'
       - card
     additionalProperties: false
-  I18NStringConfig:
-    type: object
-    additionalProperties:
-      type: string
-  ActionCardConfig:
+  CardConfig:
     type: object
     properties:
       parameterTransformId:
         type: string
       url:
         type: string
-      title:
-        $ref: '#/definitions/I18NStringConfig'
-      description:
-        $ref: '#/definitions/I18NStringConfig'
+        pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
     required:
       - parameterTransformId
       - url
-      - title
-      - description
     additionalProperties: false
   ActionCardSlotGroupConfig:
     type: object
@@ -296,29 +287,30 @@ definitions:
       cards:
         type: array
         items:
-          $ref: '#/definitions/ActionCardConfig'
+          $ref: '#/definitions/CardConfig'
     required:
       - id
       - type
       - slots
       - cards
     additionalProperties: false
-  EventCardConfig:
+  CardSlotConfig:
     type: object
     properties:
-      parameterTransformId:
+      id:
         type: string
-      url:
-        type: string
-      title:
-        $ref: '#/definitions/I18NStringConfig'
-      description:
-        $ref: '#/definitions/I18NStringConfig'
+      x:
+        type: number
+      'y':
+        type: number
+      angle:
+        type: number
+        default: 0
     required:
-      - parameterTransformId
-      - url
-      - title
-      - description
+      - id
+      - x
+      - 'y'
+      - angle
     additionalProperties: false
   EventCardSlotGroupConfig:
     type: object
@@ -326,22 +318,41 @@ definitions:
       id:
         type: string
         pattern: ^((?!internal).)*$
+      minDelayMs:
+        type: number
+        minimum: 0
+      maxDelayMs:
+        type: number
+        minimum: 0
+      minDurationMs:
+        type: number
+        minimum: 0
+      maxDurationMs:
+        type: number
+        minimum: 0
       type:
         type: string
         enum:
           - event-card
-      slots:
+      markerSlot:
+        $ref: '#/definitions/BasicSlotConfig'
+      cardSlots:
         type: array
         items:
-          $ref: '#/definitions/SlotWithCardConfig'
+          $ref: '#/definitions/CardSlotConfig'
       cards:
         type: array
         items:
-          $ref: '#/definitions/EventCardConfig'
+          $ref: '#/definitions/CardConfig'
     required:
       - id
+      - minDelayMs
+      - maxDelayMs
+      - minDurationMs
+      - maxDurationMs
       - type
-      - slots
+      - markerSlot
+      - cardSlots
       - cards
     additionalProperties: false
   SlotGroup:

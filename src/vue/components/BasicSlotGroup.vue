@@ -7,7 +7,7 @@ import { ref, watchEffect } from 'vue';
 import type { BasicSlotGroupConfig } from '../../ts/config/config-schema';
 
 import { useSlotGroupsStore } from '../../ts/stores/slot-groups';
-import SlotGroupElement from './SlotGroupElement.vue';
+import MarkerSlot from './MarkerSlot.vue';
 
 const props = defineProps<{
   readonly slotGroupConfig: DeepReadonly<BasicSlotGroupConfig>;
@@ -33,7 +33,7 @@ watchEffect(() => {
 
 <template>
   <div :data-slot-group-id="slotGroupConfig.id">
-    <SlotGroupElement
+    <MarkerSlot
       v-for="slotConfig in slotGroupConfig.slots"
       :key="slotConfig.id"
       :slot-group-id="slotGroupConfig.id"

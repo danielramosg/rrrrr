@@ -1,10 +1,8 @@
 import { v, suretype } from 'suretype';
 import { stockIds, parameterIds } from '../circular-economy-model';
 
-const I18NStringSchema = suretype(
-  { name: 'I18NStringConfig' },
-  v.object({}).additional(v.string()),
-);
+const POSITIONAL_ASSET_REGEX = /_x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$/g;
+const AssetUrlSchema = v.string().matches(POSITIONAL_ASSET_REGEX);
 
 const ParameterTransformSchema = suretype(
   { name: 'ParameterTransformConfig' },
@@ -64,18 +62,27 @@ const SlotWithCardSchema = suretype(
     .additional(false),
 );
 
-const CardSchema = v
-  .object({
-    parameterTransformId: v.string().required(),
-    url: v.string().required(),
-    title: I18NStringSchema.required(),
-    description: I18NStringSchema.required(),
-  })
-  .additional(false);
+const CardSlotSchema = suretype(
+  { name: 'CardSlotConfig' },
+  v
+    .object({
+      id: v.string().required(),
+      x: v.number().required(),
+      y: v.number().required(),
+      angle: v.number().default(0).required(),
+    })
+    .additional(false),
+);
 
-const ActionCardSchema = suretype({ name: 'ActionCardConfig' }, CardSchema);
-
-const EventCardSchema = suretype({ name: 'EventCardConfig' }, CardSchema);
+const CardSchema = suretype(
+  { name: 'CardConfig' },
+  v
+    .object({
+      parameterTransformId: v.string().required(),
+      url: AssetUrlSchema.required(),
+    })
+    .additional(false),
+);
 
 const SlotGroupIdSchema = v.string().matches(/^((?!internal).)*$/g);
 
@@ -98,7 +105,7 @@ const ActionCardSlotGroupSchema = suretype(
       id: SlotGroupIdSchema.required(),
       type: v.string().enum('action-card').required(),
       slots: v.array(SlotWithCardSchema).required(),
-      cards: v.array(ActionCardSchema).required(),
+      cards: v.array(CardSchema).required(),
     })
     .additional(false),
 );
@@ -108,9 +115,14 @@ const EventCardSlotGroupSchema = suretype(
   v
     .object({
       id: SlotGroupIdSchema.required(),
+      minDelayMs: v.number().gte(0).required(),
+      maxDelayMs: v.number().gte(0).required(),
+      minDurationMs: v.number().gte(0).required(),
+      maxDurationMs: v.number().gte(0).required(),
       type: v.string().enum('event-card').required(),
-      slots: v.array(SlotWithCardSchema).required(),
-      cards: v.array(EventCardSchema).required(),
+      markerSlot: BasicSlotSchema.required(),
+      cardSlots: v.array(CardSlotSchema).required(),
+      cards: v.array(CardSchema).required(),
     })
     .additional(false),
 );
@@ -124,13 +136,12 @@ const SlotGroupSchema = suretype(
   ]),
 );
 
-const POSITIONAL_ASSET_REGEX = /_x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$/g;
 const TriggerConditionSchema = suretype(
   { name: 'TriggerConditionConfig' },
   v
     .object({
       condition: v.string().required(),
-      url: v.string().matches(POSITIONAL_ASSET_REGEX).required(),
+      url: AssetUrlSchema.required(),
     })
     .additional(false)
     .required(),
