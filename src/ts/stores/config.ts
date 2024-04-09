@@ -16,5 +16,21 @@ export const useConfigStore = defineStore('config', () => {
 
   const toAssetUrl = (path: string) => new URL(path, assetBaseUrl);
 
-  return { config, assetBaseUrl, toAssetUrl };
+  const POSITIONAL_ASSET_REGEX =
+    /_x([+-]?[0-9]+)_y([+-]?[0-9]+)\.[a-zA-Z0-9]+$/;
+  const extractAssetPosition = (
+    url: string | URL,
+  ): { x: number; y: number } => {
+    if (typeof url !== 'string') return extractAssetPosition(url.href);
+
+    const matches = url.match(POSITIONAL_ASSET_REGEX);
+    if (matches === null || matches.length !== 3) return { x: 0, y: 0 };
+
+    const x = Number.parseInt(matches[1], 10);
+    const y = Number.parseInt(matches[2], 10);
+
+    return { x, y };
+  };
+
+  return { config, assetBaseUrl, toAssetUrl, extractAssetPosition };
 });

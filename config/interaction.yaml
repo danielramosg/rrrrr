@@ -28,37 +28,13 @@ interaction:
           }
       cards:
         - parameterTransformId: technology-card-1
-          url: technology-card-1.png
-          title:
-            en: 'T-Tech-en-1'
-            de: 'T-Tech-de-1'
-          description:
-            en: 'D-Tech-en-1'
-            de: 'D-Tech-de-1'
+          url: card_template_x-8_y-15.png
         - parameterTransformId: technology-card-2
-          url: technology-card-2.png
-          title:
-            en: 'T-Tech-en-2'
-            de: 'T-Tech-de-2'
-          description:
-            en: 'D-Tech-en-2'
-            de: 'D-Tech-de-2'
+          url: card_template_x-8_y-15.png
         - parameterTransformId: technology-card-3
-          url: technology-card-3.png
-          title:
-            en: 'T-Tech-en-3'
-            de: 'T-Tech-de-3'
-          description:
-            en: 'D-Tech-en-3'
-            de: 'D-Tech-de-3'
+          url: card_template_x-8_y-15.png
         - parameterTransformId: technology-card-4
-          url: technology-card-4.png
-          title:
-            en: 'T-Tech-en-4'
-            de: 'T-Tech-de-4'
-          description:
-            en: 'D-Tech-en-4'
-            de: 'D-Tech-de-4'
+          url: card_template_x-8_y-15.png
     - id: policy
       type: action-card
       slots:
@@ -78,78 +54,33 @@ interaction:
           card: { x: 0, y: 0, angle: 0 }
       cards:
         - parameterTransformId: policy-card-1
-          url: policy-card-1.png
-          title:
-            en: 'T-Pol-en-1'
-            de: 'T-Pol-de-1'
-          description:
-            en: 'D-Pol-en-1'
-            de: 'D-Pol-de-1'
+          url: card_template_x-8_y-15.png
         - parameterTransformId: policy-card-2
-          url: policy-card-2.png
-          title:
-            en: 'T-Pol-en-2'
-            de: 'T-Pol-de-2'
-          description:
-            en: 'D-Pol-en-2'
-            de: 'D-Pol-de-2'
+          url: card_template_x-8_y-15.png
         - parameterTransformId: policy-card-3
-          url: policy-card-3.png
-          title:
-            en: 'T-Pol-en-3'
-            de: 'T-Pol-de-3'
-          description:
-            en: 'D-Pol-en-3'
-            de: 'D-Pol-de-3'
+          url: card_template_x-8_y-15.png
         - parameterTransformId: policy-card-4
-          url: policy-card-4.png
-          title:
-            en: 'T-Pol-en-4'
-            de: 'T-Pol-de-4'
-          description:
-            en: 'D-Pol-en-4'
-            de: 'D-Pol-de-4'
+          url: card_template_x-8_y-15.png
     - id: event
       type: event-card
-      slots:
-        - id: event
-          x: 2066.8
-          y: 154.8
-          angle: 0
-          card: { x: 0, y: 0, angle: 0 }
+      minDelayMs: 1000
+      maxDelayMs: 2000
+      minDurationMs: 5000
+      maxDurationMs: 10000
+      markerSlot: { id: event, x: 2066.8, y: 154.8, angle: 0 }
+      cardSlots:
+        - { id: event-slot-1, x: 1650, y: 60, angle: 0 }
+        - { id: event-slot-2, x: 1400, y: 60, angle: 0 }
+        - { id: event-slot-3, x: 1150, y: 60, angle: 0 }
       cards:
         - parameterTransformId: event-card-1
-          url: event-card-1.png
-          title:
-            en: 'T-Ev-en-1'
-            de: 'T-Ev-de-1'
-          description:
-            en: 'D-Ev-en-1'
-            de: 'D-Ev-de-1'
+          url: card_template_x-8_y-15.png
         - parameterTransformId: event-card-2
-          url: event-card-2.png
-          title:
-            en: 'T-Ev-en-2'
-            de: 'T-Ev-de-2'
-          description:
-            en: 'D-Ev-en-2'
-            de: 'D-Ev-de-2'
+          url: card_template_x-8_y-15.png
         - parameterTransformId: event-card-3
-          url: event-card-3.png
-          title:
-            en: 'T-Ev-en-3'
-            de: 'T-Ev-de-3'
-          description:
-            en: 'D-Ev-en-3'
-            de: 'D-Ev-de-3'
+          url: card_template_x-8_y-15.png
         - parameterTransformId: event-card-4
-          url: event-card-4.png
-          title:
-            en: 'T-Ev-en-4'
-            de: 'T-Ev-de-4'
-          description:
-            en: 'D-Ev-en-4'
-            de: 'D-Ev-de-4'
+          url: card_template_x-8_y-15.png
     - id: reduce
       type: basic
       slots:

@@ -12,11 +12,7 @@ const props = defineProps<{ triggerConfig: DeepReadonly<TriggerConfig> }>();
 const { triggerConfig } = props;
 const { events } = triggerConfig;
 
-const {
-  config: {
-    general: { assetBaseDir },
-  },
-} = useConfigStore();
+const { extractAssetPosition, toAssetUrl } = useConfigStore();
 const { record } = useModelStore();
 
 type Condition = (r: typeof record) => boolean;
@@ -30,14 +26,9 @@ function compile(condition: string): (r: typeof record) => boolean {
   ) as Condition;
 }
 
-const assetBaseUrl = new URL(`${assetBaseDir}/`, window.location.href);
-const POSITIONAL_ASSET_REGEX = /_x([+-]?[0-9]+)_y([+-]?[0-9]+)\.[a-zA-Z0-9]+$/;
 const compiledEvents = events.map(({ condition, url }) => {
-  const resolvedUrl = new URL(url, assetBaseUrl);
-  const matches = resolvedUrl.href.match(POSITIONAL_ASSET_REGEX);
-  assert(matches !== null && matches.length === 3);
-  const x = Number.parseInt(matches[1], 10);
-  const y = Number.parseInt(matches[2], 10);
+  const resolvedUrl = toAssetUrl(url);
+  const { x, y } = extractAssetPosition(resolvedUrl);
   const checkCondition = compile(condition);
   return {
     checkCondition,
