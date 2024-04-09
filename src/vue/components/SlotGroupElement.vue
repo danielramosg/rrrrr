@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DeepReadonly } from 'ts-essentials';
+import type { DeepReadonly, Writable } from 'ts-essentials';
 
 import { difference } from 'lodash';
 import { ref, computed, watchEffect } from 'vue';
@@ -37,8 +37,9 @@ const slotCircle = new Circle(
 
 let previousContainedMarkers = new Array<Marker>();
 
-const containedMarkers = useArrayFilter(markerPositions, (m) =>
-  slotCircle.containsPoint(m),
+const containedMarkers = useArrayFilter(
+  markerPositions as Writable<typeof markerPositions>,
+  (m) => slotCircle.containsPoint(m),
 );
 
 watchEffect(() => {
@@ -73,7 +74,6 @@ const isActive = computed(() => containedMarkers.value.length > 0);
 
 <style scoped lang="scss">
 .slot {
-  z-index: 10; // TODO: remove after finishing port to Vue 3
   left: calc(1px * var(--slot-x));
   top: calc(1px * var(--slot-y));
   width: calc(1px * var(--slot-radius));

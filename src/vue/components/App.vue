@@ -2,17 +2,21 @@
 import { ref, computed, watch } from 'vue';
 import { onKeyStroke } from '@vueuse/core';
 
+import PointerMarkerPanel from './PointerMarkerPanel.vue';
+import TuioMarkerPanel from './TuioMarkerPanel.vue';
 import ScoreItem from './ScoreItem.vue';
 import ControlPanel from './ControlPanel.vue';
 import TriggeredOverlay from './TriggeredOverlay.vue';
 import SlotGroup from './SlotGroup.vue';
 
+import { useOptionStore } from '../../ts/stores/options';
 import { useConfigStore } from '../../ts/stores/config';
 import { useAppStore } from '../../ts/stores/app';
 import { useModelStore } from '../../ts/stores/model';
 import { Scores } from '../../ts/scores';
 import { ignorePromise } from '../../ts/util/ignore-promise';
 
+const options = useOptionStore();
 const { config } = useConfigStore();
 const appStore = useAppStore();
 const modelStore = useModelStore();
@@ -79,12 +83,17 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
         class="score user-satisfaction"
       />
     </div>
-    <div id="slot-panel" class="slot-panel fill">
+    <div class="slot-panel fill">
       <SlotGroup
         v-for="slotGroupConfig in config.interaction.slotGroups"
         :key="slotGroupConfig.id"
         :slot-group-config="slotGroupConfig"
       ></SlotGroup>
+      <PointerMarkerPanel v-if="options.usePointerMarkers"></PointerMarkerPanel>
+      <TuioMarkerPanel
+        v-if="options.useTuioMarkers"
+        class="pointer-events-fallthrough"
+      ></TuioMarkerPanel>
     </div>
   </div>
   <ControlPanel
@@ -108,6 +117,10 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
 
 .slot-panel {
   touch-action: none;
+}
+
+.pointer-events-fallthrough {
+  pointer-events: none;
 }
 
 .score {

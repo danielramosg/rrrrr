@@ -7,7 +7,7 @@ import { NUM_POINTER_MARKERS } from '../builtin-config';
 export const useOptionStore = defineStore('options', () => {
   const searchParams = new URLSearchParams(window.location.search);
 
-  const useTuioMarkers = searchParams.get('tuio') === 'true';
+  const useTuioMarkers = (searchParams.get('tuio') ?? 'true') === 'true';
   const usePointerMarkers = (searchParams.get('pointer') ?? 'false') === 'true';
 
   const numPointerMarkers = Number.parseInt(

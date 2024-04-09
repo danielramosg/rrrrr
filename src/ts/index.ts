@@ -1,5 +1,4 @@
 import hotkeys from 'hotkeys-js';
-import { strict as assert } from 'assert';
 import { createApp, watchEffect } from 'vue';
 import { createPinia } from 'pinia';
 
@@ -14,11 +13,9 @@ import { documentReady } from './util/document-ready';
 import { ScaleToFitParent } from './util/scale-to-fit';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
 import { Game } from './game';
-import { setupMarkerPanel } from './marker';
 import {
   BOARD_WIDTH,
   BOARD_HEIGHT,
-  SLOT_DEFINITIONS,
   CONFIG_URLS,
   CONFIG_INJECTION_KEY,
 } from './builtin-config';
@@ -116,18 +113,6 @@ async function init(): Promise<CircularEconomyApi> {
   });
 
   game.runner.tick();
-
-  const slotTracker = setupMarkerPanel();
-  slotTracker.slotActivate$.subscribe(({ slotId }) => {
-    const slot = SLOT_DEFINITIONS.find((sd) => sd.id === slotId);
-    assert(typeof slot !== 'undefined');
-    //  controlPanel.activateParameterTransform(slot.transformId);
-  });
-  slotTracker.slotDeactivate$.subscribe(({ slotId }) => {
-    const slot = SLOT_DEFINITIONS.find((sd) => sd.id === slotId);
-    assert(typeof slot !== 'undefined');
-    //  controlPanel.deactivateParameterTransform(slot.transformId);
-  });
 
   configureHotkeys(game);
 

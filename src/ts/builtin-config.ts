@@ -26,7 +26,7 @@ const MARKER_CIRCLE_DIAMETER =
 const NUM_POINTER_MARKERS = 8;
 const POINTER_MARKER_COORDINATES = new Array(NUM_POINTER_MARKERS)
   .fill(0)
-  .map(() => ({ x: 180 / BOARD_WIDTH, y: 260 / BOARD_HEIGHT }));
+  .map(() => ({ x: 180, y: 260 }));
 
 const SLOT_DEFINITIONS_RW = [
   {

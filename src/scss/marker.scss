@@ -4,27 +4,6 @@
   transform: translate(-50%, -50%);
 }
 
-.marker {
-  @include circle;
-
-  cursor: pointer;
-  background-color: rgb(211 211 211 / 50%);
-
-  &.active {
-    background-color: rgb(55 175 218 / 50%);
-  }
-
-  * {
-    pointer-events: none;
-    user-select: none;
-  }
-
-  display: grid;
-  place-items: center center;
-  font-family: sans-serif;
-  font-size: x-large;
-}
-
 .slot {
   @include circle;
 
