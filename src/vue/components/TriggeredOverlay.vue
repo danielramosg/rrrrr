@@ -31,7 +31,7 @@ function compile(condition: string): (r: typeof record) => boolean {
 }
 
 const assetBaseUrl = new URL(`${assetBaseDir}/`, window.location.href);
-const POSITIONAL_ASSET_REGEX = /_x([0-9]+)_y([0-9]+)\.[a-zA-Z0-9]+$/;
+const POSITIONAL_ASSET_REGEX = /_x([+-]?[0-9]+)_y([+-]?[0-9]+)\.[a-zA-Z0-9]+$/;
 const compiledEvents = events.map(({ condition, url }) => {
   const resolvedUrl = new URL(url, assetBaseUrl);
   const matches = resolvedUrl.href.match(POSITIONAL_ASSET_REGEX);

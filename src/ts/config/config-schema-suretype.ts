@@ -124,7 +124,7 @@ const SlotGroupSchema = suretype(
   ]),
 );
 
-const POSITIONAL_ASSET_REGEX = /_x[0-9]+_y[0-9]+\.[a-zA-Z0-9]+$/g;
+const POSITIONAL_ASSET_REGEX = /_x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$/g;
 const TriggerConditionSchema = suretype(
   { name: 'TriggerConditionConfig' },
   v

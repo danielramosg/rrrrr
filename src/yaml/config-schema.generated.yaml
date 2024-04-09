@@ -356,7 +356,7 @@ definitions:
         type: string
       url:
         type: string
-        pattern: _x[1-9][0-9]*_y[1-9][0-9]*\.[a-zA-Z0-9]+$
+        pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
     required:
       - condition
       - url
