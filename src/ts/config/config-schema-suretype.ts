@@ -30,34 +30,14 @@ const InitialStocksSchema = suretype(
     .additional(false),
 );
 
-const BasicSlotSchema = suretype(
-  { name: 'BasicSlotConfig' },
+const MarkerSlotSchema = suretype(
+  { name: 'MarkerSlotConfig' },
   v
     .object({
       id: v.string().required(),
       x: v.number().required(),
       y: v.number().required(),
       angle: v.number().default(0),
-    })
-    .additional(false),
-);
-
-const SlotWithCardSchema = suretype(
-  { name: 'SlotWithCardConfig' },
-  v
-    .object({
-      id: v.string().required(),
-      x: v.number().required(),
-      y: v.number().required(),
-      angle: v.number().default(0),
-      card: v
-        .object({
-          x: v.number().required(),
-          y: v.number().required(),
-          angle: v.number().default(0),
-        })
-        .additional(false)
-        .required(),
     })
     .additional(false),
 );
@@ -92,7 +72,7 @@ const BasicSlotGroupSchema = suretype(
     .object({
       id: SlotGroupIdSchema.required(),
       type: v.string().enum('basic').required(),
-      slots: v.array(BasicSlotSchema).required(),
+      slots: v.array(MarkerSlotSchema).required(),
       parameterTransformIds: v.array(v.string()).required(),
     })
     .additional(false),
@@ -104,7 +84,16 @@ const ActionCardSlotGroupSchema = suretype(
     .object({
       id: SlotGroupIdSchema.required(),
       type: v.string().enum('action-card').required(),
-      slots: v.array(SlotWithCardSchema).required(),
+      slots: v
+        .array(
+          v
+            .object({
+              markerSlot: MarkerSlotSchema.required(),
+              cardSlot: CardSlotSchema.required(),
+            })
+            .additional(false),
+        )
+        .required(),
       cards: v.array(CardSchema).required(),
     })
     .additional(false),
@@ -120,7 +109,7 @@ const EventCardSlotGroupSchema = suretype(
       minDurationMs: v.number().gte(0).required(),
       maxDurationMs: v.number().gte(0).required(),
       type: v.string().enum('event-card').required(),
-      markerSlot: BasicSlotSchema.required(),
+      markerSlot: MarkerSlotSchema.required(),
       cardSlots: v.array(CardSlotSchema).required(),
       cards: v.array(CardSchema).required(),
     })

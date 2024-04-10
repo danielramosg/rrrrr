@@ -5,27 +5,12 @@ interaction:
     - id: technology
       type: action-card
       slots:
-        - {
-            id: technology-1,
-            x: 188.7,
-            y: 1318.22,
-            angle: 0,
-            card: { x: 0, y: 0, angle: 0 },
-          }
-        - {
-            id: technology-2,
-            x: 188.7,
-            y: 1064.51,
-            angle: 0,
-            card: { x: 0, y: 0, angle: 0 },
-          }
-        - {
-            id: technology-3,
-            x: 188.7,
-            y: 810.8,
-            angle: 0,
-            card: { x: 0, y: 0, angle: 0 },
-          }
+        - markerSlot: { id: technology-ms-1, x: 188.7, y: 1318.22, angle: 0 }
+          cardSlot: { id: technology-cs-1, x: 600, y: 690, angle: 90 }
+        - markerSlot: { id: technology-ms-2, x: 188.7, y: 1064.51, angle: 0 }
+          cardSlot: { id: technology-cs-2, x: 600, y: 945, angle: 90 }
+        - markerSlot: { id: technology-ms-3, x: 188.7, y: 810.8, angle: 0 }
+          cardSlot: { id: technology-cs-3, x: 600, y: 1200, angle: 90 }
       cards:
         - parameterTransformId: technology-card-1
           url: card_template_x-8_y-15.png
@@ -38,20 +23,12 @@ interaction:
     - id: policy
       type: action-card
       slots:
-        - id: policy-1
-          x: 1368.6
-          y: 2008.4
-          angle: 0
-          card: { x: 0, y: 0, angle: 0 }
-        - id: policy-2
-          x: 1624.3
-          y: 2008.4
-          card: { x: 0, y: 0, angle: 0 }
-        - id: policy-3
-          x: 1876.4
-          y: 2008.4
-          angle: 0
-          card: { x: 0, y: 0, angle: 0 }
+        - markerSlot: { id: policy-ms-1, x: 1368.6, y: 2008.4, angle: 0 }
+          cardSlot: { id: policy-cs-1, x: 1250, y: 1600, angle: 0 }
+        - markerSlot: { id: policy-ms-2, x: 1624.3, y: 2008.4, angle: 0 }
+          cardSlot: { id: policy-cs-2, x: 1510, y: 1600, angle: 0 }
+        - markerSlot: { id: policy-ms-3, x: 1876.4, y: 2008.4, angle: 0 }
+          cardSlot: { id: policy-cs-3, x: 1770, y: 1600, angle: 0 }
       cards:
         - parameterTransformId: policy-card-1
           url: card_template_x-8_y-15.png

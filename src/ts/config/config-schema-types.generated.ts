@@ -51,7 +51,7 @@ export interface ParameterTransformConfig {
   script: string;
 }
 
-export interface BasicSlotConfig {
+export interface MarkerSlotConfig {
   id: string;
   x: number;
   y: number;
@@ -61,20 +61,15 @@ export interface BasicSlotConfig {
 export interface BasicSlotGroupConfig {
   id: string;
   type: 'basic';
-  slots: BasicSlotConfig[];
+  slots: MarkerSlotConfig[];
   parameterTransformIds: string[];
 }
 
-export interface SlotWithCardConfig {
+export interface CardSlotConfig {
   id: string;
   x: number;
   y: number;
-  angle?: number;
-  card: {
-    x: number;
-    y: number;
-    angle?: number;
-  };
+  angle: number;
 }
 
 export interface CardConfig {
@@ -85,15 +80,11 @@ export interface CardConfig {
 export interface ActionCardSlotGroupConfig {
   id: string;
   type: 'action-card';
-  slots: SlotWithCardConfig[];
+  slots: {
+    markerSlot: MarkerSlotConfig;
+    cardSlot: CardSlotConfig;
+  }[];
   cards: CardConfig[];
-}
-
-export interface CardSlotConfig {
-  id: string;
-  x: number;
-  y: number;
-  angle: number;
 }
 
 export interface EventCardSlotGroupConfig {
@@ -103,7 +94,7 @@ export interface EventCardSlotGroupConfig {
   minDurationMs: number;
   maxDurationMs: number;
   type: 'event-card';
-  markerSlot: BasicSlotConfig;
+  markerSlot: MarkerSlotConfig;
   cardSlots: CardSlotConfig[];
   cards: CardConfig[];
 }

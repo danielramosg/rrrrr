@@ -8,6 +8,7 @@ import type { ActionCardSlotGroupConfig } from '../../ts/config/config-schema';
 
 import { useSlotGroupsStore } from '../../ts/stores/slot-groups';
 import MarkerSlot from './MarkerSlot.vue';
+import CardSlot from './CardSlot.vue';
 
 const props = defineProps<{
   slotGroupConfig: DeepReadonly<ActionCardSlotGroupConfig>;
@@ -33,14 +34,13 @@ watchEffect(() => {
 
 <template>
   <div :data-slot-group-id="slotGroupConfig.id">
-    <MarkerSlot
-      v-for="slotConfig in slotGroupConfig.slots"
-      :key="slotConfig.id"
-      :slot-group-id="slotGroupConfig.id"
-      :slot-config="slotConfig"
-      @activate="numActive += 1"
-      @deactivate="numActive -= 1"
-    />
+    <template v-for="slotConfig in slotGroupConfig.slots" :key="slotConfig.id">
+      <MarkerSlot
+        :slot-group-id="slotGroupConfig.id"
+        :slot-config="slotConfig.markerSlot"
+      />
+      <CardSlot :card-slot-config="slotConfig.cardSlot" :card-config="null" />
+    </template>
   </div>
 </template>
 

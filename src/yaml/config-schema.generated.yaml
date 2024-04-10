@@ -185,7 +185,7 @@ definitions:
       - id
       - script
     additionalProperties: false
-  BasicSlotConfig:
+  MarkerSlotConfig:
     type: object
     properties:
       id:
@@ -215,7 +215,7 @@ definitions:
       slots:
         type: array
         items:
-          $ref: '#/definitions/BasicSlotConfig'
+          $ref: '#/definitions/MarkerSlotConfig'
       parameterTransformIds:
         type: array
         items:
@@ -226,7 +226,7 @@ definitions:
       - slots
       - parameterTransformIds
     additionalProperties: false
-  SlotWithCardConfig:
+  CardSlotConfig:
     type: object
     properties:
       id:
@@ -238,25 +238,11 @@ definitions:
       angle:
         type: number
         default: 0
-      card:
-        type: object
-        properties:
-          x:
-            type: number
-          'y':
-            type: number
-          angle:
-            type: number
-            default: 0
-        required:
-          - x
-          - 'y'
-        additionalProperties: false
     required:
       - id
       - x
       - 'y'
-      - card
+      - angle
     additionalProperties: false
   CardConfig:
     type: object
@@ -283,7 +269,16 @@ definitions:
       slots:
         type: array
         items:
-          $ref: '#/definitions/SlotWithCardConfig'
+          type: object
+          properties:
+            markerSlot:
+              $ref: '#/definitions/MarkerSlotConfig'
+            cardSlot:
+              $ref: '#/definitions/CardSlotConfig'
+          required:
+            - markerSlot
+            - cardSlot
+          additionalProperties: false
       cards:
         type: array
         items:
@@ -293,24 +288,6 @@ definitions:
       - type
       - slots
       - cards
-    additionalProperties: false
-  CardSlotConfig:
-    type: object
-    properties:
-      id:
-        type: string
-      x:
-        type: number
-      'y':
-        type: number
-      angle:
-        type: number
-        default: 0
-    required:
-      - id
-      - x
-      - 'y'
-      - angle
     additionalProperties: false
   EventCardSlotGroupConfig:
     type: object
@@ -335,7 +312,7 @@ definitions:
         enum:
           - event-card
       markerSlot:
-        $ref: '#/definitions/BasicSlotConfig'
+        $ref: '#/definitions/MarkerSlotConfig'
       cardSlots:
         type: array
         items:
