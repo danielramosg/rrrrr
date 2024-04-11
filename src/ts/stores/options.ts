@@ -16,11 +16,14 @@ export const useOptionStore = defineStore('options', () => {
   );
   const tuioUrl = searchParams.get('tuioUrl') ?? 'ws://localhost:3339';
 
+  const autoStart = (searchParams.get('autoStart') ?? 'true') === 'true';
+
   const result = {
     useTuioMarkers,
     usePointerMarkers,
     numPointerMarkers,
     tuioUrl,
+    autoStart,
   };
 
   return result as DeepReadonly<typeof result>;
