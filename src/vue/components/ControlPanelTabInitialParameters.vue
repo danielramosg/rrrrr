@@ -17,7 +17,7 @@ const initialParameters = toReactive(storeToRefs(modelStore).initialParameters);
       min="0"
       max="4"
       step="0.001"
-      v-model="initialParameters[parameterId]"
+      v-model.number="initialParameters[parameterId]"
     />
   </div>
 </template>
