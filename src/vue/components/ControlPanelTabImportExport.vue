@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, toRaw } from 'vue';
 import yaml from 'js-yaml';
 
 import { useParameterTransformsStore } from '../../ts/stores/parameter-transforms';
@@ -17,7 +17,9 @@ function importParameterTransforms() {
   const unvalidatedPartialConfig = yaml.load(yamlText.value) as {
     [key: string]: unknown;
   };
-  const newConfig = structuredClone(config) as { [key: string]: unknown };
+  const newConfig = structuredClone(toRaw(config)) as {
+    [key: string]: unknown;
+  };
   newConfig.parameterTransforms = unvalidatedPartialConfig.parameterTransforms;
 
   const validationResult = validateConfig(newConfig);
