@@ -3,6 +3,7 @@ import { ref, toRaw } from 'vue';
 import yaml from 'js-yaml';
 
 import { useParameterTransformsStore } from '../../ts/stores/parameter-transforms';
+import { useSlotGroupsStore } from '../../ts/stores/slot-groups';
 import { useConfigStore } from '../../ts/stores/config';
 import { validateConfig } from '../../ts/config/config-schema';
 
@@ -10,6 +11,7 @@ const { config } = useConfigStore();
 
 const parameterTransformsStore = useParameterTransformsStore();
 const { parameterTransforms } = parameterTransformsStore;
+const { rebuildInternalSlotGroup } = useSlotGroupsStore();
 
 const yamlText = ref('');
 
@@ -42,6 +44,7 @@ function importParameterTransforms() {
     validationResult.data;
 
   parameterTransformsStore.replaceAll(validatedParameterTransforms);
+  rebuildInternalSlotGroup();
 }
 
 function exportParameterTransforms() {

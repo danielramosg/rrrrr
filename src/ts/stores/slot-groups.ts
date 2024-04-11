@@ -102,5 +102,18 @@ export const useSlotGroupsStore = defineStore('slot-groups', () => {
 
   const slotGroups = [internalSlotGroup, ...nonInternalSlotGroups];
 
-  return { slotGroups, internalSlotGroup, nonInternalSlotGroups };
+  const rebuildInternalSlotGroup = () => {
+    internalSlotGroup.parameterTransforms.splice(
+      0,
+      internalSlotGroup.parameterTransforms.length,
+      ...useInternalSlotGroup().parameterTransforms,
+    );
+  };
+
+  return {
+    slotGroups,
+    internalSlotGroup,
+    nonInternalSlotGroups,
+    rebuildInternalSlotGroup,
+  };
 });
