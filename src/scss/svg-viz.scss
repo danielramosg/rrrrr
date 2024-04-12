@@ -1,8 +1,10 @@
 svg.model-visualization {
   overflow: visible;
 
-  .stock {
+  .stock,
+  #phones-in-use {
     stroke: none;
+    opacity: 0.75;
 
     &.capacity {
       fill: gray;
