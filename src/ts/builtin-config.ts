@@ -30,6 +30,12 @@ const POINTER_MARKER_COORDINATES = new Array(NUM_POINTER_MARKERS)
 
 const SLOT_CIRCLE_DIAMETER = MARKER_CIRCLE_DIAMETER;
 
+const HOTKEYS = {
+  run: { key: ' ', label: 'space' },
+  controlPanel: { key: 'c', label: 'c' },
+  developerMode: { key: 'd', label: 'd' },
+} as const;
+
 export {
   CONFIG_BASE_URL,
   CONFIG_INJECTION_KEY,
@@ -43,4 +49,5 @@ export {
   NUM_POINTER_MARKERS,
   POINTER_MARKER_COORDINATES,
   SLOT_CIRCLE_DIAMETER,
+  HOTKEYS,
 };

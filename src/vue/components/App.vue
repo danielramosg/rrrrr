@@ -13,6 +13,7 @@ import ActionCardSlotGroup from './ActionCardSlotGroup.vue';
 import EventCardSlotGroup from './EventCardSlotGroup.vue';
 import ModelVisualization from './ModelVisualization.vue';
 
+import { HOTKEYS } from '../../ts/builtin-config';
 import { useOptionStore } from '../../ts/stores/options';
 import { useConfigStore } from '../../ts/stores/config';
 import { useAppStore } from '../../ts/stores/app';
@@ -91,9 +92,9 @@ const togglePlayPause = () => {
   appStore.isPlaying = !appStore.isPlaying;
 };
 
-onKeyStroke('c', toggleControlPanel);
-onKeyStroke('d', toggleDeveloperMode);
-onKeyStroke(' ', togglePlayPause);
+onKeyStroke(HOTKEYS.controlPanel.key, toggleControlPanel);
+onKeyStroke(HOTKEYS.developerMode.key, toggleDeveloperMode);
+onKeyStroke(HOTKEYS.run.key, togglePlayPause);
 
 watchEffect(() => {
   if (appStore.isPlaying) runner.play();

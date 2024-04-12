@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { v4 as uuidv4 } from 'uuid';
 
+import { HOTKEYS } from '../../ts/builtin-config';
 import { useAppStore } from '../../ts/stores/app';
 
 const togglePlayingBtnId = `btn-toggle-playing-${uuidv4()}`;
@@ -27,7 +28,9 @@ const toggleDeveloperMode = () =>
     autocomplete="off"
     @click="togglePlaying"
   />
-  <label class="btn btn-primary" :for="togglePlayingBtnId">Run</label>
+  <label class="btn btn-primary" :for="togglePlayingBtnId"
+    >Run ({{ HOTKEYS.run.label }})</label
+  >
   <input
     type="checkbox"
     class="btn-check"
@@ -52,6 +55,6 @@ const toggleDeveloperMode = () =>
     class="btn btn-primary"
     :for="toggleDeveloperModeBtnId"
     @click="toggleDeveloperMode"
-    >Developer mode</label
+    >Developer mode ({{ HOTKEYS.developerMode.label }})</label
   >
 </template>
