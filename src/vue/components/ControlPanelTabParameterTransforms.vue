@@ -135,10 +135,12 @@ onMounted(() => {
           :title="createTooltip(internalSlotGroup, pt)"
         >
           <label class="draggable">
-            <input type="checkbox" :value="pt.id" v-model="pt.active" /><span
-              class="draggable"
-              >{{ pt.id }}</span
-            ></label
+            <input
+              type="checkbox"
+              :name="pt.id"
+              :value="pt.id"
+              v-model="pt.active"
+            /><span class="draggable">{{ pt.id }}</span></label
           >
           <span class="edit" @click="select(pt)">✎</span>
         </div>
@@ -191,6 +193,7 @@ onMounted(() => {
               <label>
                 <input
                   type="checkbox"
+                  :name="pt.id"
                   :value="pt.id"
                   v-model="pt.active"
                   disabled
