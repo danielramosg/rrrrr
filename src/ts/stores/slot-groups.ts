@@ -19,6 +19,7 @@ export interface ParameterTransformState {
   readonly id: string;
   readonly uuid: string;
   active: boolean;
+  setActive(active: boolean): void;
 }
 
 export interface SlotGroupParameterTransformsState {
@@ -29,7 +30,15 @@ export interface SlotGroupParameterTransformsState {
 export function useParameterTransformId(id: string): ParameterTransformState {
   const uuid = uuid4();
   const active = false;
-  return reactive({ id, uuid, active });
+  const result = {
+    id,
+    uuid,
+    active,
+    setActive: function (active: boolean) {
+      if (this.active !== active) this.active = active;
+    },
+  };
+  return reactive(result);
 }
 
 export function useInternalSlotGroup(): SlotGroupParameterTransformsState {

@@ -20,15 +20,11 @@ assert(typeof slotGroup !== 'undefined');
 
 const numActive = ref(0);
 
-watchEffect(() => {
-  slotGroup.parameterTransforms.forEach((pt, index) => {
-    const active = numActive.value > index;
-    if (pt.active !== active) {
-      // eslint-disable-next-line no-param-reassign
-      pt.active = active;
-    }
-  });
-});
+watchEffect(() =>
+  slotGroup.parameterTransforms.forEach((pt, index) =>
+    pt.setActive(numActive.value > index),
+  ),
+);
 </script>
 
 <template>
