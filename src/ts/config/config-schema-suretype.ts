@@ -147,16 +147,31 @@ const TriggerSchema = suretype(
     .required(),
 );
 
+const GeneralSchema = suretype(
+  { name: 'GeneralConfig' },
+  v
+    .object({
+      assetBaseDir: v.string().required(),
+      primaryLanguage: v.string().required(),
+      secondaryLanguage: v.string().required(),
+      scoreLabels: v
+        .object({
+          circularity: v.object({}).additional(v.string()).required(),
+          happiness: v.object({}).additional(v.string()).required(),
+        })
+        .additional(false)
+        .required(),
+    })
+    .additional(false),
+);
+
 const CONFIG_SCHEMA_NAME = 'Config';
 
 const ConfigSchema = suretype(
   { name: CONFIG_SCHEMA_NAME },
   v
     .object({
-      general: v
-        .object({ assetBaseDir: v.string().required() })
-        .additional(false)
-        .required(),
+      general: GeneralSchema.required(),
       model: v
         .object({
           initialParameters: InitialParametersSchema.required(),

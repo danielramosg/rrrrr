@@ -1,2 +1,11 @@
 general:
   assetBaseDir: config/assets
+  primaryLanguage: de
+  secondaryLanguage: en
+  scoreLabels:
+    circularity:
+      en: Circularity
+      de: Kreislauf
+    happiness:
+      en: Happiness
+      de: Zufriedenheit

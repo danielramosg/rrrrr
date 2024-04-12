@@ -3,13 +3,7 @@ title: Config
 type: object
 properties:
   general:
-    type: object
-    properties:
-      assetBaseDir:
-        type: string
-    required:
-      - assetBaseDir
-    additionalProperties: false
+    $ref: '#/definitions/GeneralConfig'
   model:
     type: object
     properties:
@@ -63,6 +57,36 @@ required:
   - triggers
 additionalProperties: false
 definitions:
+  GeneralConfig:
+    type: object
+    properties:
+      assetBaseDir:
+        type: string
+      primaryLanguage:
+        type: string
+      secondaryLanguage:
+        type: string
+      scoreLabels:
+        type: object
+        properties:
+          circularity:
+            type: object
+            additionalProperties:
+              type: string
+          happiness:
+            type: object
+            additionalProperties:
+              type: string
+        required:
+          - circularity
+          - happiness
+        additionalProperties: false
+    required:
+      - assetBaseDir
+      - primaryLanguage
+      - secondaryLanguage
+      - scoreLabels
+    additionalProperties: false
   InitialParametersConfig:
     type: object
     properties:

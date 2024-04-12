@@ -7,6 +7,20 @@
  *  - {@link https://github.com/grantila/typeconv}
  */
 
+export interface GeneralConfig {
+  assetBaseDir: string;
+  primaryLanguage: string;
+  secondaryLanguage: string;
+  scoreLabels: {
+    circularity: {
+      [key: string]: string;
+    };
+    happiness: {
+      [key: string]: string;
+    };
+  };
+}
+
 export interface InitialParametersConfig {
   abandonExcessRate: number;
   abandonRate: number;
@@ -115,9 +129,7 @@ export interface TriggerConfig {
 }
 
 export interface Config {
-  general: {
-    assetBaseDir: string;
-  };
+  general: GeneralConfig;
   model: {
     initialParameters: InitialParametersConfig;
     initialStocks: InitialStocksConfig;

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { strict as assert } from 'assert';
-import { ref, computed, watch, watchEffect, onMounted } from 'vue';
+import { ref, watch, watchEffect, onMounted } from 'vue';
 import { onKeyStroke } from '@vueuse/core';
 
 import PointerMarkerPanel from './PointerMarkerPanel.vue';
 import TuioMarkerPanel from './TuioMarkerPanel.vue';
-import ScoreItem from './ScoreItem.vue';
+import ScoreTable from './ScoreTable.vue';
 import ControlPanel from './ControlPanel.vue';
 import TriggeredOverlay from './TriggeredOverlay.vue';
 import BasicSlotGroup from './BasicSlotGroup.vue';
@@ -18,7 +18,6 @@ import { useOptionStore } from '../../ts/stores/options';
 import { useConfigStore } from '../../ts/stores/config';
 import { useAppStore } from '../../ts/stores/app';
 import { useModelStore } from '../../ts/stores/model';
-import { Scores } from '../../ts/scores';
 import { ignorePromise } from '../../ts/util/ignore-promise';
 import { ModelSimulator } from '../../ts/model-simulator';
 import {
@@ -106,11 +105,6 @@ watchEffect(() => {
   else runner.pause();
 });
 
-const circularityScore = computed(() => Scores.circularity(modelStore.record));
-const userSatisfactionScore = computed(() =>
-  Scores.userSatifaction(modelStore.record),
-);
-
 const modelVisualization = ref<typeof ModelVisualization | null>(null);
 onMounted(() => {
   const tick = (deltaMs: DOMHighResTimeStamp) => {
@@ -140,16 +134,8 @@ onMounted(() => {
     </div>
     <div ref="" class="viz-panel fill">
       <ModelVisualization ref="modelVisualization" />
-      <ScoreItem
-        title="Circularity"
-        :value="circularityScore"
-        class="score circularity-index"
-      />
-      <ScoreItem
-        title="User Satisfaction"
-        :value="userSatisfactionScore"
-        class="score user-satisfaction"
-      />
+      <ScoreTable class="score-top-left" />
+      <ScoreTable class="score-bottom-right" />
     </div>
     <div class="slot-panel fill">
       <template
@@ -204,17 +190,19 @@ onMounted(() => {
 }
 
 .score {
-  font-size: 64px;
   position: absolute;
-  padding: 0.5ex;
 }
 
-.circularity-index {
+.score-top-left {
+  @extend .score;
   top: 0;
   left: 0;
+  transform-origin: center;
+  transform: rotate(180deg);
 }
 
-.user-satisfaction {
+.score-bottom-right {
+  @extend .score;
   bottom: 0;
   right: 0;
 }
