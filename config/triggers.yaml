@@ -2,8 +2,12 @@ triggers:
   - id: background
     events:
       - condition: 'true'
-        url: 'background_x0_y0.webp'
-  - id: government
+        url: 'background_static_x0_y0.webp'
+  - id: overlays
     events:
-      - condition: 'parameters.breakRate > 0.5 /* just for testing */'
-        url: 'government_static_x794_y1705.webp'
+      - condition: 'true'
+        url: government_static_x794_y1705.webp
+      - condition: 'true'
+        url: reduce_cellphone_x1647_y1346.webp
+      - condition: 'true'
+        url: reuse_cellphone_x1647_y1346.webp
