@@ -1,5 +1,10 @@
 interaction:
   actionCardDelayMs: 1000
+  assets:
+    markerSlotActive:
+      url: slots/marker-slot-active_x-121_y-121.webp
+    markerSlotInactive:
+      url: slots/marker-slot-inactive_x-121_y-121.webp
   slotGroups:
     - id: technology
       type: action-card

@@ -118,6 +118,19 @@ export type SlotGroup =
   | ActionCardSlotGroupConfig
   | EventCardSlotGroupConfig;
 
+export interface InteractionConfig {
+  actionCardDelayMs: number;
+  assets: {
+    markerSlotActive: {
+      url: string;
+    };
+    markerSlotInactive: {
+      url: string;
+    };
+  };
+  slotGroups: SlotGroup[];
+}
+
 export interface TriggerConditionConfig {
   condition: string;
   url: string;
@@ -139,9 +152,6 @@ export interface Config {
     maxStepSize: number;
   };
   parameterTransforms: ParameterTransformConfig[];
-  interaction: {
-    actionCardDelayMs: number;
-    slotGroups: SlotGroup[];
-  };
+  interaction: InteractionConfig;
   triggers: TriggerConfig[];
 }

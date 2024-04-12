@@ -9,6 +9,7 @@ import type { Marker } from '../../ts/stores/marker';
 import type { SlotConfig } from '../../ts/config/config-schema';
 
 import { SLOT_CIRCLE_DIAMETER } from '../../ts/builtin-config';
+import { useConfigStore } from '../../ts/stores/config';
 import { useAppStore } from '../../ts/stores/app';
 import { useMarkerStore } from '../../ts/stores/marker';
 import { useSlotStore } from '../../ts/stores/slot';
@@ -24,6 +25,18 @@ const { slotConfig } = props;
 
 const slotGroupId = ref(props.slotGroupId);
 const slotId = `${slotGroupId.value}-${slotConfig.id}`;
+
+const {
+  config: {
+    interaction: { assets },
+  },
+  toAssetUrl,
+  extractAssetPosition,
+} = useConfigStore();
+const markerSlotActiveUrl = toAssetUrl(assets.markerSlotActive.url);
+const markerSlotInactiveUrl = toAssetUrl(assets.markerSlotInactive.url);
+const markerSlotActivePosition = extractAssetPosition(markerSlotActiveUrl);
+const markerSlotInactivePosition = extractAssetPosition(markerSlotInactiveUrl);
 
 const appStore = useAppStore();
 
@@ -81,14 +94,39 @@ watch(
   <div
     :data-slot-id="slotConfig.id"
     class="slot"
-    :class="{ active: isActive }"
     :style="{
       '--slot-x': slotConfig.x,
       '--slot-y': slotConfig.y,
-      '--slot-radius': SLOT_CIRCLE_DIAMETER,
+      '--slot-angle': `${slotConfig.angle}deg`,
+      '--slot-diameter': SLOT_CIRCLE_DIAMETER,
     }"
   >
-    <div v-if="appStore.isDeveloperModeActive">
+    <div class="asset-container">
+      <img
+        v-show="isActive"
+        :src="markerSlotActiveUrl.href"
+        :alt="`${slotConfig.id}-active`"
+        :style="{
+          '--asset-x': markerSlotActivePosition.x,
+          '--asset-y': markerSlotActivePosition.y,
+        }"
+      />
+      <img
+        v-show="!isActive"
+        :src="markerSlotInactiveUrl.href"
+        :alt="`${slotConfig.id}-inactive`"
+        :style="{
+          '--asset-x': markerSlotInactivePosition.x,
+          '--asset-y': markerSlotInactivePosition.y,
+        }"
+      />
+    </div>
+    <div
+      v-if="appStore.isDeveloperModeActive"
+      class="circle"
+      :class="{ active: isActive, inactive: !isActive }"
+    ></div>
+    <div v-if="appStore.isDeveloperModeActive" class="label">
       {{ slotGroupId }}<br />{{ slotConfig.id }}
     </div>
   </div>
@@ -98,19 +136,48 @@ watch(
 .slot {
   left: calc(1px * var(--slot-x));
   top: calc(1px * var(--slot-y));
-  width: calc(1px * var(--slot-radius));
-  height: calc(1px * var(--slot-radius));
-  border-radius: 50%;
+  width: calc(1px * var(--slot-diameter));
+  height: calc(1px * var(--slot-diameter));
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform-origin: center;
+  transform: translate(-50%, -50%) rotate(var(--slot-angle));
 
-  border: solid 6px darkred; // TODO: change color to #aaa after finishing port to Vue 3
-  background-color: #eee;
-  box-sizing: content-box;
+  & > .asset-container {
+    position: absolute;
+    transform: translate(0%, 50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 
-  &.active {
-    border-color: #37afda;
-    background-color: #a1d7ea;
+    & > img {
+      position: absolute;
+      transform: translateX(calc(1px * var(--asset-x)))
+        translateY(calc(1px * var(--asset-y)));
+    }
+  }
+
+  & > .circle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-sizing: content-box;
+    outline: solid 2px;
+
+    &.inactive {
+      outline-color: darkgray;
+    }
+
+    &.active {
+      outline-color: black;
+    }
+  }
+
+  & .label {
+    position: absolute;
   }
 
   * {

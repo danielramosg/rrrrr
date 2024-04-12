@@ -31,19 +31,7 @@ properties:
     items:
       $ref: '#/definitions/ParameterTransformConfig'
   interaction:
-    type: object
-    properties:
-      actionCardDelayMs:
-        type: number
-        minimum: 0
-      slotGroups:
-        type: array
-        items:
-          $ref: '#/definitions/SlotGroup'
-    required:
-      - actionCardDelayMs
-      - slotGroups
-    additionalProperties: false
+    $ref: '#/definitions/InteractionConfig'
   triggers:
     type: array
     items:
@@ -358,6 +346,46 @@ definitions:
       - $ref: '#/definitions/BasicSlotGroupConfig'
       - $ref: '#/definitions/ActionCardSlotGroupConfig'
       - $ref: '#/definitions/EventCardSlotGroupConfig'
+  InteractionConfig:
+    type: object
+    properties:
+      actionCardDelayMs:
+        type: number
+        minimum: 0
+      assets:
+        type: object
+        properties:
+          markerSlotActive:
+            type: object
+            properties:
+              url:
+                type: string
+                pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
+            required:
+              - url
+            additionalProperties: false
+          markerSlotInactive:
+            type: object
+            properties:
+              url:
+                type: string
+                pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
+            required:
+              - url
+            additionalProperties: false
+        required:
+          - markerSlotActive
+          - markerSlotInactive
+        additionalProperties: false
+      slotGroups:
+        type: array
+        items:
+          $ref: '#/definitions/SlotGroup'
+    required:
+      - actionCardDelayMs
+      - assets
+      - slotGroups
+    additionalProperties: false
   TriggerConditionConfig:
     type: object
     properties:

@@ -165,6 +165,27 @@ const GeneralSchema = suretype(
     .additional(false),
 );
 
+const AssetUrlObjectSchema = v
+  .object({ url: AssetUrlSchema.required() })
+  .additional(false);
+
+const InteractionSchema = suretype(
+  { name: 'InteractionConfig' },
+  v
+    .object({
+      actionCardDelayMs: v.number().gte(0).required(),
+      assets: v
+        .object({
+          markerSlotActive: AssetUrlObjectSchema.required(),
+          markerSlotInactive: AssetUrlObjectSchema.required(),
+        })
+        .additional(false)
+        .required(),
+      slotGroups: v.array(SlotGroupSchema).required(),
+    })
+    .additional(false),
+);
+
 const CONFIG_SCHEMA_NAME = 'Config';
 
 const ConfigSchema = suretype(
@@ -187,13 +208,7 @@ const ConfigSchema = suretype(
         .additional(false)
         .required(),
       parameterTransforms: ParameterTransformsSchema.required(),
-      interaction: v
-        .object({
-          actionCardDelayMs: v.number().gte(0).required(),
-          slotGroups: v.array(SlotGroupSchema).required(),
-        })
-        .additional(false)
-        .required(),
+      interaction: InteractionSchema.required(),
       triggers: v.array(TriggerSchema).required(),
     })
     .additional(false)
