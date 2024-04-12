@@ -3,6 +3,8 @@ import type { DeepReadonly } from 'ts-essentials';
 
 import type { CardSlotConfig, CardConfig } from '../../ts/config/config-schema';
 
+import { useAppStore } from '../../ts/stores/app';
+
 import GameCard from './GameCard.vue';
 
 const props = defineProps<{
@@ -10,6 +12,8 @@ const props = defineProps<{
   cardConfig: DeepReadonly<CardConfig> | null;
   active: boolean;
 }>();
+
+const appStore = useAppStore();
 </script>
 
 <template>
@@ -20,8 +24,11 @@ const props = defineProps<{
       '--card-angle': cardSlotConfig.angle,
     }"
     class="card-slot"
+    :class="{ 'dev-mode': appStore.isDeveloperModeActive }"
   >
-    <div class="label">{{ cardSlotConfig.id }}</div>
+    <div class="label" v-if="appStore.isDeveloperModeActive">
+      {{ cardSlotConfig.id }}
+    </div>
     <template v-if="cardConfig !== null">
       <GameCard
         :url="cardConfig.url"
@@ -35,15 +42,18 @@ const props = defineProps<{
 <style scoped lang="scss">
 .card-slot {
   position: absolute;
-  width: 236px;
-  height: 325px;
-  background-color: rgba(255, 255, 255, 0.5);
-  outline: 2px dotted gray;
+  width: 202px;
+  height: 275px;
   transform-origin: top left;
   --card-x-px: calc(1px * var(--card-x));
   --card-y-px: calc(1px * var(--card-y));
   transform: translateX(var(--card-x-px)) translateY(var(--card-y-px))
     rotate(calc(1deg * var(--card-angle)));
+
+  &.dev-mode {
+    background-color: rgba(255, 255, 255, 0.5);
+    outline: 2px dotted gray;
+  }
 
   & > .label {
     position: absolute;

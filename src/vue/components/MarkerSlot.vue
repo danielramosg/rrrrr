@@ -9,6 +9,7 @@ import type { Marker } from '../../ts/stores/marker';
 import type { SlotConfig } from '../../ts/config/config-schema';
 
 import { SLOT_CIRCLE_DIAMETER } from '../../ts/builtin-config';
+import { useAppStore } from '../../ts/stores/app';
 import { useMarkerStore } from '../../ts/stores/marker';
 import { useSlotStore } from '../../ts/stores/slot';
 
@@ -23,6 +24,8 @@ const { slotConfig } = props;
 
 const slotGroupId = ref(props.slotGroupId);
 const slotId = `${slotGroupId.value}-${slotConfig.id}`;
+
+const appStore = useAppStore();
 
 const markerStore = useMarkerStore();
 const { markerPositions } = markerStore;
@@ -85,7 +88,9 @@ watch(
       '--slot-radius': SLOT_CIRCLE_DIAMETER,
     }"
   >
-    <div>{{ slotGroupId }}<br />{{ slotConfig.id }}</div>
+    <div v-if="appStore.isDeveloperModeActive">
+      {{ slotGroupId }}<br />{{ slotConfig.id }}
+    </div>
   </div>
 </template>
 

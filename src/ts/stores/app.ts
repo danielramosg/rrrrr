@@ -4,10 +4,11 @@ import { ref } from 'vue';
 import { useOptionStore } from './options';
 
 export const useAppStore = defineStore('app', () => {
-  const { autoStart } = useOptionStore();
+  const { autoStart, developerMode } = useOptionStore();
 
   const isPlaying = ref(autoStart);
   const isFullscreen = ref(false);
+  const isDeveloperModeActive = ref(developerMode);
 
-  return { isPlaying, isFullscreen };
+  return { isPlaying, isFullscreen, isDeveloperModeActive };
 });

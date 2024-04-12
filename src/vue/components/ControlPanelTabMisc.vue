@@ -5,6 +5,7 @@ import { useAppStore } from '../../ts/stores/app';
 
 const togglePlayingBtnId = `btn-toggle-playing-${uuidv4()}`;
 const toggleFullscreenBtnId = `btn-toggle-playing-${uuidv4()}`;
+const toggleDeveloperModeBtnId = `btn-toggle-playing-${uuidv4()}`;
 
 const appStore = useAppStore();
 
@@ -12,6 +13,9 @@ const togglePlaying = () => appStore.$patch({ isPlaying: !appStore.isPlaying });
 
 const toggleFullscreen = () =>
   appStore.$patch({ isFullscreen: !appStore.isFullscreen });
+
+const toggleDeveloperMode = () =>
+  appStore.$patch({ isDeveloperModeActive: !appStore.isDeveloperModeActive });
 </script>
 
 <template>
@@ -36,5 +40,18 @@ const toggleFullscreen = () =>
     :for="toggleFullscreenBtnId"
     @click="toggleFullscreen"
     >Fullscreen</label
+  >
+  <input
+    type="checkbox"
+    class="btn-check"
+    :id="toggleDeveloperModeBtnId"
+    :class="() => (appStore.isDeveloperModeActive ? 'active' : '')"
+    autocomplete="off"
+  />
+  <label
+    class="btn btn-primary"
+    :for="toggleDeveloperModeBtnId"
+    @click="toggleDeveloperMode"
+    >Developer mode</label
   >
 </template>

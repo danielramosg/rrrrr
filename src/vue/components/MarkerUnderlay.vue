@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { MARKER_CIRCLE_DIAMETER } from '../../ts/builtin-config';
+import { useAppStore } from '../../ts/stores/app';
+
+const appStore = useAppStore();
 
 const props = defineProps<{
   readonly markerId: string;
@@ -17,7 +20,7 @@ const props = defineProps<{
       '--marker-diameter': MARKER_CIRCLE_DIAMETER,
     }"
   >
-    {{ props.markerId }}
+    <span v-if="appStore.isDeveloperModeActive">{{ props.markerId }}</span>
   </div>
 </template>
 

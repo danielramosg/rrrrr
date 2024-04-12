@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 
 import { useConfigStore } from '../../ts/stores/config';
+import { useAppStore } from '../../ts/stores/app';
 
 const props = defineProps<{
   readonly url: string;
@@ -10,6 +11,7 @@ const props = defineProps<{
 }>();
 
 const { toAssetUrl, extractAssetPosition } = useConfigStore();
+const appStore = useAppStore();
 
 const assetUrl = computed(() => toAssetUrl(props.url));
 
@@ -27,12 +29,10 @@ const position = { x: 0, y: 0 };
       '--card-y': position.y,
     }"
   >
-    <img
-      :src="assetUrl.href"
-      :alt="label"
-      class="image"
-    /><!-- TODO: overlay label on top of image -->
-    <div class="label">{{ label }}</div>
+    <img :src="assetUrl.href" :alt="label" class="image" />
+    <div class="label" v-if="appStore.isDeveloperModeActive">
+      <span class="highlight">{{ label }}</span>
+    </div>
   </div>
 </template>
 
@@ -62,6 +62,10 @@ const position = { x: 0, y: 0 };
     font-family: sans-serif;
     font-size: x-large;
     text-align: center;
+  }
+
+  .highlight {
+    background: #fff7;
   }
 }
 </style>

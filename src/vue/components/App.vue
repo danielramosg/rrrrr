@@ -41,7 +41,12 @@ const toggleControlPanel = () => {
   enableControlPanel.value = !enableControlPanel.value;
 };
 
+const toggleDeveloperMode = () => {
+  appStore.isDeveloperModeActive = !appStore.isDeveloperModeActive;
+};
+
 onKeyStroke('c', toggleControlPanel);
+onKeyStroke('d', toggleDeveloperMode);
 
 const circularityScore = computed(() => Scores.circularity(modelStore.record));
 const userSatisfactionScore = computed(() =>
