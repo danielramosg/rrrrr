@@ -63,9 +63,9 @@ const flowVizSigns: ModelElementObject<MainFlowIds> = {
   repair: -1,
 };
 
-const dashGap = 30; // FIXME: Calculate from CSS
-const lineWidth = 10; // FIXME: Calculate from CSS
-const dotRadius = 20; // FIXME: Calculate from CSS
+const dashGap = 27; // FIXME: Calculate from CSS
+const lineWidth = 0; // FIXME: Calculate from CSS
+const dotRadius = 15; // FIXME: Calculate from CSS
 const lineSegmentArea = lineWidth * dashGap;
 const dotWithoutLineSegmentArea =
   Math.sqrt(dotRadius ** 2 - lineWidth ** 2) * lineWidth;
@@ -374,3 +374,7 @@ defineExpose({ update });
     }"
   ></div>
 </template>
+
+<style scoped lang="scss">
+// FIXME: Move global SVG styles here
+</style>

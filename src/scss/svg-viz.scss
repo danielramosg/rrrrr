@@ -30,8 +30,18 @@ svg.model-visualization {
   .flow {
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke: #aaa;
+    stroke: #bbb;
     fill: none;
+
+    &.edge {
+      stroke-width: 8;
+      display: none;
+    }
+
+    &.anim-edge {
+      stroke-width: 15;
+      stroke-dasharray: 10 27;
+    }
 
     &#recycle-flow,
     &#recycle-edge,
@@ -47,15 +57,11 @@ svg.model-visualization {
     &#acquire-refurbished-edge,
     &#acquire-used-flow,
     &#acquire-used-edge {
-      stroke: yellowgreen;
-    }
+      stroke: gray;
 
-    &.edge {
-      stroke-width: 10;
-    }
-
-    &.anim-edge {
-      stroke-width: 20;
+      &.anim-edge {
+        stroke-dasharray: 0 27;
+      }
     }
   }
 
