@@ -1,5 +1,9 @@
 interaction:
   actionCardDelayMs: 1000
+  eventCardMinDelayMs: 1000
+  eventCardMaxDelayMs: 2000
+  eventCardMinDurationMs: 5000
+  eventCardMaxDurationMs: 10000
   assets:
     markerSlotActive:
       url: slots/marker-slot-active_x-121_y-121.webp
@@ -56,10 +60,6 @@ interaction:
           url: cards/policy/handy-detox-day.webp
     - id: event
       type: event-card
-      minDelayMs: 1000
-      maxDelayMs: 2000
-      minDurationMs: 5000
-      maxDurationMs: 10000
       markerSlot: { id: event-ms-1, x: 2298, y: 190, angle: 180 }
       cardSlots:
         - { id: event-cs-1, x: 1633, y: 318, angle: 180 }

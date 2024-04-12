@@ -304,18 +304,6 @@ definitions:
       id:
         type: string
         pattern: ^((?!internal).)*$
-      minDelayMs:
-        type: number
-        minimum: 0
-      maxDelayMs:
-        type: number
-        minimum: 0
-      minDurationMs:
-        type: number
-        minimum: 0
-      maxDurationMs:
-        type: number
-        minimum: 0
       type:
         type: string
         enum:
@@ -332,10 +320,6 @@ definitions:
           $ref: '#/definitions/CardConfig'
     required:
       - id
-      - minDelayMs
-      - maxDelayMs
-      - minDurationMs
-      - maxDurationMs
       - type
       - markerSlot
       - cardSlots
@@ -350,6 +334,18 @@ definitions:
     type: object
     properties:
       actionCardDelayMs:
+        type: number
+        minimum: 0
+      eventCardMinDelayMs:
+        type: number
+        minimum: 0
+      eventCardMaxDelayMs:
+        type: number
+        minimum: 0
+      eventCardMinDurationMs:
+        type: number
+        minimum: 0
+      eventCardMaxDurationMs:
         type: number
         minimum: 0
       assets:
@@ -383,6 +379,10 @@ definitions:
           $ref: '#/definitions/SlotGroup'
     required:
       - actionCardDelayMs
+      - eventCardMinDelayMs
+      - eventCardMaxDelayMs
+      - eventCardMinDurationMs
+      - eventCardMaxDurationMs
       - assets
       - slotGroups
     additionalProperties: false

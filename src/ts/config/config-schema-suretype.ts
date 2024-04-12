@@ -104,10 +104,6 @@ const EventCardSlotGroupSchema = suretype(
   v
     .object({
       id: SlotGroupIdSchema.required(),
-      minDelayMs: v.number().gte(0).required(),
-      maxDelayMs: v.number().gte(0).required(),
-      minDurationMs: v.number().gte(0).required(),
-      maxDurationMs: v.number().gte(0).required(),
       type: v.string().enum('event-card').required(),
       markerSlot: MarkerSlotSchema.required(),
       cardSlots: v.array(CardSlotSchema).required(),
@@ -174,6 +170,10 @@ const InteractionSchema = suretype(
   v
     .object({
       actionCardDelayMs: v.number().gte(0).required(),
+      eventCardMinDelayMs: v.number().gte(0).required(),
+      eventCardMaxDelayMs: v.number().gte(0).required(),
+      eventCardMinDurationMs: v.number().gte(0).required(),
+      eventCardMaxDurationMs: v.number().gte(0).required(),
       assets: v
         .object({
           markerSlotActive: AssetUrlObjectSchema.required(),

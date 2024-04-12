@@ -103,10 +103,6 @@ export interface ActionCardSlotGroupConfig {
 
 export interface EventCardSlotGroupConfig {
   id: string;
-  minDelayMs: number;
-  maxDelayMs: number;
-  minDurationMs: number;
-  maxDurationMs: number;
   type: 'event-card';
   markerSlot: MarkerSlotConfig;
   cardSlots: CardSlotConfig[];
@@ -120,6 +116,10 @@ export type SlotGroup =
 
 export interface InteractionConfig {
   actionCardDelayMs: number;
+  eventCardMinDelayMs: number;
+  eventCardMaxDelayMs: number;
+  eventCardMinDurationMs: number;
+  eventCardMaxDurationMs: number;
   assets: {
     markerSlotActive: {
       url: string;
