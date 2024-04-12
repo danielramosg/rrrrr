@@ -249,7 +249,6 @@ definitions:
         type: string
       url:
         type: string
-        pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
     required:
       - parameterTransformId
       - url

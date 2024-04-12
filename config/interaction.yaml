@@ -11,14 +11,16 @@ interaction:
         - markerSlot: { id: technology-ms-3, x: 188.7, y: 810.8, angle: 0 }
           cardSlot: { id: technology-cs-3, x: 600, y: 690, angle: 90 }
       cards:
-        - parameterTransformId: technology-card-1
-          url: card_template_x-8_y-15.png
-        - parameterTransformId: technology-card-2
-          url: card_template_x-8_y-15.png
-        - parameterTransformId: technology-card-3
-          url: card_template_x-8_y-15.png
-        - parameterTransformId: technology-card-4
-          url: card_template_x-8_y-15.png
+        - parameterTransformId: (T) Triple Diamantglas
+          url: cards/technology/triple-diamond-glass.webp
+        - parameterTransformId: (T) KI-Automatisierung
+          url: cards/technology/ai-automation.webp
+        - parameterTransformId: (T) Modular smartphone
+          url: cards/technology/modular-smartphone.webp
+        - parameterTransformId: (T) Planed Obsol
+          url: cards/technology/planned-obsolescence.webp
+        - parameterTransformId: (T) Software Upgrade
+          url: cards/technology/software-upgrade.webp
     - id: policy
       type: action-card
       slots:
@@ -29,14 +31,24 @@ interaction:
         - markerSlot: { id: policy-ms-3, x: 1876.4, y: 2008.4, angle: 0 }
           cardSlot: { id: policy-cs-3, x: 1770, y: 1600, angle: 0 }
       cards:
-        - parameterTransformId: policy-card-1
-          url: card_template_x-8_y-15.png
-        - parameterTransformId: policy-card-2
-          url: card_template_x-8_y-15.png
-        - parameterTransformId: policy-card-3
-          url: card_template_x-8_y-15.png
-        - parameterTransformId: policy-card-4
-          url: card_template_x-8_y-15.png
+        - parameterTransformId: (P) Schul-Repair-Café
+          url: cards/policy/school-repair-cafe.webp
+        - parameterTransformId: (P) Extreme Öko-Steuer
+          url: cards/policy/extreme-eco-tax.webp
+        - parameterTransformId: (P) Handy-Abo
+          url: cards/policy/handy-abo.webp
+        - parameterTransformId: (P) Recycle-Prämie
+          url: cards/policy/recycle-bonus.webp
+        - parameterTransformId: (P) Wartungsvertrag
+          url: cards/policy/wartungsvertrag.webp
+        - parameterTransformId: (P) Jugendschutz
+          url: cards/policy/youth-protection.webp
+        - parameterTransformId: (P) Ein-Telefon-Gesetz
+          url: cards/policy/one-phone-law.webp
+        - parameterTransformId: (P) BYOD
+          url: cards/policy/byod.webp
+        - parameterTransformId: (P) Handy Detox Day
+          url: cards/policy/handy-detox-day.webp
     - id: event
       type: event-card
       minDelayMs: 1000
@@ -49,14 +61,16 @@ interaction:
         - { id: event-cs-2, x: 1400, y: 60, angle: 0 }
         - { id: event-cs-3, x: 1150, y: 60, angle: 0 }
       cards:
-        - parameterTransformId: event-card-1
-          url: card_template_x-8_y-15.png
-        - parameterTransformId: event-card-2
-          url: card_template_x-8_y-15.png
-        - parameterTransformId: event-card-3
-          url: card_template_x-8_y-15.png
-        - parameterTransformId: event-card-4
-          url: card_template_x-8_y-15.png
+        - parameterTransformId: (E) Weltweite Chip-Krise
+          url: cards/event/global-chip-crisis.webp
+        - parameterTransformId: (E) Neues Ananas Phone
+          url: cards/event/new-pineapple-phone.webp
+        - parameterTransformId: (E) Sicherheitslücke
+          url: cards/event/security-gap.webp
+        - parameterTransformId: (E) Transport Streik
+          url: cards/event/transportstreik.webp
+        - parameterTransformId: (E) Deponie Streik
+          url: cards/event/landfill-strike.webp
     - id: reduce
       type: basic
       slots:

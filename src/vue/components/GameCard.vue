@@ -12,7 +12,10 @@ const props = defineProps<{
 const { toAssetUrl, extractAssetPosition } = useConfigStore();
 
 const assetUrl = computed(() => toAssetUrl(props.url));
-const position = computed(() => extractAssetPosition(assetUrl.value));
+
+// const position = computed(() => extractAssetPosition(assetUrl.value));
+// Keep the position fixed for now
+const position = { x: 0, y: 0 };
 </script>
 
 <template>

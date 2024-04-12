@@ -59,7 +59,7 @@ const CardSchema = suretype(
   v
     .object({
       parameterTransformId: v.string().required(),
-      url: AssetUrlSchema.required(),
+      url: v.string().required(),
     })
     .additional(false),
 );
