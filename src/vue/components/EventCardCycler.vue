@@ -121,5 +121,6 @@ watch(
     :key="csa.cardSlotConfig.id"
     :card-slot-config="csa.cardSlotConfig"
     :card-config="csa.cardConfig"
+    :active="props.enabled"
   />
 </template>

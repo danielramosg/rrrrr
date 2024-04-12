@@ -174,8 +174,7 @@ const ConfigSchema = suretype(
       parameterTransforms: ParameterTransformsSchema.required(),
       interaction: v
         .object({
-          slotActivationDelay: v.number().required(),
-          slotDeactivationDelay: v.number().required(),
+          actionCardDelayMs: v.number().gte(0).required(),
           slotGroups: v.array(SlotGroupSchema).required(),
         })
         .additional(false)

@@ -128,8 +128,7 @@ export interface Config {
   };
   parameterTransforms: ParameterTransformConfig[];
   interaction: {
-    slotActivationDelay: number;
-    slotDeactivationDelay: number;
+    actionCardDelayMs: number;
     slotGroups: SlotGroup[];
   };
   triggers: TriggerConfig[];

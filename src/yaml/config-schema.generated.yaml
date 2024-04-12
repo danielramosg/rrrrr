@@ -39,17 +39,15 @@ properties:
   interaction:
     type: object
     properties:
-      slotActivationDelay:
+      actionCardDelayMs:
         type: number
-      slotDeactivationDelay:
-        type: number
+        minimum: 0
       slotGroups:
         type: array
         items:
           $ref: '#/definitions/SlotGroup'
     required:
-      - slotActivationDelay
-      - slotDeactivationDelay
+      - actionCardDelayMs
       - slotGroups
     additionalProperties: false
   triggers:

@@ -1,46 +1,132 @@
 <script setup lang="ts">
-import type { DeepReadonly } from 'ts-essentials';
+import type { DeepReadonly, ElementOf } from 'ts-essentials';
+import type { Ref } from 'vue';
 
 import { strict as assert } from 'assert';
-import { ref, watchEffect } from 'vue';
+import { ref, watch } from 'vue';
 
-import type { ActionCardSlotGroupConfig } from '../../ts/config/config-schema';
+import type {
+  ActionCardSlotGroupConfig,
+  CardConfig,
+} from '../../ts/config/config-schema';
+import type { ParameterTransformState } from '../../ts/stores/slot-groups';
 
+import { useConfigStore } from '../../ts/stores/config';
 import { useSlotGroupsStore } from '../../ts/stores/slot-groups';
 import MarkerSlot from './MarkerSlot.vue';
 import CardSlot from './CardSlot.vue';
+
+interface CardAssigment {
+  cardConfig: DeepReadonly<CardConfig>;
+  state: ParameterTransformState;
+}
+
+interface ActionCardSlotAssignment {
+  readonly slotConfig: DeepReadonly<
+    ElementOf<ActionCardSlotGroupConfig['slots']>
+  >;
+  assignment: Ref<CardAssigment | null>;
+  active: Ref<boolean>;
+  timeout: ReturnType<typeof setTimeout> | null;
+}
 
 const props = defineProps<{
   slotGroupConfig: DeepReadonly<ActionCardSlotGroupConfig>;
 }>();
 const { slotGroupConfig } = props;
 
+const {
+  config: {
+    interaction: { actionCardDelayMs },
+  },
+} = useConfigStore();
+
 const { slotGroups } = useSlotGroupsStore();
 const slotGroup = slotGroups.find(({ id }) => id === slotGroupConfig.id);
 assert(typeof slotGroup !== 'undefined');
 
-const numActive = ref(0);
+const slotsWithCard = slotGroupConfig.slots.map(
+  (slotConfig): ActionCardSlotAssignment => ({
+    slotConfig,
+    assignment: ref<CardAssigment | null>(null),
+    active: ref(false),
+    timeout: null,
+  }),
+);
 
-watchEffect(() => {
-  slotGroup.parameterTransforms.forEach((pt, index) => {
-    const active = numActive.value > index;
-    if (pt.active !== active) {
-      // eslint-disable-next-line no-param-reassign
-      pt.active = active;
-    }
-  });
+const availableCardAssignments = slotGroupConfig.cards.map((cardConfig) => {
+  const state = slotGroup.parameterTransforms.find(
+    (pt) => pt.id === cardConfig.parameterTransformId,
+  );
+  assert(typeof state !== 'undefined');
+  return { cardConfig, state };
+});
+
+slotsWithCard.forEach((slotWithCard) => {
+  watch(
+    slotWithCard.active,
+    (active) => {
+      const { assignment } = slotWithCard;
+      if (!active) {
+        if (assignment.value !== null) {
+          const assignmentValue = assignment.value;
+          const { state } = assignmentValue;
+          console.log(
+            `Deactivating ${state.id} at action card slot ${slotWithCard.slotConfig.cardSlot.id}`,
+          );
+          assignmentValue.state.setActive(false);
+          console.log(
+            `Removing ${assignmentValue.state.id} from action card slot ${slotWithCard.slotConfig.cardSlot.id}`,
+          );
+          slotWithCard.assignment.value = null;
+          availableCardAssignments.push(assignmentValue);
+        }
+
+        if (slotWithCard.timeout === null) {
+          slotWithCard.timeout = setTimeout(() => {
+            slotWithCard.timeout = null;
+            const newAssignment = availableCardAssignments.shift();
+            assert(typeof newAssignment !== 'undefined');
+            console.log(
+              `Assigning ${newAssignment.state.id} to action card slot ${slotWithCard.slotConfig.cardSlot.id}`,
+            );
+            assignment.value = newAssignment;
+            assignment.value.state.setActive(slotWithCard.active.value);
+          }, actionCardDelayMs);
+        }
+      } else {
+        if (assignment.value !== null) {
+          const { state } = assignment.value;
+          console.log(state);
+          console.log(
+            `Activating ${state.id} at action card slot ${slotWithCard.slotConfig.cardSlot.id}`,
+          );
+          state.setActive(true);
+        }
+      }
+    },
+    { immediate: true },
+  );
 });
 </script>
 
 <template>
   <div :data-slot-group-id="slotGroupConfig.id">
-    <template v-for="slotConfig in slotGroupConfig.slots" :key="slotConfig.id">
-      <MarkerSlot
-        :slot-group-id="slotGroupConfig.id"
-        :slot-config="slotConfig.markerSlot"
-      />
-      <CardSlot :card-slot-config="slotConfig.cardSlot" :card-config="null" />
-    </template>
+    <MarkerSlot
+      v-for="slotWithCard in slotsWithCard"
+      :key="slotWithCard.slotConfig.markerSlot.id"
+      :slot-group-id="slotGroupConfig.id"
+      :slot-config="slotWithCard.slotConfig.markerSlot"
+      @activate="slotWithCard.active.value = true"
+      @deactivate="slotWithCard.active.value = false"
+    />
+    <CardSlot
+      v-for="slotWithCard in slotsWithCard"
+      :key="slotWithCard.slotConfig.cardSlot.id"
+      :card-slot-config="slotWithCard.slotConfig.cardSlot"
+      :card-config="slotWithCard.assignment.value?.cardConfig ?? null"
+      :active="slotWithCard.assignment.value?.state?.active ?? false"
+    />
   </div>
 </template>
 

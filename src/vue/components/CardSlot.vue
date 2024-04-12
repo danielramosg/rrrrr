@@ -8,6 +8,7 @@ import GameCard from './GameCard.vue';
 const props = defineProps<{
   readonly cardSlotConfig: DeepReadonly<CardSlotConfig>;
   cardConfig: DeepReadonly<CardConfig> | null;
+  active: boolean;
 }>();
 </script>
 
@@ -25,7 +26,7 @@ const props = defineProps<{
       <GameCard
         :url="cardConfig.url"
         :label="cardConfig.parameterTransformId"
-        :active="true"
+        :active="props.active"
       />
     </template>
   </div>

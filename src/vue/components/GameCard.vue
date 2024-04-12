@@ -35,12 +35,13 @@ const position = computed(() => extractAssetPosition(assetUrl.value));
 
 <style scoped lang="scss">
 .action-card {
+  --inactive-card-filter: invert(1) brightness(0.4) invert(1);
   position: absolute;
   left: calc(1px * var(--card-x));
   top: calc(1px * var(--card-y));
 
   &:not(.active) {
-    filter: blur(2px);
+    filter: var(--inactive-card-filter);
   }
 
   .image {

@@ -1,16 +1,15 @@
 interaction:
-  slotActivationDelay: 1
-  slotDeactivationDelay: 1
+  actionCardDelayMs: 1000
   slotGroups:
     - id: technology
       type: action-card
       slots:
         - markerSlot: { id: technology-ms-1, x: 188.7, y: 1318.22, angle: 0 }
-          cardSlot: { id: technology-cs-1, x: 600, y: 690, angle: 90 }
+          cardSlot: { id: technology-cs-1, x: 600, y: 1200, angle: 90 }
         - markerSlot: { id: technology-ms-2, x: 188.7, y: 1064.51, angle: 0 }
           cardSlot: { id: technology-cs-2, x: 600, y: 945, angle: 90 }
         - markerSlot: { id: technology-ms-3, x: 188.7, y: 810.8, angle: 0 }
-          cardSlot: { id: technology-cs-3, x: 600, y: 1200, angle: 90 }
+          cardSlot: { id: technology-cs-3, x: 600, y: 690, angle: 90 }
       cards:
         - parameterTransformId: technology-card-1
           url: card_template_x-8_y-15.png
