@@ -92,9 +92,14 @@ const togglePlayPause = () => {
   appStore.isPlaying = !appStore.isPlaying;
 };
 
+const toggleFullscreen = () => {
+  appStore.isFullscreen = !appStore.isFullscreen;
+};
+
 onKeyStroke(HOTKEYS.controlPanel.key, toggleControlPanel);
 onKeyStroke(HOTKEYS.developerMode.key, toggleDeveloperMode);
 onKeyStroke(HOTKEYS.run.key, togglePlayPause);
+onKeyStroke(HOTKEYS.fullscreen.key, toggleFullscreen);
 
 watchEffect(() => {
   if (appStore.isPlaying) runner.play();

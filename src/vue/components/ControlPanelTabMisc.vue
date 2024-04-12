@@ -42,7 +42,7 @@ const toggleDeveloperMode = () =>
     class="btn btn-primary"
     :for="toggleFullscreenBtnId"
     @click="toggleFullscreen"
-    >Fullscreen</label
+    >Fullscreen ({{ HOTKEYS.fullscreen.label }})</label
   >
   <input
     type="checkbox"

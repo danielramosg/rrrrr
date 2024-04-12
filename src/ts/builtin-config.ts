@@ -34,6 +34,7 @@ const HOTKEYS = {
   run: { key: ' ', label: 'space' },
   controlPanel: { key: 'c', label: 'c' },
   developerMode: { key: 'd', label: 'd' },
+  fullscreen: { key: 'f', label: 'f' },
 } as const;
 
 export {
