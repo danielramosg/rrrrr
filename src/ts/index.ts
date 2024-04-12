@@ -1,18 +1,14 @@
-import hotkeys from 'hotkeys-js';
-import { createApp, watchEffect } from 'vue';
+import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 
 import './side-effects';
 
-import { useAppStore } from './stores/app';
-import { useModelStore } from './stores/model';
 import App from '../vue/components/App.vue';
 
 import { ConfigLoader } from './config/config-loader';
 import { documentReady } from './util/document-ready';
 import { ScaleToFitParent } from './util/scale-to-fit';
 import { guardedQuerySelector } from './util/guarded-query-selectors';
-import { Game } from './game';
 import {
   BOARD_WIDTH,
   BOARD_HEIGHT,
@@ -34,15 +30,7 @@ import {
 
 type CircularEconomyApi = {
   app: InstanceType<typeof App>;
-  game: Game;
 };
-
-function configureHotkeys(game: Game) {
-  hotkeys('space', () => {
-    game.runner.togglePlayPause();
-    return false;
-  });
-}
 
 async function init(): Promise<CircularEconomyApi> {
   const configLoaderResult = await ConfigLoader.safeLoad(...CONFIG_URLS);
@@ -85,40 +73,8 @@ async function init(): Promise<CircularEconomyApi> {
     typeof App
   >;
 
-  const appStore = useAppStore();
-  const modelStore = useModelStore();
-
-  const modelVisualizationContainer = guardedQuerySelector(
-    HTMLDivElement,
-    '#model-viz-container',
-  );
-
-  const game = await Game.create(modelVisualizationContainer, config);
-
-  game.runner.on('tick', () => {
-    const { record } = game.modelSimulator;
-    modelStore.$patch({ record });
-  });
-
-  watchEffect(() => {
-    if (appStore.isPlaying) game.runner.play();
-    else game.runner.pause();
-  });
-
-  watchEffect(() => {
-    Object.assign(game.modelSimulator.parameters, {
-      ...modelStore.transformedParameters,
-    });
-    console.log('Update model parameters', game.modelSimulator.parameters);
-  });
-
-  game.runner.tick();
-
-  configureHotkeys(game);
-
   const circularEconomyApi: CircularEconomyApi = {
     app: appComponent,
-    game,
   };
 
   return circularEconomyApi;

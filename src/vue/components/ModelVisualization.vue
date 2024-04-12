@@ -1,12 +1,17 @@
+<script setup lang="ts">
 import { strict as assert } from 'assert';
 import kebabCase from 'lodash/kebabCase';
+import { onMounted, ref } from 'vue';
 
-import { ModelElementObject } from './model';
-import { CircularEconomyModel, Record } from './circular-economy-model';
-import { loadSvg } from './util/load-svg';
-import { guardedQuerySelector } from './util/guarded-query-selectors';
+import type { ModelElementObject } from '../../ts/model';
+import type { Record } from '../../ts/circular-economy-model';
 
-const svgUrl = new URL('../svg/model.svg', import.meta.url);
+import { useModelStore } from '../../ts/stores/model';
+import { CircularEconomyModel } from '../../ts/circular-economy-model';
+import { loadSvg } from '../../ts/util/load-svg';
+import { guardedQuerySelector } from '../../ts/util/guarded-query-selectors';
+
+const svgUrl = new URL('../../svg/model.svg', import.meta.url);
 
 const mainFlowIds = [
   'abandon',
@@ -73,7 +78,7 @@ class ModelView {
 
   protected readonly svg: SVGSVGElement;
 
-  protected constructor(model: CircularEconomyModel, svg: SVGSVGElement) {
+  constructor(model: CircularEconomyModel, svg: SVGSVGElement) {
     this.model = model;
     this.svg = svg;
 
@@ -323,12 +328,37 @@ class ModelView {
 
     elementsToRemove.forEach((element) => element.remove());
   }
-
-  public static async create(model: CircularEconomyModel) {
-    const svg = await loadSvg(svgUrl);
-    this.prepareSvg(model, svg);
-    return new ModelView(model, svg);
-  }
 }
 
-export { ModelView };
+const svgPromise = loadSvg(svgUrl);
+
+const modelStore = useModelStore();
+const model = new CircularEconomyModel();
+const modelView = ref<ModelView | null>(null);
+
+const container = ref<HTMLElement | null>(null);
+onMounted(() => {
+  svgPromise.then((svg) => {
+    ModelView.prepareSvg(model, svg);
+    modelView.value = new ModelView(model, svg);
+    modelView.value.update(0, 0, modelStore.record);
+    assert(container.value !== null);
+    container.value.append(modelView.value.element);
+  });
+});
+
+const update = (
+  deltaMs: DOMHighResTimeStamp,
+  stepSize: number,
+  record: Record,
+) => {
+  if (modelView.value === null) return;
+  modelView.value.update(deltaMs, stepSize, record);
+};
+
+defineExpose({ update });
+</script>
+
+<template>
+  <div ref="container" class="model-viz-container"></div>
+</template>

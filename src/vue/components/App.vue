@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { strict as assert } from 'assert';
+import { ref, computed, watch, watchEffect, onMounted } from 'vue';
 import { onKeyStroke } from '@vueuse/core';
 
 import PointerMarkerPanel from './PointerMarkerPanel.vue';
@@ -10,6 +11,7 @@ import TriggeredOverlay from './TriggeredOverlay.vue';
 import BasicSlotGroup from './BasicSlotGroup.vue';
 import ActionCardSlotGroup from './ActionCardSlotGroup.vue';
 import EventCardSlotGroup from './EventCardSlotGroup.vue';
+import ModelVisualization from './ModelVisualization.vue';
 
 import { useOptionStore } from '../../ts/stores/options';
 import { useConfigStore } from '../../ts/stores/config';
@@ -17,11 +19,51 @@ import { useAppStore } from '../../ts/stores/app';
 import { useModelStore } from '../../ts/stores/model';
 import { Scores } from '../../ts/scores';
 import { ignorePromise } from '../../ts/util/ignore-promise';
+import { ModelSimulator } from '../../ts/model-simulator';
+import {
+  CircularEconomyModel,
+  type FlowIds,
+  type ParameterIds,
+  type StockIds,
+  type VariableIds,
+} from '../../ts/circular-economy-model';
+import { Runner } from '../../ts/util/runner';
 
 const options = useOptionStore();
 const { config } = useConfigStore();
 const appStore = useAppStore();
 const modelStore = useModelStore();
+
+const model = new CircularEconomyModel();
+const modelSimulator = new ModelSimulator<
+  StockIds,
+  FlowIds,
+  VariableIds,
+  ParameterIds
+>(
+  model,
+  { ...config.model.initialStocks },
+  { ...config.model.initialParameters },
+  0.0,
+  config.simulation.deltaPerSecond,
+  config.simulation.maxStepSize,
+);
+
+const runner = new Runner();
+
+watchEffect(() => {
+  if (appStore.isPlaying) runner.play();
+  else runner.pause();
+});
+
+watchEffect(() => {
+  Object.assign(modelSimulator.parameters, {
+    ...modelStore.transformedParameters,
+  });
+  console.log('Update model parameters', modelSimulator.parameters);
+});
+
+runner.tick();
 
 watch(
   () => appStore.isFullscreen,
@@ -45,26 +87,39 @@ const toggleDeveloperMode = () => {
   appStore.isDeveloperModeActive = !appStore.isDeveloperModeActive;
 };
 
+const togglePlayPause = () => {
+  appStore.isPlaying = !appStore.isPlaying;
+};
+
 onKeyStroke('c', toggleControlPanel);
 onKeyStroke('d', toggleDeveloperMode);
+onKeyStroke(' ', togglePlayPause);
+
+watchEffect(() => {
+  if (appStore.isPlaying) runner.play();
+  else runner.pause();
+});
 
 const circularityScore = computed(() => Scores.circularity(modelStore.record));
 const userSatisfactionScore = computed(() =>
   Scores.userSatifaction(modelStore.record),
 );
 
-/*
-// TODO: Sync button state and fullscreen state
-if (!document.fullscreenEnabled)
-  fullscreenToggleCheckboxBox.disabled = true;
-fullscreenToggleCheckboxBox.addEventListener('input', () =>
-    ignorePromise(
-        fullscreenToggleCheckboxBox.checked
-            ? document.documentElement.requestFullscreen()
-            : document.exitFullscreen(),
-    ),
-);
-*/
+const modelVisualization = ref<typeof ModelVisualization | null>(null);
+onMounted(() => {
+  const tick = (deltaMs: DOMHighResTimeStamp) => {
+    const { t: lastT } = modelSimulator.record;
+    modelSimulator.tick(deltaMs);
+    const { t: currentT } = modelSimulator.record;
+    const deltaT = currentT - lastT;
+
+    const { record } = modelSimulator;
+    modelStore.$patch({ record });
+    assert(modelVisualization.value !== null);
+    modelVisualization.value.update(deltaMs, deltaT, modelSimulator.record);
+  };
+  runner.on('tick', tick);
+});
 </script>
 
 <template>
@@ -78,7 +133,7 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
       </TriggeredOverlay>
     </div>
     <div ref="" class="viz-panel fill">
-      <div id="model-viz-container" class="model-viz-container"></div>
+      <ModelVisualization ref="modelVisualization" />
       <ScoreItem
         title="Circularity"
         :value="circularityScore"
@@ -110,10 +165,10 @@ fullscreenToggleCheckboxBox.addEventListener('input', () =>
       </template>
       <PointerMarkerPanel v-if="options.usePointerMarkers"></PointerMarkerPanel>
       <TuioMarkerPanel
-          v-if="options.useTuioMarkers"
-          class="pointer-events-fallthrough"
+        v-if="options.useTuioMarkers"
+        class="pointer-events-fallthrough"
       ></TuioMarkerPanel>
-      </div>
+    </div>
   </div>
   <ControlPanel
     @keydown="$event.stopPropagation()"
