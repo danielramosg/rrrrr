@@ -6,6 +6,7 @@ import { onMounted, ref } from 'vue';
 import type { ModelElementObject } from '../../ts/model';
 import type { Record } from '../../ts/circular-economy-model';
 
+import { useAppStore } from '../../ts/stores/app';
 import { useModelStore } from '../../ts/stores/model';
 import { CircularEconomyModel } from '../../ts/circular-economy-model';
 import { loadSvg } from '../../ts/util/load-svg';
@@ -30,18 +31,18 @@ const mainFlowIds = [
   'repair',
 ] as const;
 
-const stockLabels = {
-  'recycled-materials': 'Verwertungsanlage',
-  'hibernating-phones': 'Ungenutzte Handies',
-  'disposed-phones': 'Handies im Müll',
-  'broken-phones': 'Kaputte Handies',
-  'repaired-phones': 'Werkstatt',
-  'phones-in-use': 'Handies in Benutzung',
-  'refurbished-phones': 'Instandsetzung',
-  'newly-produced-phones': 'Handy-Fabrik',
-  'natural-resources': 'Natur',
-  'landfilled-phones': 'Deponie',
-};
+const kebabCaseStockIds = [
+  'recycled-materials',
+  'hibernating-phones',
+  'disposed-phones',
+  'broken-phones',
+  'repaired-phones',
+  'phones-in-use',
+  'refurbished-phones',
+  'newly-produced-phones',
+  'natural-resources',
+  'landfilled-phones',
+];
 
 type MainFlowIds = typeof mainFlowIds;
 
@@ -234,7 +235,7 @@ class ModelView {
       return { x: x + width / 2, y: y + height / 2 };
     }
 
-    Object.entries(stockLabels).forEach(([id, label]) => {
+    kebabCaseStockIds.forEach((id) => {
       const baseElement = guardedQuerySelector(
         SVGGeometryElement,
         `#${id}`,
@@ -255,8 +256,9 @@ class ModelView {
         50,
       );
 
-      divElement.textContent = label;
+      divElement.textContent = id;
       divElement.classList.add('label');
+      divElement.style.display = 'var(--dev-mode-label-display)';
 
       labelLayer.append(foreignObjectElement);
     });
@@ -332,6 +334,8 @@ class ModelView {
 
 const svgPromise = loadSvg(svgUrl);
 
+const appStore = useAppStore();
+
 const modelStore = useModelStore();
 const model = new CircularEconomyModel();
 const modelView = ref<ModelView | null>(null);
@@ -360,5 +364,13 @@ defineExpose({ update });
 </script>
 
 <template>
-  <div ref="container" class="model-viz-container"></div>
+  <div
+    ref="container"
+    class="model-viz-container"
+    :style="{
+      '--dev-mode-label-display': appStore.isDeveloperModeActive
+        ? 'inline'
+        : 'none',
+    }"
+  ></div>
 </template>
