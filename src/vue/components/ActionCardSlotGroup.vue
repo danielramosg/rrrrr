@@ -112,6 +112,13 @@ slotsWithCard.forEach((slotWithCard) => {
 
 <template>
   <div :data-slot-group-id="slotGroupConfig.id">
+    <CardSlot
+      v-for="slotWithCard in slotsWithCard"
+      :key="slotWithCard.slotConfig.cardSlot.id"
+      :card-slot-config="slotWithCard.slotConfig.cardSlot"
+      :card-config="slotWithCard.assignment.value?.cardConfig ?? null"
+      :active="slotWithCard.assignment.value?.state?.active ?? false"
+    />
     <MarkerSlot
       v-for="slotWithCard in slotsWithCard"
       :key="slotWithCard.slotConfig.markerSlot.id"
@@ -119,13 +126,6 @@ slotsWithCard.forEach((slotWithCard) => {
       :slot-config="slotWithCard.slotConfig.markerSlot"
       @activate="slotWithCard.active.value = true"
       @deactivate="slotWithCard.active.value = false"
-    />
-    <CardSlot
-      v-for="slotWithCard in slotsWithCard"
-      :key="slotWithCard.slotConfig.cardSlot.id"
-      :card-slot-config="slotWithCard.slotConfig.cardSlot"
-      :card-config="slotWithCard.assignment.value?.cardConfig ?? null"
-      :active="slotWithCard.assignment.value?.state?.active ?? false"
     />
   </div>
 </template>
