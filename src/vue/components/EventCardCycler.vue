@@ -98,7 +98,8 @@ const activateCardSlotAssignments = () => {
   let delayMultiplier = 0;
   cardSlotAssignments.forEach((csa) => {
     if (csa.cardConfig === null) {
-      const delayMs = getRandomDelayMs(delayMultiplier);
+      const delayMs =
+        delayMultiplier === 0 ? 0 : getRandomDelayMs(delayMultiplier);
       csa.stopFilling();
       csa.stopFilling = useTimeoutFn(() => fillCardSlot(csa), delayMs).stop;
       delayMultiplier += 1;
