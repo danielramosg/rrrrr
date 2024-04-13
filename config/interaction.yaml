@@ -1,9 +1,9 @@
 interaction:
   actionCardDelayMs: 1000
-  eventCardMinDelayMs: 1000
-  eventCardMaxDelayMs: 2000
-  eventCardMinDurationMs: 5000
-  eventCardMaxDurationMs: 10000
+  eventCardMinDelayMs: 10000
+  eventCardMaxDelayMs: 20000
+  eventCardMinDurationMs: 30000
+  eventCardMaxDurationMs: 60000
   assets:
     markerSlotActive:
       url: slots/marker-slot-active_x-121_y-121.webp
