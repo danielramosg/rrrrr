@@ -10,4 +10,4 @@ triggers:
       - condition: 'true'
         url: reduce_cellphone_x1647_y1346.webp
       - condition: 'true'
-        url: reuse_cellphone_x1647_y1346.webp
+        url: reduce_walkingman_x1471_y1347.webp
