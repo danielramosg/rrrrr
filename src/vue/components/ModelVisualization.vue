@@ -63,15 +63,12 @@ const flowVizSigns: ModelElementObject<MainFlowIds> = {
   repair: -1,
 };
 
-const dashGap = 27; // FIXME: Calculate from CSS
-const lineWidth = 0; // FIXME: Calculate from CSS
-const dotRadius = 15; // FIXME: Calculate from CSS
-const lineSegmentArea = lineWidth * dashGap;
-const dotWithoutLineSegmentArea =
-  Math.sqrt(dotRadius ** 2 - lineWidth ** 2) * lineWidth;
-const averageFlowVizWidth = lineSegmentArea + dotWithoutLineSegmentArea;
-console.log(lineSegmentArea, dotWithoutLineSegmentArea, averageFlowVizWidth);
-const quantityScaleFactor = 30000.0;
+const scaleFactors = {
+  global: 30000,
+  stocks: 1,
+  flows: 0.002,
+};
+
 class ModelView {
   protected readonly model: CircularEconomyModel;
 
@@ -94,8 +91,9 @@ class ModelView {
   ) {
     const { flows } = record;
     const flowVizScale =
-      (stepSize * (quantityScaleFactor / record.parameters.numberOfUsers)) /
-      averageFlowVizWidth;
+      stepSize *
+      ((scaleFactors.global * scaleFactors.flows) /
+        record.parameters.numberOfUsers);
     mainFlowIds.forEach((id) => {
       const flow = flows[id];
       const flowVizSign = flowVizSigns[id];
@@ -110,15 +108,17 @@ class ModelView {
       );
       // The dash offset step must not be small compared to the dash gap.
       // Otherwise, the flow animation may appear to move backwards.
-      const dashOffsetStep = Math.max(
-        -0.3 * dashGap,
-        Math.min(flowVizSign * (deltaMs * flow) * flowVizScale, 0.1 * dashGap),
+      const maxStep = parseFloat(
+        window
+          .getComputedStyle(element)
+          .getPropertyValue('--max-dashoffset-step'),
       );
+      const dashOffsetStep =
+        flowVizSign * Math.min(deltaMs * flowVizScale * flow, maxStep);
       const dashOffset =
         (Number.isNaN(lastDashOffset) ? 0 : lastDashOffset) + dashOffsetStep;
 
       element.setAttribute('stroke-dashoffset', `${dashOffset}`);
-      element.setAttribute('stroke-dasharray', `0 ${dashGap}`);
     });
   }
 
@@ -128,7 +128,9 @@ class ModelView {
     record: Record,
   ) {
     const { stocks } = record;
-    const stockVizScale = quantityScaleFactor / record.parameters.numberOfUsers;
+    const stockVizScale =
+      (scaleFactors.global * scaleFactors.stocks) /
+      record.parameters.numberOfUsers;
     this.model.stockIds.forEach((id) => {
       const elementId = kebabCase(id);
       const element = this.svg.getElementById(elementId);
