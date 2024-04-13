@@ -61,7 +61,7 @@ function exportParameterTransforms() {
 
 <template>
   Import/Export parameter transforms:<br />
-  <textarea v-model="yamlText" rows="37" cols="80"></textarea>
+  <textarea name="yamlText" v-model="yamlText" rows="37" cols="80"></textarea>
   <div>
     <input type="button" value="Import" @click="importParameterTransforms()" />
     <input type="button" value="Export" @click="exportParameterTransforms()" />

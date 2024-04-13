@@ -1,12 +1,18 @@
+<script setup lang="ts">
 import { strict as assert } from 'assert';
 import kebabCase from 'lodash/kebabCase';
+import { onMounted, ref } from 'vue';
 
-import { ModelElementObject } from './model';
-import { CircularEconomyModel, Record } from './circular-economy-model';
-import { loadSvg } from './util/load-svg';
-import { guardedQuerySelector } from './util/guarded-query-selectors';
+import type { ModelElementObject } from '../../ts/model';
+import type { Record } from '../../ts/circular-economy-model';
 
-const svgUrl = new URL('../svg/model.svg', import.meta.url);
+import { useAppStore } from '../../ts/stores/app';
+import { useModelStore } from '../../ts/stores/model';
+import { CircularEconomyModel } from '../../ts/circular-economy-model';
+import { loadSvg } from '../../ts/util/load-svg';
+import { guardedQuerySelector } from '../../ts/util/guarded-query-selectors';
+
+const svgUrl = new URL('../../svg/model.svg', import.meta.url);
 
 const mainFlowIds = [
   'abandon',
@@ -25,18 +31,18 @@ const mainFlowIds = [
   'repair',
 ] as const;
 
-const stockLabels = {
-  'recycled-materials': 'Verwertungsanlage',
-  'hibernating-phones': 'Ungenutzte Handies',
-  'disposed-phones': 'Handies im Müll',
-  'broken-phones': 'Kaputte Handies',
-  'repaired-phones': 'Werkstatt',
-  'phones-in-use': 'Handies in Benutzung',
-  'refurbished-phones': 'Instandsetzung',
-  'newly-produced-phones': 'Handy-Fabrik',
-  'natural-resources': 'Natur',
-  'landfilled-phones': 'Deponie',
-};
+const kebabCaseStockIds = [
+  'recycled-materials',
+  'hibernating-phones',
+  'disposed-phones',
+  'broken-phones',
+  'repaired-phones',
+  'phones-in-use',
+  'refurbished-phones',
+  'newly-produced-phones',
+  'natural-resources',
+  'landfilled-phones',
+];
 
 type MainFlowIds = typeof mainFlowIds;
 
@@ -57,15 +63,12 @@ const flowVizSigns: ModelElementObject<MainFlowIds> = {
   repair: -1,
 };
 
-const dashGap = 30; // FIXME: Calculate from CSS
-const lineWidth = 10; // FIXME: Calculate from CSS
-const dotRadius = 20; // FIXME: Calculate from CSS
-const lineSegmentArea = lineWidth * dashGap;
-const dotWithoutLineSegmentArea =
-  Math.sqrt(dotRadius ** 2 - lineWidth ** 2) * lineWidth;
-const averageFlowVizWidth = lineSegmentArea + dotWithoutLineSegmentArea;
-console.log(lineSegmentArea, dotWithoutLineSegmentArea, averageFlowVizWidth);
-const quantityScaleFactor = 30000.0;
+const scaleFactors = {
+  global: 30000,
+  stocks: 1,
+  flows: 0.002,
+};
+
 class ModelView {
   protected readonly model: CircularEconomyModel;
 
@@ -73,7 +76,7 @@ class ModelView {
 
   protected readonly svg: SVGSVGElement;
 
-  protected constructor(model: CircularEconomyModel, svg: SVGSVGElement) {
+  constructor(model: CircularEconomyModel, svg: SVGSVGElement) {
     this.model = model;
     this.svg = svg;
 
@@ -88,8 +91,9 @@ class ModelView {
   ) {
     const { flows } = record;
     const flowVizScale =
-      (stepSize * (quantityScaleFactor / record.parameters.numberOfUsers)) /
-      averageFlowVizWidth;
+      stepSize *
+      ((scaleFactors.global * scaleFactors.flows) /
+        record.parameters.numberOfUsers);
     mainFlowIds.forEach((id) => {
       const flow = flows[id];
       const flowVizSign = flowVizSigns[id];
@@ -104,15 +108,17 @@ class ModelView {
       );
       // The dash offset step must not be small compared to the dash gap.
       // Otherwise, the flow animation may appear to move backwards.
-      const dashOffsetStep = Math.max(
-        -0.3 * dashGap,
-        Math.min(flowVizSign * (deltaMs * flow) * flowVizScale, 0.1 * dashGap),
+      const maxStep = parseFloat(
+        window
+          .getComputedStyle(element)
+          .getPropertyValue('--max-dashoffset-step'),
       );
+      const dashOffsetStep =
+        flowVizSign * Math.min(deltaMs * flowVizScale * flow, maxStep);
       const dashOffset =
         (Number.isNaN(lastDashOffset) ? 0 : lastDashOffset) + dashOffsetStep;
 
       element.setAttribute('stroke-dashoffset', `${dashOffset}`);
-      element.setAttribute('stroke-dasharray', `0 ${dashGap}`);
     });
   }
 
@@ -122,7 +128,9 @@ class ModelView {
     record: Record,
   ) {
     const { stocks } = record;
-    const stockVizScale = quantityScaleFactor / record.parameters.numberOfUsers;
+    const stockVizScale =
+      (scaleFactors.global * scaleFactors.stocks) /
+      record.parameters.numberOfUsers;
     this.model.stockIds.forEach((id) => {
       const elementId = kebabCase(id);
       const element = this.svg.getElementById(elementId);
@@ -229,7 +237,7 @@ class ModelView {
       return { x: x + width / 2, y: y + height / 2 };
     }
 
-    Object.entries(stockLabels).forEach(([id, label]) => {
+    kebabCaseStockIds.forEach((id) => {
       const baseElement = guardedQuerySelector(
         SVGGeometryElement,
         `#${id}`,
@@ -250,8 +258,9 @@ class ModelView {
         50,
       );
 
-      divElement.textContent = label;
+      divElement.textContent = id;
       divElement.classList.add('label');
+      divElement.style.display = 'var(--dev-mode-label-display)';
 
       labelLayer.append(foreignObjectElement);
     });
@@ -323,12 +332,51 @@ class ModelView {
 
     elementsToRemove.forEach((element) => element.remove());
   }
-
-  public static async create(model: CircularEconomyModel) {
-    const svg = await loadSvg(svgUrl);
-    this.prepareSvg(model, svg);
-    return new ModelView(model, svg);
-  }
 }
 
-export { ModelView };
+const svgPromise = loadSvg(svgUrl);
+
+const appStore = useAppStore();
+
+const modelStore = useModelStore();
+const model = new CircularEconomyModel();
+const modelView = ref<ModelView | null>(null);
+
+const container = ref<HTMLElement | null>(null);
+onMounted(() => {
+  svgPromise.then((svg) => {
+    ModelView.prepareSvg(model, svg);
+    modelView.value = new ModelView(model, svg);
+    modelView.value.update(0, 0, modelStore.record);
+    assert(container.value !== null);
+    container.value.append(modelView.value.element);
+  });
+});
+
+const update = (
+  deltaMs: DOMHighResTimeStamp,
+  stepSize: number,
+  record: Record,
+) => {
+  if (modelView.value === null) return;
+  modelView.value.update(deltaMs, stepSize, record);
+};
+
+defineExpose({ update });
+</script>
+
+<template>
+  <div
+    ref="container"
+    class="model-viz-container"
+    :style="{
+      '--dev-mode-label-display': appStore.isDeveloperModeActive
+        ? 'inline'
+        : 'none',
+    }"
+  ></div>
+</template>
+
+<style scoped lang="scss">
+// FIXME: Move global SVG styles here
+</style>

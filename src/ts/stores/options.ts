@@ -18,12 +18,15 @@ export const useOptionStore = defineStore('options', () => {
 
   const autoStart = (searchParams.get('autoStart') ?? 'true') === 'true';
 
+  const developerMode = (searchParams.get('devMode') ?? 'false') === 'true';
+
   const result = {
     useTuioMarkers,
     usePointerMarkers,
     numPointerMarkers,
     tuioUrl,
     autoStart,
+    developerMode,
   };
 
   return result as DeepReadonly<typeof result>;

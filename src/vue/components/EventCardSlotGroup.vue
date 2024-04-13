@@ -25,15 +25,15 @@ const isMarkerSlotActive = ref(false);
 
 <template>
   <div :data-slot-group-id="slotGroupConfig.id">
+    <EventCardCycler
+      :slot-group-config="slotGroupConfig"
+      :enabled="isMarkerSlotActive"
+    />
     <MarkerSlot
       :slot-group-id="slotGroupConfig.id"
       :slot-config="markerSlotConfig"
       @activate="isMarkerSlotActive = true"
       @deactivate="isMarkerSlotActive = false"
-    />
-    <EventCardCycler
-      :slot-group-config="slotGroupConfig"
-      :enabled="isMarkerSlotActive"
     />
   </div>
 </template>

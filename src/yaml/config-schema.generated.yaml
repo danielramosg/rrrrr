@@ -3,13 +3,7 @@ title: Config
 type: object
 properties:
   general:
-    type: object
-    properties:
-      assetBaseDir:
-        type: string
-    required:
-      - assetBaseDir
-    additionalProperties: false
+    $ref: '#/definitions/GeneralConfig'
   model:
     type: object
     properties:
@@ -37,21 +31,7 @@ properties:
     items:
       $ref: '#/definitions/ParameterTransformConfig'
   interaction:
-    type: object
-    properties:
-      slotActivationDelay:
-        type: number
-      slotDeactivationDelay:
-        type: number
-      slotGroups:
-        type: array
-        items:
-          $ref: '#/definitions/SlotGroup'
-    required:
-      - slotActivationDelay
-      - slotDeactivationDelay
-      - slotGroups
-    additionalProperties: false
+    $ref: '#/definitions/InteractionConfig'
   triggers:
     type: array
     items:
@@ -65,6 +45,36 @@ required:
   - triggers
 additionalProperties: false
 definitions:
+  GeneralConfig:
+    type: object
+    properties:
+      assetBaseDir:
+        type: string
+      primaryLanguage:
+        type: string
+      secondaryLanguage:
+        type: string
+      scoreLabels:
+        type: object
+        properties:
+          circularity:
+            type: object
+            additionalProperties:
+              type: string
+          happiness:
+            type: object
+            additionalProperties:
+              type: string
+        required:
+          - circularity
+          - happiness
+        additionalProperties: false
+    required:
+      - assetBaseDir
+      - primaryLanguage
+      - secondaryLanguage
+      - scoreLabels
+    additionalProperties: false
   InitialParametersConfig:
     type: object
     properties:
@@ -251,7 +261,6 @@ definitions:
         type: string
       url:
         type: string
-        pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
     required:
       - parameterTransformId
       - url
@@ -295,18 +304,6 @@ definitions:
       id:
         type: string
         pattern: ^((?!internal).)*$
-      minDelayMs:
-        type: number
-        minimum: 0
-      maxDelayMs:
-        type: number
-        minimum: 0
-      minDurationMs:
-        type: number
-        minimum: 0
-      maxDurationMs:
-        type: number
-        minimum: 0
       type:
         type: string
         enum:
@@ -323,10 +320,6 @@ definitions:
           $ref: '#/definitions/CardConfig'
     required:
       - id
-      - minDelayMs
-      - maxDelayMs
-      - minDurationMs
-      - maxDurationMs
       - type
       - markerSlot
       - cardSlots
@@ -337,6 +330,62 @@ definitions:
       - $ref: '#/definitions/BasicSlotGroupConfig'
       - $ref: '#/definitions/ActionCardSlotGroupConfig'
       - $ref: '#/definitions/EventCardSlotGroupConfig'
+  InteractionConfig:
+    type: object
+    properties:
+      actionCardDelayMs:
+        type: number
+        minimum: 0
+      eventCardMinDelayMs:
+        type: number
+        minimum: 0
+      eventCardMaxDelayMs:
+        type: number
+        minimum: 0
+      eventCardMinDurationMs:
+        type: number
+        minimum: 0
+      eventCardMaxDurationMs:
+        type: number
+        minimum: 0
+      assets:
+        type: object
+        properties:
+          markerSlotActive:
+            type: object
+            properties:
+              url:
+                type: string
+                pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
+            required:
+              - url
+            additionalProperties: false
+          markerSlotInactive:
+            type: object
+            properties:
+              url:
+                type: string
+                pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
+            required:
+              - url
+            additionalProperties: false
+        required:
+          - markerSlotActive
+          - markerSlotInactive
+        additionalProperties: false
+      slotGroups:
+        type: array
+        items:
+          $ref: '#/definitions/SlotGroup'
+    required:
+      - actionCardDelayMs
+      - eventCardMinDelayMs
+      - eventCardMaxDelayMs
+      - eventCardMinDurationMs
+      - eventCardMaxDurationMs
+      - assets
+      - slotGroups
+    additionalProperties: false
   TriggerConditionConfig:
     type: object
     properties:

@@ -11,6 +11,7 @@ import type {
   EventCardSlotGroupConfig,
 } from '../../ts/config/config-schema';
 
+import { useConfigStore } from '../../ts/stores/config';
 import { useSlotGroupsStore } from '../../ts/stores/slot-groups';
 import CardSlot from './CardSlot.vue';
 
@@ -19,18 +20,27 @@ const props = defineProps<{
   enabled: boolean;
 }>();
 
-const { minDelayMs, maxDelayMs, minDurationMs, maxDurationMs } =
-  props.slotGroupConfig;
+const {
+  config: {
+    interaction: {
+      eventCardMinDelayMs,
+      eventCardMaxDelayMs,
+      eventCardMinDurationMs,
+      eventCardMaxDurationMs,
+    },
+  },
+} = useConfigStore();
 
 const { slotGroups } = useSlotGroupsStore();
 const slotGroup = slotGroups.find(({ id }) => id === props.slotGroupConfig.id);
 assert(typeof slotGroup !== 'undefined');
 
 const getRandomDelayMs = (minDelayMultiplier: number = 1) =>
-  minDelayMultiplier * minDelayMs +
-  Math.random() * Math.abs(maxDelayMs - minDelayMs);
+  minDelayMultiplier * eventCardMinDelayMs +
+  Math.random() * Math.abs(eventCardMaxDelayMs - eventCardMinDelayMs);
 const getRandomDurationMs = () =>
-  minDurationMs + Math.random() * Math.abs(maxDurationMs - minDurationMs);
+  eventCardMinDurationMs +
+  Math.random() * Math.abs(eventCardMaxDurationMs - eventCardMinDurationMs);
 
 interface CardSlotAssignment {
   cardSlotConfig: DeepReadonly<CardSlotConfig>;
@@ -88,7 +98,8 @@ const activateCardSlotAssignments = () => {
   let delayMultiplier = 0;
   cardSlotAssignments.forEach((csa) => {
     if (csa.cardConfig === null) {
-      const delayMs = getRandomDelayMs(delayMultiplier);
+      const delayMs =
+        delayMultiplier === 0 ? 0 : getRandomDelayMs(delayMultiplier);
       csa.stopFilling();
       csa.stopFilling = useTimeoutFn(() => fillCardSlot(csa), delayMs).stop;
       delayMultiplier += 1;
@@ -121,5 +132,6 @@ watch(
     :key="csa.cardSlotConfig.id"
     :card-slot-config="csa.cardSlotConfig"
     :card-config="csa.cardConfig"
+    :active="true"
   />
 </template>

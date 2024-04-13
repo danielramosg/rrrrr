@@ -7,6 +7,20 @@
  *  - {@link https://github.com/grantila/typeconv}
  */
 
+export interface GeneralConfig {
+  assetBaseDir: string;
+  primaryLanguage: string;
+  secondaryLanguage: string;
+  scoreLabels: {
+    circularity: {
+      [key: string]: string;
+    };
+    happiness: {
+      [key: string]: string;
+    };
+  };
+}
+
 export interface InitialParametersConfig {
   abandonExcessRate: number;
   abandonRate: number;
@@ -89,10 +103,6 @@ export interface ActionCardSlotGroupConfig {
 
 export interface EventCardSlotGroupConfig {
   id: string;
-  minDelayMs: number;
-  maxDelayMs: number;
-  minDurationMs: number;
-  maxDurationMs: number;
   type: 'event-card';
   markerSlot: MarkerSlotConfig;
   cardSlots: CardSlotConfig[];
@@ -103,6 +113,23 @@ export type SlotGroup =
   | BasicSlotGroupConfig
   | ActionCardSlotGroupConfig
   | EventCardSlotGroupConfig;
+
+export interface InteractionConfig {
+  actionCardDelayMs: number;
+  eventCardMinDelayMs: number;
+  eventCardMaxDelayMs: number;
+  eventCardMinDurationMs: number;
+  eventCardMaxDurationMs: number;
+  assets: {
+    markerSlotActive: {
+      url: string;
+    };
+    markerSlotInactive: {
+      url: string;
+    };
+  };
+  slotGroups: SlotGroup[];
+}
 
 export interface TriggerConditionConfig {
   condition: string;
@@ -115,9 +142,7 @@ export interface TriggerConfig {
 }
 
 export interface Config {
-  general: {
-    assetBaseDir: string;
-  };
+  general: GeneralConfig;
   model: {
     initialParameters: InitialParametersConfig;
     initialStocks: InitialStocksConfig;
@@ -127,10 +152,6 @@ export interface Config {
     maxStepSize: number;
   };
   parameterTransforms: ParameterTransformConfig[];
-  interaction: {
-    slotActivationDelay: number;
-    slotDeactivationDelay: number;
-    slotGroups: SlotGroup[];
-  };
+  interaction: InteractionConfig;
   triggers: TriggerConfig[];
 }

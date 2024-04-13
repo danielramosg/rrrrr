@@ -118,6 +118,7 @@
     "udp-websocket-bridge:node": "tsx ./tools/udp-websocket-bridge.ts"
   },
   "dependencies": {
+    "@fontsource/jost": "^5.0.17",
     "@popperjs/core": "^2.11.8",
     "@vueuse/core": "^10.9.0",
     "assert": "^2.1.0",
@@ -126,7 +127,6 @@
     "chart.js": "^4.4.2",
     "deepmerge": "^4.3.1",
     "events": "^3.3.0",
-    "hotkeys-js": "^3.13.7",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "long": "^5.2.3",

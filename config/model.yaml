@@ -14,23 +14,23 @@ model:
     supplyOfRepairedPhones: 0
   initialParameters:
     abandonExcessRate: 0.5
-    abandonRate: 0.1
+    abandonRate: 0.5
     acquireRate: 1
-    breakRate: 0.1
+    breakRate: 0.3
     capacityAdjustmentRate: 0.1
-    disposeIncentive: 0.5
-    disposeRate: 0.5
+    disposeIncentive: 0.8
+    disposeRate: 0.8
     landfillIncentive: 0.5
-    landfillRate: 1
+    landfillRate: 0.8
     naturalResourcesIncentive: 0.5
     newPhoneProductionRate: 0.5
     newlyProducedPhoneIncentive: 0.82
     numberOfUsers: 1000000
     phonesPerUserGoal: 1
-    recycleRate: 1
-    recyclingIncentive: 0.89
-    refurbishmentIncentive: 0.5
-    refurbishmentRate: 1
-    repairIncentive: 0.5
-    repairRate: 1
-    reuseIncentive: 0.86
+    recycleRate: 0.2
+    recyclingIncentive: 0.2
+    refurbishmentIncentive: 0.2
+    refurbishmentRate: 0.2
+    repairIncentive: 0.2
+    repairRate: 0.2
+    reuseIncentive: 0.2

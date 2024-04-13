@@ -59,7 +59,7 @@ const CardSchema = suretype(
   v
     .object({
       parameterTransformId: v.string().required(),
-      url: AssetUrlSchema.required(),
+      url: v.string().required(),
     })
     .additional(false),
 );
@@ -104,10 +104,6 @@ const EventCardSlotGroupSchema = suretype(
   v
     .object({
       id: SlotGroupIdSchema.required(),
-      minDelayMs: v.number().gte(0).required(),
-      maxDelayMs: v.number().gte(0).required(),
-      minDurationMs: v.number().gte(0).required(),
-      maxDurationMs: v.number().gte(0).required(),
       type: v.string().enum('event-card').required(),
       markerSlot: MarkerSlotSchema.required(),
       cardSlots: v.array(CardSlotSchema).required(),
@@ -147,16 +143,56 @@ const TriggerSchema = suretype(
     .required(),
 );
 
+const GeneralSchema = suretype(
+  { name: 'GeneralConfig' },
+  v
+    .object({
+      assetBaseDir: v.string().required(),
+      primaryLanguage: v.string().required(),
+      secondaryLanguage: v.string().required(),
+      scoreLabels: v
+        .object({
+          circularity: v.object({}).additional(v.string()).required(),
+          happiness: v.object({}).additional(v.string()).required(),
+        })
+        .additional(false)
+        .required(),
+    })
+    .additional(false),
+);
+
+const AssetUrlObjectSchema = v
+  .object({ url: AssetUrlSchema.required() })
+  .additional(false);
+
+const InteractionSchema = suretype(
+  { name: 'InteractionConfig' },
+  v
+    .object({
+      actionCardDelayMs: v.number().gte(0).required(),
+      eventCardMinDelayMs: v.number().gte(0).required(),
+      eventCardMaxDelayMs: v.number().gte(0).required(),
+      eventCardMinDurationMs: v.number().gte(0).required(),
+      eventCardMaxDurationMs: v.number().gte(0).required(),
+      assets: v
+        .object({
+          markerSlotActive: AssetUrlObjectSchema.required(),
+          markerSlotInactive: AssetUrlObjectSchema.required(),
+        })
+        .additional(false)
+        .required(),
+      slotGroups: v.array(SlotGroupSchema).required(),
+    })
+    .additional(false),
+);
+
 const CONFIG_SCHEMA_NAME = 'Config';
 
 const ConfigSchema = suretype(
   { name: CONFIG_SCHEMA_NAME },
   v
     .object({
-      general: v
-        .object({ assetBaseDir: v.string().required() })
-        .additional(false)
-        .required(),
+      general: GeneralSchema.required(),
       model: v
         .object({
           initialParameters: InitialParametersSchema.required(),
@@ -172,14 +208,7 @@ const ConfigSchema = suretype(
         .additional(false)
         .required(),
       parameterTransforms: ParameterTransformsSchema.required(),
-      interaction: v
-        .object({
-          slotActivationDelay: v.number().required(),
-          slotDeactivationDelay: v.number().required(),
-          slotGroups: v.array(SlotGroupSchema).required(),
-        })
-        .additional(false)
-        .required(),
+      interaction: InteractionSchema.required(),
       triggers: v.array(TriggerSchema).required(),
     })
     .additional(false)
