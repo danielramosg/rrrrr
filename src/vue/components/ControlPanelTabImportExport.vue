@@ -82,6 +82,8 @@ async function importInitialParameters() {
   } = newConfig;
 
   Object.assign(initialParameters, validatedInitialParameters);
+
+  await nextTick();
   initialParametersImportState.value = OState.SUCCESS;
 }
 
@@ -97,6 +99,8 @@ async function importParameterTransforms() {
 
   parameterTransformsStore.replaceAll(validatedParameterTransforms);
   rebuildInternalSlotGroup();
+
+  await nextTick();
   parameterTransformImportState.value = OState.SUCCESS;
 }
 
