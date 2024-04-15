@@ -29,6 +29,10 @@ export class ConfigLoader {
     return json;
   }
 
+  static merge(...segments: object[]): object {
+    return deepmerge.all(segments, { arrayMerge: overwriteMerge });
+  }
+
   static async safeLoad(...urls: URL[]): Promise<
     SafeResult<
       ReadonlyConfig,
@@ -46,9 +50,8 @@ export class ConfigLoader {
         ],
       ),
     );
-    const merged = deepmerge.all(
-      segments.map(([_, jsonSegment]) => jsonSegment),
-      { arrayMerge: overwriteMerge },
+    const merged = ConfigLoader.merge(
+      ...segments.map(([_, jsonSegment]) => jsonSegment),
     );
     const validationResult = validateConfig(merged);
     if (!validationResult.ok)
