@@ -1,23 +1,13 @@
 triggers:
-  - id: test-1
+  - id: background
     events:
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-  - id: test-2
+      - condition: 'true'
+        url: 'background_static_x0_y0.webp'
+  - id: overlays
     events:
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
-      - condition:
-          'some condition based on the model elements (stocks, flows etc)'
-        url: 'url to the image'
+      - condition: 'true'
+        url: government_static_x794_y1705.webp
+      - condition: 'true'
+        url: reduce_cellphone_x1647_y1346.webp
+      - condition: 'true'
+        url: reduce_walkingman_x1471_y1347.webp

@@ -1,6 +1,6 @@
 // This file was auto-generated from the InsightMaker model. Do not edit it manually.
-import {
-  Model,
+import { Model } from './model';
+import type {
   ModelElementObject,
   ModelElementId,
   ModelElementArray,

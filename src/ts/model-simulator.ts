@@ -4,9 +4,9 @@ import type {
   ModelElementObject,
   ModelRecord,
 } from './model';
-import { Model } from './model';
+import type { FlowEvaluator } from './box-model/types';
 
-import { FlowEvaluator } from './box-model/types';
+import { Model } from './model';
 
 class ModelSimulator<
   S extends ModelElementIds,

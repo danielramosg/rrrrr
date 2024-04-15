@@ -1,10 +1,9 @@
-import type { FlowEvaluator, ConvergenceCriterion } from './types';
-import { step as stepImpl, converge as convergeImpl } from './engine';
-import {
+import type { FlowEvaluator, ConvergenceCriterion ,
   IntegrationEngineInputArray,
   IntegrationEngineOutputArray,
   IVPIntegrator,
 } from './types';
+import { step as stepImpl, converge as convergeImpl } from './engine';
 
 function step5<T extends readonly number[]>(
   stocksAtT: IntegrationEngineInputArray<T>,

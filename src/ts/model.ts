@@ -1,5 +1,4 @@
-import {
-  step,
+import type {
   FlowEvaluator,
   IntegrationEngineInputArray,
   IntegrationEngineOutputArray,
@@ -9,6 +8,8 @@ import type {
   ConvertTupleToObject,
   ConvertTupleItemType,
 } from './util/type-helpers';
+
+import { step } from './box-model/box-model';
 
 type ModelElementIds = readonly string[];
 type ModelElementId<I extends ModelElementIds> = ConvertTupleToUnion<I>;

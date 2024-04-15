@@ -7,7 +7,21 @@
  *  - {@link https://github.com/grantila/typeconv}
  */
 
-export interface InitialParameters {
+export interface GeneralConfig {
+  assetBaseDir: string;
+  primaryLanguage: string;
+  secondaryLanguage: string;
+  scoreLabels: {
+    circularity: {
+      [key: string]: string;
+    };
+    happiness: {
+      [key: string]: string;
+    };
+  };
+}
+
+export interface InitialParametersConfig {
   abandonExcessRate: number;
   abandonRate: number;
   acquireRate: number;
@@ -31,7 +45,7 @@ export interface InitialParameters {
   reuseIncentive: number;
 }
 
-export interface InitialStocks {
+export interface InitialStocksConfig {
   capacityOfNewlyProducedPhones: number;
   capacityOfRecycledMaterials: number;
   capacityOfRefurbishedPhones: number;
@@ -46,101 +60,98 @@ export interface InitialStocks {
   supplyOfRepairedPhones: number;
 }
 
-export interface ParameterTransform {
+export interface ParameterTransformConfig {
   id: string;
   script: string;
 }
 
-export interface BasicSlot {
+export interface MarkerSlotConfig {
   id: string;
   x: number;
   y: number;
   angle?: number;
 }
 
-export interface BasicSlotGroup {
+export interface BasicSlotGroupConfig {
   id: string;
   type: 'basic';
-  slots: BasicSlot[];
+  slots: MarkerSlotConfig[];
   parameterTransformIds: string[];
 }
 
-export interface SlotWithCard {
+export interface CardSlotConfig {
   id: string;
   x: number;
   y: number;
-  angle?: number;
-  card: {
-    x: number;
-    y: number;
-    angle?: number;
-  };
+  angle: number;
 }
 
-export interface I18NString {
-  [key: string]: string;
-}
-
-export interface ActionCard {
-  id: string;
+export interface CardConfig {
+  parameterTransformId: string;
   url: string;
-  title: I18NString;
-  description: I18NString;
 }
 
-export interface ActionCardSlotGroup {
+export interface ActionCardSlotGroupConfig {
   id: string;
   type: 'action-card';
-  slots: SlotWithCard[];
-  cards: ActionCard[];
+  slots: {
+    markerSlot: MarkerSlotConfig;
+    cardSlot: CardSlotConfig;
+  }[];
+  cards: CardConfig[];
 }
 
-export interface EventCard {
-  id: string;
-  url: string;
-  title: I18NString;
-  description: I18NString;
-}
-
-export interface EventCardSlotGroup {
+export interface EventCardSlotGroupConfig {
   id: string;
   type: 'event-card';
-  slots: SlotWithCard[];
-  cards: EventCard[];
+  markerSlot: MarkerSlotConfig;
+  cardSlots: CardSlotConfig[];
+  cards: CardConfig[];
 }
 
 export type SlotGroup =
-  | BasicSlotGroup
-  | ActionCardSlotGroup
-  | EventCardSlotGroup;
+  | BasicSlotGroupConfig
+  | ActionCardSlotGroupConfig
+  | EventCardSlotGroupConfig;
 
-export interface TriggerCondition {
+export interface InteractionConfig {
+  actionCardDelayMs: number;
+  eventCardMinDelayMs: number;
+  eventCardMaxDelayMs: number;
+  eventCardMinDurationMs: number;
+  eventCardMaxDurationMs: number;
+  assets: {
+    markerSlotActive: {
+      url: string;
+    };
+    markerSlotInactive: {
+      url: string;
+    };
+  };
+  slotGroups: SlotGroup[];
+}
+
+export interface TriggerConditionConfig {
   condition: string;
   url: string;
 }
 
-export interface Trigger {
+export interface TriggerConfig {
   id: string;
-  events: TriggerCondition[];
+  events: TriggerConditionConfig[];
 }
 
 export interface Config {
-  general: {
-    backgroundImage: string;
-  };
+  general: GeneralConfig;
   model: {
-    initialParameters: InitialParameters;
-    initialStocks: InitialStocks;
+    initialParameters: InitialParametersConfig;
+    initialStocks: InitialStocksConfig;
   };
   simulation: {
     deltaPerSecond: number;
     maxStepSize: number;
   };
-  parameterTransforms: ParameterTransform[];
-  interaction: {
-    slotActivationDelay: number;
-    slotDeactivationDelay: number;
-    slotGroups: SlotGroup[];
-  };
-  triggers: Trigger[];
+  parameterTransforms: ParameterTransformConfig[];
+  interaction: InteractionConfig;
+  triggers: TriggerConfig[];
 }
