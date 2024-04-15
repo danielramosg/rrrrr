@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRaw, nextTick } from 'vue';
+import { ref, toRaw, watch } from 'vue';
 import yaml from 'js-yaml';
 
 import type { Config } from '../../ts/config/config-schema';
@@ -16,7 +16,7 @@ const { config } = useConfigStore();
 const parameterTransformsStore = useParameterTransformsStore();
 const { parameterTransforms } = parameterTransformsStore;
 const { rebuildInternalSlotGroup } = useSlotGroupsStore();
-const { initialParameters } = useModelStore();
+const { initialParameters, transformedParametersExt } = useModelStore();
 
 const OState = {
   SUCCESS: 0,
@@ -75,15 +75,12 @@ async function importInitialParameters() {
     newConfig === null ? OState.ERROR : OState.UNKNOWN;
   if (!newConfig) return;
 
-  await nextTick();
-
   const {
     model: { initialParameters: validatedInitialParameters },
   } = newConfig;
 
   Object.assign(initialParameters, validatedInitialParameters);
 
-  await nextTick();
   initialParametersImportState.value = OState.SUCCESS;
 }
 
@@ -93,14 +90,16 @@ async function importParameterTransforms() {
     newConfig === null ? OState.ERROR : OState.UNKNOWN;
   if (!newConfig) return;
 
-  await nextTick();
-
   const { parameterTransforms: validatedParameterTransforms } = newConfig;
+
+  const transformParametersPromise = new Promise((resolve, reject) => {
+    watch(transformedParametersExt, resolve, { deep: true, once: true });
+  });
 
   parameterTransformsStore.replaceAll(validatedParameterTransforms);
   rebuildInternalSlotGroup();
 
-  await nextTick();
+  await transformParametersPromise;
   parameterTransformImportState.value = OState.SUCCESS;
 }
 
