@@ -1,18 +1,26 @@
 <script setup lang="ts">
+import type { ElementOf } from 'ts-essentials';
+
 import { strict as assert } from 'assert';
 import kebabCase from 'lodash/kebabCase';
-import { onMounted, ref } from 'vue';
+import camelCase from 'lodash/camelCase';
+import { onMounted, ref, computed } from 'vue';
+import { toReactive } from '@vueuse/core';
+import { v4 as uuid4 } from 'uuid';
 
 import type { ModelElementObject } from '../../ts/model';
-import type { Record } from '../../ts/circular-economy-model';
+import { type Record, type StockId } from '../../ts/circular-economy-model';
 
+import { BOARD_WIDTH, BOARD_HEIGHT } from '../../ts/builtin-config';
 import { useAppStore } from '../../ts/stores/app';
 import { useModelStore } from '../../ts/stores/model';
-import { CircularEconomyModel } from '../../ts/circular-economy-model';
+import { stockIds } from '../../ts/circular-economy-model';
 import { loadSvg } from '../../ts/util/load-svg';
+import { getCircleCenter } from '../../ts/util/geometry/svg';
 import { guardedQuerySelector } from '../../ts/util/guarded-query-selectors';
 
 const svgUrl = new URL('../../svg/model.svg', import.meta.url);
+const uuid = uuid4();
 
 const mainFlowIds = [
   'abandon',
@@ -31,20 +39,27 @@ const mainFlowIds = [
   'repair',
 ] as const;
 
-const kebabCaseStockIds = [
-  'recycled-materials',
-  'hibernating-phones',
-  'disposed-phones',
-  'broken-phones',
-  'repaired-phones',
-  'phones-in-use',
-  'refurbished-phones',
-  'newly-produced-phones',
-  'natural-resources',
-  'landfilled-phones',
-];
+const mainCapacityIds = [
+  'recycledMaterials',
+  'repairedPhones',
+  'refurbishedPhones',
+  'newlyProducedPhones',
+] as const;
+
+const mainSupplyIds = [
+  'recycledMaterials',
+  'hibernatingPhones',
+  'disposedPhones',
+  'brokenPhones',
+  'repairedPhones',
+  'refurbishedPhones',
+  'newlyProducedPhones',
+] as const;
+
+const additionalVerbatimSupplyIds = ['phonesInUse'] as const;
 
 type MainFlowIds = typeof mainFlowIds;
+type MainFlowId = ElementOf<MainFlowIds>;
 
 const flowVizSigns: ModelElementObject<MainFlowIds> = {
   abandon: +1,
@@ -61,7 +76,7 @@ const flowVizSigns: ModelElementObject<MainFlowIds> = {
   recycle: -1,
   refurbish: -1,
   repair: -1,
-};
+} as const;
 
 const scaleFactors = {
   global: 30000,
@@ -69,287 +84,136 @@ const scaleFactors = {
   flows: 0.002,
 };
 
-class ModelView {
-  protected readonly model: CircularEconomyModel;
-
-  public readonly element: HTMLDivElement;
-
-  protected readonly svg: SVGSVGElement;
-
-  constructor(model: CircularEconomyModel, svg: SVGSVGElement) {
-    this.model = model;
-    this.svg = svg;
-
-    this.element = document.createElement('div');
-    this.element.append(this.svg);
-  }
-
-  protected updateSvgFlows(
-    deltaMs: DOMHighResTimeStamp,
-    stepSize: number,
-    record: Record,
-  ) {
-    const { flows } = record;
-    const flowVizScale =
-      stepSize *
-      ((scaleFactors.global * scaleFactors.flows) /
-        record.parameters.numberOfUsers);
-    mainFlowIds.forEach((id) => {
-      const flow = flows[id];
-      const flowVizSign = flowVizSigns[id];
-      const elementId = `${kebabCase(id)}-flow`;
-      const element = guardedQuerySelector(
-        SVGPathElement,
-        `#${elementId}`,
-        this.svg,
-      );
-      const lastDashOffset = parseFloat(
-        element.getAttribute('stroke-dashoffset') ?? '0',
-      );
-      // The dash offset step must not be small compared to the dash gap.
-      // Otherwise, the flow animation may appear to move backwards.
-      const maxStep = parseFloat(
-        window
-          .getComputedStyle(element)
-          .getPropertyValue('--max-dashoffset-step'),
-      );
-      const dashOffsetStep =
-        flowVizSign * Math.min(deltaMs * flowVizScale * flow, maxStep);
-      const dashOffset =
-        (Number.isNaN(lastDashOffset) ? 0 : lastDashOffset) + dashOffsetStep;
-
-      element.setAttribute('stroke-dashoffset', `${dashOffset}`);
-    });
-  }
-
-  protected updateSvgStocks(
-    deltaMs: DOMHighResTimeStamp,
-    stepSize: number,
-    record: Record,
-  ) {
-    const { stocks } = record;
-    const stockVizScale =
-      (scaleFactors.global * scaleFactors.stocks) /
-      record.parameters.numberOfUsers;
-    this.model.stockIds.forEach((id) => {
-      const elementId = kebabCase(id);
-      const element = this.svg.getElementById(elementId);
-      if (element === null) {
-        throw new Error(
-          `SVG element with id ${elementId} for stock ${id} not found.`,
-        );
-      }
-      if (!(element instanceof SVGCircleElement)) {
-        throw new Error(
-          `Stock element for stock ${id} with id ${elementId} is not an SVG circle element.`,
-        );
-      }
-      const stock = stocks[id];
-      const radius = Math.sqrt((stock * stockVizScale) / Math.PI);
-      element.setAttribute('r', `${radius}`);
-    });
-  }
-
-  protected updateSvg(
-    deltaMs: DOMHighResTimeStamp,
-    stepSize: number,
-    record: Record,
-  ) {
-    this.updateSvgFlows(deltaMs, stepSize, record);
-    this.updateSvgStocks(deltaMs, stepSize, record);
-  }
-
-  public update(
-    deltaMs: DOMHighResTimeStamp,
-    stepSize: number,
-    record: Record,
-  ) {
-    this.updateSvg(deltaMs, stepSize, record);
-  }
-
-  public static prepareSvg(model: CircularEconomyModel, svg: SVGSVGElement) {
-    const createSVGElement = (tagName: string) =>
-      svg.ownerDocument.createElementNS('http://www.w3.org/2000/svg', tagName);
-
-    svg.classList.add('model-visualization');
-    svg.querySelectorAll('circle, rect, path, text').forEach((element) => {
-      element.removeAttribute('style');
-    });
-
-    const elementsToRemove = [...svg.children];
-
-    const labelLayer = createSVGElement('g');
-    labelLayer.classList.add('labels');
-
-    const supplyLayer = createSVGElement('g');
-    supplyLayer.classList.add('supplies');
-
-    const capacityLayer = createSVGElement('g');
-    capacityLayer.classList.add('capacities');
-
-    const flowLayer = createSVGElement('g');
-    flowLayer.classList.add('flows');
-    svg.append(capacityLayer, flowLayer, supplyLayer, labelLayer);
-
-    svg.querySelectorAll('text').forEach((element) => {
-      elementsToRemove.push(element);
-    });
-
-    function createForeignDiv(
-      x: number,
-      y: number,
-      width: number,
-      height: number,
-    ) {
-      const foreignObjectElement = createSVGElement('foreignObject');
-      foreignObjectElement.setAttribute('x', `${x}`);
-      foreignObjectElement.setAttribute('y', `${y}`);
-      foreignObjectElement.setAttribute('width', `${width}`);
-      foreignObjectElement.setAttribute('height', `${height}`);
-
-      const divElement = foreignObjectElement.ownerDocument.createElementNS(
-        'http://www.w3.org/1999/xhtml',
-        'div',
-      );
-
-      foreignObjectElement.append(divElement);
-
-      return { foreignObjectElement, divElement };
-    }
-
-    function getCircleCenter(element: SVGCircleElement) {
-      const x = parseFloat(element.getAttribute('cx') ?? '');
-      assert(!Number.isNaN(x));
-      const y = parseFloat(element.getAttribute('cy') ?? '');
-      assert(!Number.isNaN(y));
-      return { x, y };
-    }
-
-    function getRectangleCenter(element: SVGRectElement) {
-      const x = parseFloat(element.getAttribute('x') ?? '');
-      assert(!Number.isNaN(x));
-      const y = parseFloat(element.getAttribute('y') ?? '');
-      assert(!Number.isNaN(y));
-      const width = parseFloat(element.getAttribute('width') ?? '');
-      assert(!Number.isNaN(width));
-      const height = parseFloat(element.getAttribute('height') ?? '');
-      assert(!Number.isNaN(height));
-      return { x: x + width / 2, y: y + height / 2 };
-    }
-
-    kebabCaseStockIds.forEach((id) => {
-      const baseElement = guardedQuerySelector(
-        SVGGeometryElement,
-        `#${id}`,
-        svg,
-      );
-      assert(
-        baseElement.tagName === 'circle' || baseElement.tagName === 'rect',
-      );
-      const { x, y } =
-        baseElement.tagName === 'circle'
-          ? getCircleCenter(baseElement as SVGCircleElement)
-          : getRectangleCenter(baseElement as SVGRectElement);
-
-      const { foreignObjectElement, divElement } = createForeignDiv(
-        x,
-        y,
-        200,
-        50,
-      );
-
-      divElement.textContent = id;
-      divElement.classList.add('label');
-      divElement.style.display = 'var(--dev-mode-label-display)';
-
-      labelLayer.append(foreignObjectElement);
-    });
-
-    svg.querySelectorAll('rect').forEach((baseElement) => {
-      const clone = baseElement.cloneNode(false) as SVGRectElement;
-      clone.classList.add('capacity');
-      capacityLayer.append(clone);
-    });
-
-    model.stockIds
-      .filter((id) => id.startsWith('supplyOf'))
-      .forEach((id) => {
-        const baseElementId = kebabCase(id.replace(/^supplyOf/, ''));
-        const baseElement = guardedQuerySelector(
-          SVGGeometryElement,
-          `#${baseElementId}`,
-          svg,
-        );
-
-        const clone = baseElement.cloneNode(false) as SVGGeometryElement;
-        clone.id = `supply-of-${baseElement.id}`;
-        clone.classList.add('stock', 'supply');
-        supplyLayer.append(clone);
-      });
-    const phonesInUse = guardedQuerySelector(
-      SVGGeometryElement,
-      '#phones-in-use',
-      svg,
-    );
-    const phonesInUseClone = phonesInUse.cloneNode(false) as SVGGeometryElement;
-    supplyLayer.append(phonesInUseClone);
-
-    model.stockIds
-      .filter((id) => id.startsWith('capacityOf'))
-      .forEach((id) => {
-        const baseElementId = kebabCase(id.replace(/^capacityOf/, ''));
-        const baseElement = guardedQuerySelector(
-          SVGGeometryElement,
-          `#${baseElementId}`,
-          svg,
-        );
-
-        const clone = baseElement.cloneNode(false) as SVGGeometryElement;
-        clone.id = `capacity-of-${baseElementId}`;
-        clone.classList.add('stock', 'capacity');
-        capacityLayer.append(clone);
-      });
-    mainFlowIds.forEach((id) => {
-      const baseElementId = kebabCase(id);
-      const baseElement = guardedQuerySelector(
-        SVGGeometryElement,
-        `#${baseElementId}`,
-        svg,
-      );
-
-      const edge = baseElement.cloneNode(false) as SVGGeometryElement;
-      edge.id = `${baseElementId}-edge`;
-      edge.removeAttribute('style');
-      edge.classList.add('flow', 'edge');
-      flowLayer.append(edge);
-
-      const flow = baseElement.cloneNode(false) as SVGGeometryElement;
-      flow.id = `${baseElementId}-flow`;
-      flow.removeAttribute('style');
-      flow.classList.add('flow', 'anim-edge');
-      flowLayer.append(flow);
-    });
-
-    elementsToRemove.forEach((element) => element.remove());
-  }
-}
-
 const svgPromise = loadSvg(svgUrl);
 
 const appStore = useAppStore();
 
 const modelStore = useModelStore();
-const model = new CircularEconomyModel();
-const modelView = ref<ModelView | null>(null);
 
-const container = ref<HTMLElement | null>(null);
+const updateInfo = ref({
+  deltaMs: 0,
+  stepSize: 0,
+  flowVizScale: 1,
+  stockVizScale: 1,
+  record: modelStore.record,
+});
+
+interface StockDescription {
+  readonly id: string;
+  readonly x: number;
+  readonly y: number;
+  readonly radius: number;
+}
+
+interface FlowDescription {
+  readonly id: string;
+  readonly svgPath: string;
+  dashOffset: number;
+}
+
+const useStockToRadius = (stockId: StockId) => {
+  const radius = computed(() => {
+    const { record } = updateInfo.value;
+    const { stocks } = record;
+    const stock = stocks[stockId];
+    const stockVizScale = updateInfo.value.stockVizScale;
+    return Math.sqrt((stock * stockVizScale) / Math.PI);
+  });
+  return { radius };
+};
+
+const useFlowToDashoffset = (flowId: MainFlowId) => {
+  let lastDashOffset = 0;
+  const dashoffset = computed(() => {
+    const { deltaMs, flowVizScale, record } = updateInfo.value;
+    const { flows } = record;
+    const flow = flows[flowId];
+    const flowVizSign = flowVizSigns[flowId];
+
+    // The dash offset step must not be small compared to the dash gap.
+    // Otherwise, the flow animation may appear to move backwards.
+    const maxStep = 10; // TODO: Make this configurable
+    const dashOffsetStep =
+      flowVizSign * Math.min(deltaMs * flowVizScale * flow, maxStep);
+    const dashOffset =
+      (Number.isNaN(lastDashOffset) ? 0 : lastDashOffset) + dashOffsetStep;
+    lastDashOffset = dashOffset;
+    return dashOffset;
+  });
+  return { dashoffset };
+};
+
+const extractFlowDescriptions = (svgElement: SVGElement): FlowDescription[] =>
+  mainFlowIds.map((id) => {
+    const flowElement = guardedQuerySelector(
+      SVGGeometryElement,
+      `#${kebabCase(id)}`,
+      svgElement,
+    );
+    const svgPath = flowElement.getAttribute('d');
+    assert(svgPath !== null, `SVG path for flow ${id} not found.`);
+    const flowDescription: FlowDescription = toReactive({
+      id,
+      svgPath,
+      dashOffset: useFlowToDashoffset(id).dashoffset,
+    });
+    return flowDescription;
+  });
+
+const extractStockDescriptions = (
+  svgElement: SVGElement,
+  type: 'supply' | 'capacity' | 'verbatim',
+): StockDescription[] => {
+  const mainStockIds =
+    type === 'supply'
+      ? mainSupplyIds
+      : type === 'capacity'
+        ? mainCapacityIds
+        : additionalVerbatimSupplyIds;
+  return mainStockIds.map((mainId) => {
+    const stockElement = guardedQuerySelector(
+      SVGGeometryElement,
+      `#${kebabCase(mainId)}`,
+      svgElement,
+    );
+    assert(stockElement.tagName === 'circle');
+    const { x, y } = getCircleCenter(stockElement as SVGCircleElement);
+    const id = (
+      type === 'verbatim'
+        ? mainId
+        : camelCase(`${type}-of-${kebabCase(mainId)}`)
+    ) as StockId;
+    assert(
+      stockIds.includes(id),
+      `${id} is no valid stockId (${stockIds.join(', ')})`,
+    );
+    const stockDescription: StockDescription = toReactive({
+      id,
+      x,
+      y,
+      radius: useStockToRadius(id).radius,
+    });
+    return stockDescription;
+  });
+};
+
+const capacityDescriptions = ref<StockDescription[]>([]);
+const supplyDescriptions = ref<StockDescription[]>([]);
+const flowDescriptions = ref<FlowDescription[]>([]);
+
+const flowElements = ref<SVGPathElement[]>([]);
+const supplyElements = ref<SVGCircleElement[]>([]);
+
 onMounted(() => {
   svgPromise.then((svg) => {
-    ModelView.prepareSvg(model, svg);
-    modelView.value = new ModelView(model, svg);
-    modelView.value.update(0, 0, modelStore.record);
-    assert(container.value !== null);
-    container.value.append(modelView.value.element);
+    flowDescriptions.value.push(...extractFlowDescriptions(svg));
+    capacityDescriptions.value.push(
+      ...extractStockDescriptions(svg, 'capacity'),
+    );
+    supplyDescriptions.value.push(
+      ...extractStockDescriptions(svg, 'supply'),
+      ...extractStockDescriptions(svg, 'verbatim'),
+    );
   });
 });
 
@@ -358,8 +222,14 @@ const update = (
   stepSize: number,
   record: Record,
 ) => {
-  if (modelView.value === null) return;
-  modelView.value.update(deltaMs, stepSize, record);
+  const flowVizScale =
+    stepSize *
+    ((scaleFactors.global * scaleFactors.flows) /
+      record.parameters.numberOfUsers);
+  const stockVizScale =
+    (scaleFactors.global * scaleFactors.stocks) /
+    record.parameters.numberOfUsers;
+  updateInfo.value = { deltaMs, stepSize, flowVizScale, stockVizScale, record };
 };
 
 defineExpose({ update });
@@ -374,9 +244,136 @@ defineExpose({ update });
         ? 'inline'
         : 'none',
     }"
-  ></div>
+  >
+    <svg
+      :width="BOARD_WIDTH"
+      :height="BOARD_HEIGHT"
+      :viewBox="`0 0 ${BOARD_WIDTH} ${BOARD_HEIGHT}`"
+      xml:space="preserve"
+      xmlns="http://www.w3.org/2000/svg"
+      class="model-visualization"
+    >
+      <path
+        v-for="flowDescription in flowDescriptions"
+        :key="flowDescription.id"
+        :id="`${flowDescription.id}-${uuid}`"
+        ref="flowElements"
+        :data-label="flowDescription.id"
+        :d="flowDescription.svgPath"
+        :stroke-dashoffset="flowDescription.dashOffset"
+        class="flow anim-edge"
+      />
+      <circle
+        v-for="stockDescription in capacityDescriptions"
+        :key="stockDescription.id"
+        :cx="stockDescription.x"
+        :cy="stockDescription.y"
+        :r="stockDescription.radius"
+        class="stock capacity"
+      />
+      <circle
+        v-for="stockDescription in supplyDescriptions"
+        :key="stockDescription.id"
+        :id="`${stockDescription.id}-${uuid}`"
+        ref="supplyElements"
+        :data-label="stockDescription.id"
+        :cx="stockDescription.x"
+        :cy="stockDescription.y"
+        :r="stockDescription.radius"
+        class="stock supply"
+      />
+      <template v-if="appStore.isDeveloperModeActive">
+        <text v-for="flowElement in flowElements" :key="flowElement.id">
+          <textPath
+            :xlink:href="`#${flowElement.id}`"
+            startOffset="50%"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            class="label"
+          >
+            {{ flowElement.dataset.label }}
+          </textPath>
+        </text>
+        <text
+          v-for="supplyElement in supplyElements"
+          :key="supplyElement.id"
+          :x="supplyElement.getAttribute('cx')"
+          :y="supplyElement.getAttribute('cy')"
+          class="label"
+        >
+          {{ supplyElement.dataset.label }}
+        </text>
+      </template>
+    </svg>
+  </div>
 </template>
 
 <style scoped lang="scss">
-// FIXME: Move global SVG styles here
+.model-visualization {
+  overflow: visible;
+
+  .stock {
+    stroke: none;
+    opacity: 0.75;
+  }
+
+  .supply {
+    fill: lightgray;
+  }
+
+  .capacity {
+    fill: gray;
+  }
+
+  .flow {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: #bbb;
+    fill: none;
+
+    &.edge {
+      stroke-width: 8;
+      display: none;
+    }
+
+    &.anim-edge {
+      stroke-width: 15;
+      stroke-dasharray: 10 27;
+      --max-dashoffset-step: 15; // string must be parseable by parseFloat()
+    }
+
+    &#recycle-flow,
+    &#recycle-edge,
+    &#produce-from-recycled-materials-flow,
+    &#produce-from-recycled-materials-edge,
+    &#repair-flow,
+    &#repair-edge,
+    &#acquire-repaired-flow,
+    &#acquire-repaired-edge,
+    &#refurbish-flow,
+    &#refurbish-edge,
+    &#acquire-refurbished-flow,
+    &#acquire-refurbished-edge,
+    &#acquire-used-flow,
+    &#acquire-used-edge {
+      stroke: gray;
+
+      &.anim-edge {
+        stroke-dasharray: 0 27;
+        --max-dashoffset-step: 12.5; // string must be parseable by parseFloat()
+      }
+    }
+  }
+
+  foreignObject {
+    overflow: visible;
+  }
+
+  .label {
+    font-size: 48px;
+    font-family: sans-serif;
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+}
 </style>
