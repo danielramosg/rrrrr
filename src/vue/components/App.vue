@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { strict as assert } from 'assert';
 import { ref, watch, watchEffect, onMounted } from 'vue';
 import { onKeyStroke } from '@vueuse/core';
 
@@ -124,8 +123,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="fill">
-    <div id="layer-panel" class="layer-panel fill">
+  <div class="abs-top-left">
+    <div class="layer-panel abs-top-left">
       <template v-for="layerConfig in config.layers">
         <ModelVisualization
           v-if="layerConfig === 'modelVisualization'"
@@ -140,7 +139,7 @@ onMounted(() => {
       <ScoreTable class="score-top-left" />
       <ScoreTable class="score-bottom-right" />
     </div>
-    <div class="slot-panel fill">
+    <div class="slot-panel abs-top-left">
       <template
         v-for="slotGroupConfig in config.interaction.slotGroups"
         :key="slotGroupConfig.id"
@@ -158,6 +157,8 @@ onMounted(() => {
           v-if="slotGroupConfig.type === 'event-card'"
         ></EventCardSlotGroup>
       </template>
+    </div>
+    <div class="marker-panel abs-top-left">
       <PointerMarkerPanel v-if="options.usePointerMarkers"></PointerMarkerPanel>
       <TuioMarkerPanel
         v-if="options.useTuioMarkers"
@@ -182,7 +183,8 @@ onMounted(() => {
   transform-origin: top left;
 }
 
-.slot-panel {
+.slot-panel,
+.marker-panel {
   touch-action: none;
 }
 

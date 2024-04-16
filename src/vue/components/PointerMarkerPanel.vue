@@ -7,11 +7,7 @@ import { useArrayFilter } from '@vueuse/core';
 
 import type { Marker } from '../../ts/stores/marker';
 
-import {
-  BOARD_HEIGHT,
-  BOARD_WIDTH,
-  POINTER_MARKER_COORDINATES,
-} from '../../ts/builtin-config';
+import { POINTER_MARKER_COORDINATES } from '../../ts/builtin-config';
 import MarkerUnderlay from './MarkerUnderlay.vue';
 import { useMarkerStore } from '../../ts/stores/marker';
 
@@ -26,41 +22,45 @@ POINTER_MARKER_COORDINATES.forEach(({ x, y }, i) =>
   addMarker({ id: `pointer-marker-${i}`, x, y }),
 );
 
-const container = ref<HTMLElement | null>(null);
+const singlePixelDiv = ref<HTMLDivElement | null>(null);
 
 const offsets = new Map<string, { x: number; y: number }>();
 
 const onPointerDown = (event: PointerEvent, m: Marker) => {
   const { target } = event;
-  assert(target !== null && target instanceof HTMLElement);
+  assert(target instanceof HTMLElement);
 
   target.setPointerCapture(event.pointerId);
 
-  assert(container.value !== null);
-  const containerRect = container.value.getBoundingClientRect();
+  assert(singlePixelDiv.value !== null);
+  const containerRect = singlePixelDiv.value.getBoundingClientRect();
+  const scaleX = containerRect.width;
+  const scaleY = containerRect.height;
 
   const offset = {
-    x: (BOARD_WIDTH * event.clientX) / containerRect.width - m.x,
-    y: (BOARD_HEIGHT * event.clientY) / containerRect.height - m.y,
+    x: event.clientX / scaleX - m.x,
+    y: event.clientY / scaleY - m.y,
   };
   offsets.set(m.id, offset);
 };
 
 const onPointerMove = (event: PointerEvent, m: Marker) => {
   const { target } = event;
-  assert(target !== null && target instanceof HTMLElement);
+  assert(target instanceof HTMLElement);
 
   if (!target.hasPointerCapture(event.pointerId)) return;
 
-  assert(container.value !== null);
-  const containerRect = container.value.getBoundingClientRect();
+  assert(singlePixelDiv.value !== null);
+  const containerRect = singlePixelDiv.value.getBoundingClientRect();
+  const scaleX = containerRect.width;
+  const scaleY = containerRect.height;
 
   const offset = offsets.get(m.id);
   assert(typeof offset !== 'undefined');
 
   // eslint-disable-next-line no-param-reassign
-  const x = (BOARD_WIDTH * event.clientX) / containerRect.width - offset.x;
-  const y = (BOARD_HEIGHT * event.clientY) / containerRect.height - offset.y;
+  const x = event.clientX / scaleX - offset.x;
+  const y = event.clientY / scaleY - offset.y;
   moveMarker({ id: m.id, x, y });
 };
 
@@ -73,7 +73,8 @@ const onPointerUpOrCancel = (event: PointerEvent, _: Marker) => {
 </script>
 
 <template>
-  <div ref="container" class="fill">
+  <div class="abs-top-left">
+    <div ref="singlePixelDiv" class="single-pixel abs-top-left"></div>
     <MarkerUnderlay
       v-for="marker in pointerMarkers"
       :key="marker.id"
@@ -90,6 +91,11 @@ const onPointerUpOrCancel = (event: PointerEvent, _: Marker) => {
 </template>
 
 <style scoped lang="scss">
+.single-pixel {
+  width: 1px;
+  height: 1px;
+}
+
 .marker-underlay {
   cursor: pointer;
 }

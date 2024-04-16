@@ -50,21 +50,21 @@ const compiledLayer = computed(() => compileLayer(props.layerConfig));
 </script>
 
 <template>
-  <div
+  <img
+    :src="compiledLayer.url.href"
+    v-if="compiledLayer.checkCondition(record)"
+    class="positioned-layer"
     :style="{
-      'backgroundImage': `url(${compiledLayer.url.href})`,
-      'display': compiledLayer.checkCondition(record) ? 'block' : 'none',
-      '--overlay-x': compiledLayer.x,
-      '--overlay-y': compiledLayer.y,
+      '--layer-x': compiledLayer.x,
+      '--layer-y': compiledLayer.y,
     }"
-    class="fill overlay-background"
-  ></div>
+  />
 </template>
 
 <style scoped lang="scss">
-.overlay-background {
-  background-repeat: no-repeat;
-  background-position-x: calc(1px * var(--overlay-x));
-  background-position-y: calc(1px * var(--overlay-y));
+.positioned-layer {
+  position: absolute;
+  top: calc(1px * var(--layer-y));
+  left: calc(1px * var(--layer-x));
 }
 </style>

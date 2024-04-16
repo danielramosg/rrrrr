@@ -15,7 +15,7 @@ const tuioMarkers = useArrayFilter(
 </script>
 
 <template>
-  <div ref="container" class="fill">
+  <div ref="container" class="abs-top-left">
     <MarkerUnderlay
       v-for="marker in tuioMarkers"
       :key="marker.id"
