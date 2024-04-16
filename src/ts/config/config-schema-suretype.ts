@@ -37,7 +37,7 @@ const MarkerSlotSchema = suretype(
       id: v.string().required(),
       x: v.number().required(),
       y: v.number().required(),
-      angle: v.number().default(0),
+      angle: v.number().required(),
     })
     .additional(false),
 );
@@ -49,7 +49,7 @@ const CardSlotSchema = suretype(
       id: v.string().required(),
       x: v.number().required(),
       y: v.number().required(),
-      angle: v.number().default(0).required(),
+      angle: v.number().required(),
     })
     .additional(false),
 );
@@ -121,26 +121,24 @@ const SlotGroupSchema = suretype(
   ]),
 );
 
-const TriggerConditionSchema = suretype(
-  { name: 'TriggerConditionConfig' },
+const ModelVisualizationLayerSchema = suretype(
+  { name: 'ModelVisualizationLayerConfig' },
+  v.string().enum('modelVisualization'),
+);
+
+const ConditionalLayerSchema = suretype(
+  { name: 'ConditionalLayerConfig' },
   v
     .object({
-      condition: v.string().required(),
       url: AssetUrlSchema.required(),
+      condition: v.string().required(),
     })
     .additional(false)
     .required(),
 );
 
-const TriggerSchema = suretype(
-  { name: 'TriggerConfig' },
-  v
-    .object({
-      id: v.string().required(),
-      events: v.array(TriggerConditionSchema).required(),
-    })
-    .additional(false)
-    .required(),
+const LayersSchema = v.array(
+  v.anyOf([ModelVisualizationLayerSchema, ConditionalLayerSchema]),
 );
 
 const GeneralSchema = suretype(
@@ -209,7 +207,7 @@ const ConfigSchema = suretype(
         .required(),
       parameterTransforms: ParameterTransformsSchema.required(),
       interaction: InteractionSchema.required(),
-      triggers: v.array(TriggerSchema).required(),
+      layers: LayersSchema.required(),
     })
     .additional(false)
     .required(),

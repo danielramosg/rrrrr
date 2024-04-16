@@ -7,7 +7,7 @@ import PointerMarkerPanel from './PointerMarkerPanel.vue';
 import TuioMarkerPanel from './TuioMarkerPanel.vue';
 import ScoreTable from './ScoreTable.vue';
 import ControlPanel from './ControlPanel.vue';
-import TriggeredOverlay from './TriggeredOverlay.vue';
+import ConditionalLayer from './ConditionalLayer.vue';
 import BasicSlotGroup from './BasicSlotGroup.vue';
 import ActionCardSlotGroup from './ActionCardSlotGroup.vue';
 import EventCardSlotGroup from './EventCardSlotGroup.vue';
@@ -105,7 +105,7 @@ watchEffect(() => {
   else runner.pause();
 });
 
-const modelVisualization = ref<typeof ModelVisualization | null>(null);
+const modelVisualizations = ref<Array<typeof ModelVisualization>>([]);
 onMounted(() => {
   const tick = (deltaMs: DOMHighResTimeStamp) => {
     const { t: lastT } = modelSimulator.record;
@@ -115,8 +115,9 @@ onMounted(() => {
 
     const { record } = modelSimulator;
     modelStore.$patch({ record });
-    assert(modelVisualization.value !== null);
-    modelVisualization.value.update(deltaMs, deltaT, modelSimulator.record);
+    modelVisualizations.value.forEach((mv) =>
+      mv.update(deltaMs, deltaT, modelSimulator.record),
+    );
   };
   runner.on('tick', tick);
 });
@@ -124,16 +125,18 @@ onMounted(() => {
 
 <template>
   <div class="fill">
-    <div id="illustration-panel" class="illustration-panel fill">
-      <TriggeredOverlay
-        v-for="triggerConfig in config.triggers"
-        :key="triggerConfig.id"
-        :trigger-config="triggerConfig"
-      >
-      </TriggeredOverlay>
-    </div>
-    <div ref="" class="viz-panel fill">
-      <ModelVisualization ref="modelVisualization" />
+    <div id="layer-panel" class="layer-panel fill">
+      <template v-for="layerConfig in config.layers">
+        <ModelVisualization
+          v-if="layerConfig === 'modelVisualization'"
+          ref="modelVisualizations"
+          class="model-visualization"
+        />
+        <ConditionalLayer
+          v-if="layerConfig !== 'modelVisualization'"
+          :layer-config="layerConfig"
+        />
+      </template>
       <ScoreTable class="score-top-left" />
       <ScoreTable class="score-bottom-right" />
     </div>
@@ -169,16 +172,14 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.illustration-panel {
+.layer-panel {
   background-color: white;
 }
 
-.viz-panel {
-  & > #model-viz-container {
-    width: calc(1px * var(--svg-width));
-    transform: scale(var(--svg-scale-factor));
-    transform-origin: top left;
-  }
+.model-visualization {
+  width: calc(1px * var(--svg-width));
+  transform: scale(var(--svg-scale-factor));
+  transform-origin: top left;
 }
 
 .slot-panel {

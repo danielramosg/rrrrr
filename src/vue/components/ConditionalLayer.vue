@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import type { DeepReadonly } from 'ts-essentials';
 
-import { strict as assert } from 'assert';
-import type { TriggerConfig } from '../../ts/config/config-schema-types';
+import { computed } from 'vue';
+
+import type { ConditionalLayerConfig } from '../../ts/config/config-schema-types';
 
 import { useConfigStore } from '../../ts/stores/config';
 import { useModelStore } from '../../ts/stores/model';
 import { CircularEconomyModel } from '../../ts/circular-economy-model';
 
-const props = defineProps<{ triggerConfig: DeepReadonly<TriggerConfig> }>();
-const { triggerConfig } = props;
-const { events } = triggerConfig;
+const props = defineProps<{
+  layerConfig: DeepReadonly<ConditionalLayerConfig>;
+}>();
 
 const { extractAssetPosition, toAssetUrl } = useConfigStore();
 const { record } = useModelStore();
@@ -26,7 +27,13 @@ function compile(condition: string): (r: typeof record) => boolean {
   ) as Condition;
 }
 
-const compiledEvents = events.map(({ condition, url }) => {
+function compileLayer({ condition, url }: ConditionalLayerConfig): {
+  checkCondition: Condition;
+  condition: string;
+  url: URL;
+  x: number;
+  y: number;
+} {
   const resolvedUrl = toAssetUrl(url);
   const { x, y } = extractAssetPosition(resolvedUrl);
   const checkCondition = compile(condition);
@@ -37,18 +44,18 @@ const compiledEvents = events.map(({ condition, url }) => {
     x,
     y,
   };
-});
+}
+
+const compiledLayer = computed(() => compileLayer(props.layerConfig));
 </script>
 
 <template>
   <div
-    v-for="{ condition, checkCondition, url, x, y } in compiledEvents"
-    :key="`(${condition})-(${url})`"
     :style="{
-      'backgroundImage': `url(${url.href})`,
-      'display': checkCondition(record) ? 'block' : 'none',
-      '--overlay-x': x,
-      '--overlay-y': y,
+      'backgroundImage': `url(${compiledLayer.url.href})`,
+      'display': compiledLayer.checkCondition(record) ? 'block' : 'none',
+      '--overlay-x': compiledLayer.x,
+      '--overlay-y': compiledLayer.y,
     }"
     class="fill overlay-background"
   ></div>
