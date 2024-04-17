@@ -4,11 +4,8 @@ import { ref, readonly } from 'vue';
 import { BOARD_WIDTH, BOARD_HEIGHT } from '../builtin-config';
 import { useOptionStore } from './options';
 import { Tuio11EventEmitter } from '../util/input/tuio/tuio11-event-emitter';
-import {
-  Tuio11Client,
-  WebsocketTuioReceiver,
-  Tuio11Object,
-} from '../util/input/tuio/tuio_client_js';
+import { Tuio11Client, Tuio11Object } from '../util/input/tuio/tuio_client_js';
+import { WebsocketTuioReceiverExt } from '../util/input/tuio/websocket-tuio-receiver-ext';
 
 interface Marker {
   id: string;
@@ -49,7 +46,9 @@ export const useMarkerStore = defineStore('marker', () => {
   const tuio11EventEmitter = new Tuio11EventEmitter();
 
   if (options.useTuioMarkers) {
-    const client = new Tuio11Client(new WebsocketTuioReceiver(options.tuioUrl));
+    const client = new Tuio11Client(
+      new WebsocketTuioReceiverExt(options.tuioUrl, 2000),
+    );
     client.addTuioListener(tuio11EventEmitter);
 
     /*

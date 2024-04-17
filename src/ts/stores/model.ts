@@ -10,6 +10,7 @@ import type { ParameterId, Parameters } from '../circular-economy-model';
 
 import { CircularEconomyModel } from '../circular-economy-model';
 
+import { useConfigStore } from './config';
 import { useParameterTransformsStore } from './parameter-transforms';
 import { useSlotGroupsStore } from './slot-groups';
 
@@ -81,14 +82,17 @@ const useTransformedParameters = (initialParameters: Ref<Parameters>) => {
 };
 
 export const useModelStore = defineStore('model', () => {
+  const {
+    config: { model: modelConfig },
+  } = useConfigStore();
   const initialRecord = new CircularEconomyModel().evaluate(
-    CircularEconomyModel.initialStocks,
-    CircularEconomyModel.defaultParameters,
+    modelConfig.initialStocks,
+    modelConfig.initialParameters,
     0,
   );
   const record = ref(initialRecord);
 
-  const initialParameters = ref({ ...CircularEconomyModel.defaultParameters });
+  const initialParameters = ref({ ...modelConfig.initialParameters });
 
   const { transformedParameters, transformedParametersExt } =
     useTransformedParameters(initialParameters);
