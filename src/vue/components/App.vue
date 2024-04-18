@@ -2,6 +2,7 @@
 import { ref, watch, watchEffect, onMounted } from 'vue';
 import { onKeyStroke } from '@vueuse/core';
 
+import ScaledLetterBox from './ScaledLetterbox.vue';
 import PointerMarkerPanel from './PointerMarkerPanel.vue';
 import TuioMarkerPanel from './TuioMarkerPanel.vue';
 import ScoreTable from './ScoreTable.vue';
@@ -12,7 +13,7 @@ import ActionCardSlotGroup from './ActionCardSlotGroup.vue';
 import EventCardSlotGroup from './EventCardSlotGroup.vue';
 import ModelVisualization from './ModelVisualization.vue';
 
-import { HOTKEYS } from '../../ts/builtin-config';
+import { HOTKEYS, BOARD_WIDTH, BOARD_HEIGHT } from '../../ts/builtin-config';
 import { useOptionStore } from '../../ts/stores/options';
 import { useConfigStore } from '../../ts/stores/config';
 import { useAppStore } from '../../ts/stores/app';
@@ -123,8 +124,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="abs-top-left">
-    <div class="layer-panel abs-top-left">
+  <ScaledLetterBox
+    :target-size="{ width: BOARD_WIDTH, height: BOARD_HEIGHT }"
+    class="scaled-letterbox"
+  >
+    <div
+      class="layer-panel abs-top-left"
+      :style="{
+        '--app-width': BOARD_WIDTH,
+        '--app-height': BOARD_HEIGHT,
+      }"
+    >
       <template v-for="layerConfig in config.layers">
         <ModelVisualization
           v-if="layerConfig === 'modelVisualization'"
@@ -165,14 +175,20 @@ onMounted(() => {
         class="pointer-events-fallthrough"
       ></TuioMarkerPanel>
     </div>
-  </div>
-  <ControlPanel
-    @keydown="$event.stopPropagation()"
-    :disabled="!enableControlPanel"
-  />
+    <ControlPanel
+      @keydown="$event.stopPropagation()"
+      :disabled="!enableControlPanel"
+    />
+  </ScaledLetterBox>
 </template>
 
 <style lang="scss" scoped>
+.app-background {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+}
+
 .layer-panel {
   background-color: white;
 }

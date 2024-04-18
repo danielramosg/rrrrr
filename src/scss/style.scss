@@ -20,14 +20,6 @@ body {
   background-color: black;
 }
 
-#fixed-size-container {
-  // The actual size is defined via code
-  position: absolute;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-}
-
 .abs-top-left {
   position: absolute;
   top: 0;
