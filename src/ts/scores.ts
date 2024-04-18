@@ -3,14 +3,14 @@ import type { Record } from './circular-economy-model';
 import { expectedLifetime } from './expected-lifetime';
 
 class Scores {
-  static circularity(record: Record) {
-    const timer = performance.now();
+  static expectedLifetime(record: Record) {
+    // const timer = performance.now();
     const value = expectedLifetime(record);
-    console.log(`Elapsed time (ms): ${performance.now() - timer}`);
+    // console.log(`Elapsed time (ms): ${performance.now() - timer}`);
     return value;
   }
 
-  static circularity_bak(record: Record) {
+  static circularity(record: Record) {
     const {
       produceFromNaturalResources,
       acquireNewlyProduced,
@@ -72,8 +72,9 @@ class Scores {
   static all(record: Record) {
     const circularity = Scores.circularity(record);
     const happiness = Scores.happiness(record);
+    const expectedLifetime = Scores.expectedLifetime(record);
 
-    return { circularity, happiness };
+    return { circularity, happiness, expectedLifetime };
   }
 }
 

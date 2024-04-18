@@ -7,7 +7,7 @@ import {
 } from './matrixFns';
 
 import {
-  Record,
+  type Record,
   stocksFlowsMatrix,
   stockIds,
   flowIds,
@@ -129,20 +129,19 @@ function expectedLifetime(record: Record) {
   try {
     const V = math.inv(U as number[][]);
 
+    const result = math.multiply(
+      math.multiply(reducedInitialStateVector as number[], V),
+      reducedStockSelectionVector as number[],
+    );
     // console.table(V);
 
-    console.log(
-      '\nExpected lifetime: ',
-      math.multiply(
-        math.multiply(reducedInitialStateVector as number[], V),
-        reducedStockSelectionVector as number[],
-      ),
-    );
+    // console.log('\nExpected lifetime: ', result);
+    return result;
   } catch (error) {
     console.error('Non-invertible matrix in expected-lifetime');
   }
 
-  return 0.5;
+  return 0;
 }
 
 export { expectedLifetime };

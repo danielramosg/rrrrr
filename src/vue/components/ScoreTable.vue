@@ -35,6 +35,9 @@ const happiness: ScoreInfo = {
   secondaryLabel: happinessLabels[secondaryLanguage],
 };
 
+window.record = () => modelStore.record;
+window.scores = () => Scores.all(modelStore.record)
+
 const scores = [circularity, happiness];
 
 const fractionDigits = 1;
