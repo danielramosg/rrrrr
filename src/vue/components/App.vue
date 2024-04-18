@@ -127,6 +127,7 @@ onMounted(() => {
   <ScaledLetterBox
     :target-size="{ width: BOARD_WIDTH, height: BOARD_HEIGHT }"
     class="scaled-letterbox"
+    @resize="(scale) => (appStore.scale = scale)"
   >
     <div
       class="layer-panel abs-top-left"

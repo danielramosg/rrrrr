@@ -3,6 +3,9 @@ import { strict as assert } from 'assert';
 import { ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps<{ targetSize: { width: number; height: number } }>();
+const emit = defineEmits<{
+  resize: [scale: number];
+}>();
 
 const outerElement = ref<HTMLDivElement | null>(null);
 const innerElement = ref<HTMLDivElement | null>(null);
@@ -24,6 +27,7 @@ onMounted(() => {
       translateY: rect.height / 2,
       scale,
     };
+    emit('resize', scale);
   };
   const observer = new ResizeObserver(handleResize);
   observer.observe(outerElementValue);

@@ -10,5 +10,7 @@ export const useAppStore = defineStore('app', () => {
   const isFullscreen = ref(false);
   const isDeveloperModeActive = ref(developerMode);
 
-  return { isPlaying, isFullscreen, isDeveloperModeActive };
+  const scale = ref(1);
+
+  return { isPlaying, isFullscreen, isDeveloperModeActive, scale };
 });
