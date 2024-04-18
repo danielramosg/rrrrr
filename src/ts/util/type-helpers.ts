@@ -45,6 +45,12 @@ function makeSafeAsync<T extends Array<unknown>, U>(
   };
 }
 
+function exhaustiveGuard<T>(value: never): T {
+  throw new Error(
+    `Reached forbidden guard function with unexpected value: ${JSON.stringify(value)}`,
+  );
+}
+
 export type {
   ConvertTupleToUnion,
   ConvertTupleToObject,
@@ -53,4 +59,4 @@ export type {
   Callable,
 };
 
-export { makeSafe, makeSafeAsync };
+export { makeSafe, makeSafeAsync, exhaustiveGuard };

@@ -1,53 +1,80 @@
 parameterTransforms:
-  - id: Reuse
+  - id: reduce
     script: |-
+      acquireRate *= 0.5;
+      naturalResourcesIncentive *= 0.8;
+      newPhoneProductionRate *=0.8;
+      landfillIncentive *= 0.8;
+      phonesPerUserGoal *= 0.9;
+  - id: reuse
+    script: |
       reuseIncentive *= 5;
       disposeIncentive *=0.5;
-      landfillIncentive *= 0.9;
-      naturalResourcesIncentive *= 0.9;
-  - id: Recycle
-    script: |-
-      recycleRate *= 3;
-      recyclingIncentive *= 2;
-      landfillIncentive *= 0.9;
-      naturalResourcesIncentive *= 0.9;
-  - id: Repair
-    script: |-
-      repairIncentive *= 3;
-      repairRate *= 2;
-      landfillIncentive *= 0.9;
-      naturalResourcesIncentive *= 0.9;
-  - id: Refurbish
+      acquireRate *= 2;
+      landfillIncentive *= 0.8;
+      naturalResourcesIncentive *= 0.8;
+  - id: repair
+    script: |
+      repairIncentive *= 2;
+      repairRate *= 3;
+      disposeIncentive *= 0.5;
+      disposeRate *= 0.5;
+      landfillIncentive *= 0.8;
+      naturalResourcesIncentive *= 0.8;
+  - id: refurbish
     script: |-
       refurbishmentIncentive *= 3;
       refurbishmentRate *= 2;
-      landfillIncentive *= 0.9;
-      naturalResourcesIncentive *= 0.9;
-  - id: Reduce
+      acquireRate *= 2;
+      abandonRate *= 1.5;
+      reuseIncentive *= 0.7;
+      landfillIncentive *= 0.8;
+      naturalResourcesIncentive *= 0.8;
+  - id: recycle
     script: |-
-      acquireRate *= 0.5;
-      landfillIncentive *= 0.6;
-      naturalResourcesIncentive *= 0.85;
-      newPhoneProductionRate *=0.5;
-  - id: '------------------'
-    script: // just a separator
-  - id: Triple Diamantglas (T)
+      recycleRate *= 2;
+      recyclingIncentive *= 2;
+  - id: (T) Triple Diamantglas
     script: breakRate *= 0.005;
-  - id: Sim Card 4.0 (T)
-    script: |-
-      phonesPerUserGoal *= 0.5;
-      landfillIncentive *= 0.9;
-      naturalResourcesIncentive *= 0.9;
-  - id: KI-Automatisierung (T)
+  - id: (T) KI-Automatisierung
     script: |-
       newPhoneProductionRate *=5;
       recycleRate *=5;
       refurbishmentRate *=5;
       repairRate *=5;
-  - id: '-----------------'
-    script: // just a separator
-  - id: Schul-Repair-Café (P)
+  - id: (T) Modular smartphone
     script: |-
+      reuseIncentive *= 5;
+      repairIncentive *= 3;
+      refurbishmentRate *=5;
+      repairRate *=5;
+      refurbishmentIncentive *= 7;
+      acquireRate *= 0.5;
+      disposeIncentive *=0.5;
+      disposeRate *= 0.5;
+      recycleRate *= 2;
+      recyclingIncentive *= 2;
+  - id: (T) Planed Obsol
+    script: |-
+      newPhoneProductionRate *=2;
+      breakRate *= 9;
+      recycleRate *= 0.5;
+      refurbishmentRate *= 0.5;
+      repairIncentive *= 0.5;
+      repairRate *= 0.5;
+      reuseIncentive *= 0.5;
+      disposeIncentive *= 2;
+      disposeRate *= 2;
+  - id: (T) Software Upgrade
+    script: |-
+      newPhoneProductionRate *= 0.5;
+      newlyProducedPhoneIncentive *= 0.5;
+      disposeIncentive *=0.5;
+      disposeRate *= 0.5;
+      reuseIncentive *= 5;
+      abandonRate *= 0.2;
+  - id: (P) Schul-Repair-Café
+    script: |
       repairIncentive *= 3;
       repairRate *= 2;
       acquireRate *= 0.5;
@@ -55,36 +82,104 @@ parameterTransforms:
       disposeIncentive *= 0.5;
       disposeRate *= 0.5;
       newlyProducedPhoneIncentive *= 0.5;
-      landfillIncentive *= 0.7;
-      naturalResourcesIncentive *= 0.85;
-  - id: Extreme Öko-Steuer (P)
+  - id: (P) Extreme Öko-Steuer
     script: |-
       landfillIncentive *= 0.022;
       naturalResourcesIncentive *= 0.022;
-  - id: Handy Spenden (P)
+  - id: (P) Handy-Abo
     script: |-
-      abandonExcessRate *= 2;
+      abandonRate *= 5;
+      newPhoneProductionRate *= 5;
+      newlyProducedPhoneIncentive *= 5;
+      reuseIncentive *= 0.5;
+      disposeIncentive *= 5;
+      refurbishmentIncentive *= 0.5;
+      repairIncentive *= 0.5;
+      disposeRate *= 2;
+      reuseIncentive *= 0.5;
+  - id: (P) Recycle-Prämie
+    script: |-
+      abandonRate *= 1;
+      newPhoneProductionRate *= 2;
+      newlyProducedPhoneIncentive *= 5;
+      refurbishmentIncentive *= 3;
+      refurbishmentRate *= 2;
+      repairIncentive *= 3;
+      repairRate *= 2;
+      recycleRate *= 2;
+      recyclingIncentive *= 2;
+  - id: (P) Wartungsvertrag
+    script: |-
+      abandonRate *= 0.5;
+      abandonExcessRate *= 0.5;
+      newPhoneProductionRate *= 0.5;
+      newlyProducedPhoneIncentive *= 0.5;
+      repairIncentive *= 3;
+      repairRate *= 2;
+      disposeRate *= 0.8;
+      landfillIncentive *= 0.8;
+      naturalResourcesIncentive *= 0.8;
+  - id: (P) Jugendschutz
+    script: |-
+      acquireRate *= 0.8;
+      landfillIncentive *= 0.6;
+      naturalResourcesIncentive *= 0.85;
+      newPhoneProductionRate *=0.8;
+      reuseIncentive *= 0.9;
+      phonesPerUserGoal *= 0.8;
+  - id: (P) Ein-Telefon-Gesetz
+    script: |
+      phonesPerUserGoal *= 0.2;
+      newPhoneProductionRate *= 0.5;
+      newlyProducedPhoneIncentive *= 0.5;
+      abandonRate *= 0;
+      naturalResourcesIncentive *= 0.8;
+      landfillIncentive *= 0.8;
+  - id: (P) BYOD
+    script: |-
+      phonesPerUserGoal *= 0.8;
+      newlyProducedPhoneIncentive *= 0.8;
+      landfillIncentive *= 0.8;
+      naturalResourcesIncentive *= 0.8;
+  - id: (P) Handy Detox Day
+    script: |-
       abandonRate *=1.5;
-      reuseIncentive *= 5;
+      acquireRate *= 0.5;
+      landfillIncentive *= 0.6;
+      naturalResourcesIncentive *= 0.85;
+      newPhoneProductionRate *=0.5;
       disposeIncentive *=0.8;
       disposeRate *= 0.8;
-      acquireRate *= 2;
       newlyProducedPhoneIncentive *= 0.8;
-  - id: '------------------ '
-    script: // just a separator
-  - id: Weltweite Chip-Krise (E)
-    script: newPhoneProductionRate *= 0;
-  - id: Neues Ananas Phone (E)
+  - id: (E) Weltweite Chip-Krise
+    script: newPhoneProductionRate *= 0.001;
+  - id: (E) Neues Ananas Phone
     script: |-
       abandonRate *= 3;
       newPhoneProductionRate *= 2;
       newlyProducedPhoneIncentive *= 10;
-  - id: Hacker Attack (E)
-    script: |-
+      acquireRate *= 2;
+      landfillIncentive *= 1.5;
+      naturalResourcesIncentive *= 1.5;
+  - id: (E) Sicherheitslücke
+    script: |
       abandonExcessRate *=5;
       abandonRate *=5;
-      disposeIncentive *=3;
-      disposeRate *=2;
+      disposeIncentive *=5;
+      disposeRate *=5;
       newlyProducedPhoneIncentive *=11;
-  - id: Deponie Streik (E)
-    script: landfillRate *= 0.1;
+      reuseIncentive *= 0.2;
+  - id: (E) Transport Streik
+    script: |-
+      landfillRate *= 0.1; 
+      recycleRate *= 0.1; 
+      repairRate *= 0.1;
+      refurbishmentRate *= 0.1; 
+      acquireRate *= 0.1; 
+      disposeRate *= 0.1; 
+      newPhoneProductionRate *=0.1; 
+      reuseIncentive *= 5; 
+      disposeIncentive *=0.5; 
+      landfillRate *= 0.1;
+  - id: (E) Deponie Streik
+    script: landfillRate *= 0.01;

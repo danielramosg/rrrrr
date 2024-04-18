@@ -15,7 +15,7 @@ export class Circle {
     return new Circle(this.x, this.y, this.radius);
   }
 
-  containsPoint({ x, y }: { x: number; y: number }) {
+  containsPoint({ x, y }: Readonly<{ x: number; y: number }>) {
     return (this.x - x) ** 2 + (this.y - y) ** 2 <= this.radius ** 2;
   }
 

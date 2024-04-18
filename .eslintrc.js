@@ -1,27 +1,30 @@
+/* eslint-env node */
 module.exports = {
   root: true,
   overrides: [
     {
-      files: ['src/ts/**/*.ts', 'tools/**/*.ts'],
-
+      files: ['src/ts/**/*.ts', 'tools/**/*.ts', 'src/**/*.vue'],
       env: {
         es6: true,
       },
-      parser: '@typescript-eslint/parser',
+      parser: 'vue-eslint-parser',
       parserOptions: {
-        ecmaVersion: 2021,
+        parser: '@typescript-eslint/parser',
+        ecmaVersion: 2022,
         sourceType: 'module',
         ecmaFeatures: {},
         project: 'tsconfig.json',
       },
-      plugins: ['@typescript-eslint/eslint-plugin'],
       extends: [
+        'plugin:vue/vue3-essential',
         'eslint:recommended',
         'airbnb-base',
         'airbnb-typescript/base',
         'plugin:compat/recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
+        '@vue/eslint-config-typescript',
+        '@vue/eslint-config-prettier/skip-formatting',
         'prettier',
       ],
       rules: {

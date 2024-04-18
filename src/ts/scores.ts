@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Record } from './circular-economy-model';
+import type { Record } from './circular-economy-model';
 
 class Scores {
   static circularity(record: Record) {
@@ -41,7 +41,7 @@ class Scores {
     return circularity;
   }
 
-  static userSatifaction(record: Record) {
+  static happiness(record: Record) {
     const { phonesInUse } = record.stocks;
     const { phoneGoal } = record.variables;
 
@@ -63,9 +63,9 @@ class Scores {
 
   static all(record: Record) {
     const circularity = Scores.circularity(record);
-    const userSatisfaction = Scores.userSatifaction(record);
+    const happiness = Scores.happiness(record);
 
-    return { circularity, userSatisfaction };
+    return { circularity, happiness };
   }
 }
 

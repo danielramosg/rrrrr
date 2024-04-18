@@ -86,10 +86,13 @@ declare module 'osc/dist/osc-browser' {
     osc: (packet: OscPacket, info: unknown) => void;
     raw: (data: Uint8Array, info: unknown) => void;
     error: (error: Error) => void;
+    close: (event: CustomEvent) => void; // emitted in osc.js, but undocumented
+    wsClient: (event: CustomEvent) => void; // emitted in osc.js, but undocumented
   };
 
   export class WebSocketPort extends (EventEmitter as new () => TypedEmitter<OscEvents>) {
-    constructor(options: { url: string });
+    constructor(options: { url: string; metadata: boolean });
     open(): void;
+    close(): void;
   }
 }

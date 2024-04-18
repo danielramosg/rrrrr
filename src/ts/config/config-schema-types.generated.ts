@@ -7,6 +7,20 @@
  *  - {@link https://github.com/grantila/typeconv}
  */
 
+export interface GeneralConfig {
+  assetBaseDir: string;
+  primaryLanguage: string;
+  secondaryLanguage: string;
+  scoreLabels: {
+    circularity: {
+      [key: string]: string;
+    };
+    happiness: {
+      [key: string]: string;
+    };
+  };
+}
+
 export interface InitialParametersConfig {
   abandonExcessRate: number;
   abandonRate: number;
@@ -51,62 +65,48 @@ export interface ParameterTransformConfig {
   script: string;
 }
 
-export interface BasicSlotConfig {
+export interface MarkerSlotConfig {
   id: string;
   x: number;
   y: number;
-  angle?: number;
+  angle: number;
 }
 
 export interface BasicSlotGroupConfig {
   id: string;
   type: 'basic';
-  slots: BasicSlotConfig[];
+  slots: MarkerSlotConfig[];
   parameterTransformIds: string[];
 }
 
-export interface SlotWithCardConfig {
+export interface CardSlotConfig {
   id: string;
   x: number;
   y: number;
-  angle?: number;
-  card: {
-    x: number;
-    y: number;
-    angle?: number;
-  };
+  angle: number;
 }
 
-export interface I18NStringConfig {
-  [key: string]: string;
-}
-
-export interface ActionCardConfig {
-  id: string;
+export interface CardConfig {
+  parameterTransformId: string;
   url: string;
-  title: I18NStringConfig;
-  description: I18NStringConfig;
 }
 
 export interface ActionCardSlotGroupConfig {
   id: string;
   type: 'action-card';
-  slots: SlotWithCardConfig[];
-  cards: ActionCardConfig[];
-}
-
-export interface EventCardConfig {
-  id: string;
-  url: string;
-  title: I18NStringConfig;
-  description: I18NStringConfig;
+  slots: {
+    markerSlot: MarkerSlotConfig;
+    cardSlot: CardSlotConfig;
+  }[];
+  cards: CardConfig[];
 }
 
 export interface EventCardSlotGroupConfig {
   id: string;
   type: 'event-card';
-  slots: SlotWithCardConfig[];
-  cards: EventCardConfig[];
+  markerSlot: MarkerSlotConfig;
+  cardSlots: CardSlotConfig[];
+  cards: CardConfig[];
 }
 
 export type SlotGroup =
@@ -114,20 +114,32 @@ export type SlotGroup =
   | ActionCardSlotGroupConfig
   | EventCardSlotGroupConfig;
 
-export interface TriggerConditionConfig {
-  condition: string;
-  url: string;
+export interface InteractionConfig {
+  actionCardDelayMs: number;
+  eventCardMinDelayMs: number;
+  eventCardMaxDelayMs: number;
+  eventCardMinDurationMs: number;
+  eventCardMaxDurationMs: number;
+  assets: {
+    markerSlotActive: {
+      url: string;
+    };
+    markerSlotInactive: {
+      url: string;
+    };
+  };
+  slotGroups: SlotGroup[];
 }
 
-export interface TriggerConfig {
-  id: string;
-  events: TriggerConditionConfig[];
+export type ModelVisualizationLayerConfig = 'modelVisualization';
+
+export interface ConditionalLayerConfig {
+  url: string;
+  condition: string;
 }
 
 export interface Config {
-  general: {
-    backgroundImage: string;
-  };
+  general: GeneralConfig;
   model: {
     initialParameters: InitialParametersConfig;
     initialStocks: InitialStocksConfig;
@@ -137,10 +149,6 @@ export interface Config {
     maxStepSize: number;
   };
   parameterTransforms: ParameterTransformConfig[];
-  interaction: {
-    slotActivationDelay: number;
-    slotDeactivationDelay: number;
-    slotGroups: SlotGroup[];
-  };
-  triggers: TriggerConfig[];
+  interaction: InteractionConfig;
+  layers: (ModelVisualizationLayerConfig | ConditionalLayerConfig)[];
 }

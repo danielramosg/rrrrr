@@ -3,13 +3,7 @@ title: Config
 type: object
 properties:
   general:
-    type: object
-    properties:
-      backgroundImage:
-        type: string
-    required:
-      - backgroundImage
-    additionalProperties: false
+    $ref: '#/definitions/GeneralConfig'
   model:
     type: object
     properties:
@@ -37,34 +31,52 @@ properties:
     items:
       $ref: '#/definitions/ParameterTransformConfig'
   interaction:
-    type: object
-    properties:
-      slotActivationDelay:
-        type: number
-      slotDeactivationDelay:
-        type: number
-      slotGroups:
-        type: array
-        items:
-          $ref: '#/definitions/SlotGroup'
-    required:
-      - slotActivationDelay
-      - slotDeactivationDelay
-      - slotGroups
-    additionalProperties: false
-  triggers:
+    $ref: '#/definitions/InteractionConfig'
+  layers:
     type: array
     items:
-      $ref: '#/definitions/TriggerConfig'
+      anyOf:
+        - $ref: '#/definitions/ModelVisualizationLayerConfig'
+        - $ref: '#/definitions/ConditionalLayerConfig'
 required:
   - general
   - model
   - simulation
   - parameterTransforms
   - interaction
-  - triggers
+  - layers
 additionalProperties: false
 definitions:
+  GeneralConfig:
+    type: object
+    properties:
+      assetBaseDir:
+        type: string
+      primaryLanguage:
+        type: string
+      secondaryLanguage:
+        type: string
+      scoreLabels:
+        type: object
+        properties:
+          circularity:
+            type: object
+            additionalProperties:
+              type: string
+          happiness:
+            type: object
+            additionalProperties:
+              type: string
+        required:
+          - circularity
+          - happiness
+        additionalProperties: false
+    required:
+      - assetBaseDir
+      - primaryLanguage
+      - secondaryLanguage
+      - scoreLabels
+    additionalProperties: false
   InitialParametersConfig:
     type: object
     properties:
@@ -185,7 +197,7 @@ definitions:
       - id
       - script
     additionalProperties: false
-  BasicSlotConfig:
+  MarkerSlotConfig:
     type: object
     properties:
       id:
@@ -196,17 +208,18 @@ definitions:
         type: number
       angle:
         type: number
-        default: 0
     required:
       - id
       - x
       - 'y'
+      - angle
     additionalProperties: false
   BasicSlotGroupConfig:
     type: object
     properties:
       id:
         type: string
+        pattern: ^((?!internal).)*$
       type:
         type: string
         enum:
@@ -214,7 +227,7 @@ definitions:
       slots:
         type: array
         items:
-          $ref: '#/definitions/BasicSlotConfig'
+          $ref: '#/definitions/MarkerSlotConfig'
       parameterTransformIds:
         type: array
         items:
@@ -225,7 +238,7 @@ definitions:
       - slots
       - parameterTransformIds
     additionalProperties: false
-  SlotWithCardConfig:
+  CardSlotConfig:
     type: object
     properties:
       id:
@@ -236,53 +249,29 @@ definitions:
         type: number
       angle:
         type: number
-        default: 0
-      card:
-        type: object
-        properties:
-          x:
-            type: number
-          'y':
-            type: number
-          angle:
-            type: number
-            default: 0
-        required:
-          - x
-          - 'y'
-        additionalProperties: false
     required:
       - id
       - x
       - 'y'
-      - card
+      - angle
     additionalProperties: false
-  I18NStringConfig:
-    type: object
-    additionalProperties:
-      type: string
-  ActionCardConfig:
+  CardConfig:
     type: object
     properties:
-      id:
+      parameterTransformId:
         type: string
       url:
         type: string
-      title:
-        $ref: '#/definitions/I18NStringConfig'
-      description:
-        $ref: '#/definitions/I18NStringConfig'
     required:
-      - id
+      - parameterTransformId
       - url
-      - title
-      - description
     additionalProperties: false
   ActionCardSlotGroupConfig:
     type: object
     properties:
       id:
         type: string
+        pattern: ^((?!internal).)*$
       type:
         type: string
         enum:
@@ -290,55 +279,51 @@ definitions:
       slots:
         type: array
         items:
-          $ref: '#/definitions/SlotWithCardConfig'
+          type: object
+          properties:
+            markerSlot:
+              $ref: '#/definitions/MarkerSlotConfig'
+            cardSlot:
+              $ref: '#/definitions/CardSlotConfig'
+          required:
+            - markerSlot
+            - cardSlot
+          additionalProperties: false
       cards:
         type: array
         items:
-          $ref: '#/definitions/ActionCardConfig'
+          $ref: '#/definitions/CardConfig'
     required:
       - id
       - type
       - slots
       - cards
     additionalProperties: false
-  EventCardConfig:
-    type: object
-    properties:
-      id:
-        type: string
-      url:
-        type: string
-      title:
-        $ref: '#/definitions/I18NStringConfig'
-      description:
-        $ref: '#/definitions/I18NStringConfig'
-    required:
-      - id
-      - url
-      - title
-      - description
-    additionalProperties: false
   EventCardSlotGroupConfig:
     type: object
     properties:
       id:
         type: string
+        pattern: ^((?!internal).)*$
       type:
         type: string
         enum:
           - event-card
-      slots:
+      markerSlot:
+        $ref: '#/definitions/MarkerSlotConfig'
+      cardSlots:
         type: array
         items:
-          $ref: '#/definitions/SlotWithCardConfig'
+          $ref: '#/definitions/CardSlotConfig'
       cards:
         type: array
         items:
-          $ref: '#/definitions/EventCardConfig'
+          $ref: '#/definitions/CardConfig'
     required:
       - id
       - type
-      - slots
+      - markerSlot
+      - cardSlots
       - cards
     additionalProperties: false
   SlotGroup:
@@ -346,27 +331,75 @@ definitions:
       - $ref: '#/definitions/BasicSlotGroupConfig'
       - $ref: '#/definitions/ActionCardSlotGroupConfig'
       - $ref: '#/definitions/EventCardSlotGroupConfig'
-  TriggerConditionConfig:
+  InteractionConfig:
     type: object
     properties:
-      condition:
-        type: string
-      url:
-        type: string
-    required:
-      - condition
-      - url
-    additionalProperties: false
-  TriggerConfig:
-    type: object
-    properties:
-      id:
-        type: string
-      events:
+      actionCardDelayMs:
+        type: number
+        minimum: 0
+      eventCardMinDelayMs:
+        type: number
+        minimum: 0
+      eventCardMaxDelayMs:
+        type: number
+        minimum: 0
+      eventCardMinDurationMs:
+        type: number
+        minimum: 0
+      eventCardMaxDurationMs:
+        type: number
+        minimum: 0
+      assets:
+        type: object
+        properties:
+          markerSlotActive:
+            type: object
+            properties:
+              url:
+                type: string
+                pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
+            required:
+              - url
+            additionalProperties: false
+          markerSlotInactive:
+            type: object
+            properties:
+              url:
+                type: string
+                pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
+            required:
+              - url
+            additionalProperties: false
+        required:
+          - markerSlotActive
+          - markerSlotInactive
+        additionalProperties: false
+      slotGroups:
         type: array
         items:
-          $ref: '#/definitions/TriggerConditionConfig'
+          $ref: '#/definitions/SlotGroup'
     required:
-      - id
-      - events
+      - actionCardDelayMs
+      - eventCardMinDelayMs
+      - eventCardMaxDelayMs
+      - eventCardMinDurationMs
+      - eventCardMaxDurationMs
+      - assets
+      - slotGroups
+    additionalProperties: false
+  ModelVisualizationLayerConfig:
+    type: string
+    enum:
+      - modelVisualization
+  ConditionalLayerConfig:
+    type: object
+    properties:
+      url:
+        type: string
+        pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
+      condition:
+        type: string
+    required:
+      - url
+      - condition
     additionalProperties: false
