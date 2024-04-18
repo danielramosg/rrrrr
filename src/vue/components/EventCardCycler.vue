@@ -45,6 +45,7 @@ const getRandomDurationMs = () =>
 interface CardSlotAssignment {
   cardSlotConfig: DeepReadonly<CardSlotConfig>;
   cardConfig: DeepReadonly<CardConfig> | null;
+  deactivateCard: () => void;
   stopFilling: () => void;
 }
 
@@ -53,6 +54,7 @@ const cardSlotAssignments = reactive(
     (csc): CardSlotAssignment => ({
       cardSlotConfig: csc,
       cardConfig: null,
+      deactivateCard: () => {},
       stopFilling: () => {},
     }),
   ),
@@ -77,6 +79,7 @@ const getNextEventCard = () => {
 };
 
 const fillCardSlot = (csa: CardSlotAssignment) => {
+  csa.deactivateCard();
   csa.stopFilling();
   const { cardConfig, parameterTransform } = getNextEventCard();
   csa.cardConfig = cardConfig;
@@ -88,10 +91,16 @@ const fillCardSlot = (csa: CardSlotAssignment) => {
     () => fillCardSlot(csa),
     durationMs + delayMs,
   ).stop;
-  useTimeoutFn(() => {
+  const stopCardDeactivation = useTimeoutFn(
+    () => csa.deactivateCard(),
+    durationMs,
+  ).stop;
+  csa.deactivateCard = () => {
+    stopCardDeactivation();
     csa.cardConfig = null;
     parameterTransform.active = false;
-  }, durationMs);
+    csa.deactivateCard = () => {};
+  };
 };
 
 const activateCardSlotAssignments = () => {
@@ -108,7 +117,10 @@ const activateCardSlotAssignments = () => {
 };
 
 const deactivateCardSlotAssignments = () => {
-  cardSlotAssignments.forEach((csa) => csa.stopFilling());
+  cardSlotAssignments.forEach((csa) => {
+    csa.deactivateCard();
+    csa.stopFilling();
+  });
 };
 
 watch(
