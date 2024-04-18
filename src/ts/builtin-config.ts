@@ -7,7 +7,7 @@ const CONFIG_FILENAMES = [
   'simulation.yaml',
   'parameter-transforms.yaml',
   'interaction.yaml',
-  'triggers.yaml',
+  'layers.yaml',
 ] as const;
 
 const CONFIG_URLS = CONFIG_FILENAMES.map(
@@ -35,6 +35,7 @@ const HOTKEYS = {
   controlPanel: { key: 'c', label: 'c' },
   developerMode: { key: 'd', label: 'd' },
   fullscreen: { key: 'f', label: 'f' },
+  highlightDerivatives: { key: 'h', label: 'h' },
 } as const;
 
 export {

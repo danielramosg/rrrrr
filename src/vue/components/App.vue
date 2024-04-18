@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { strict as assert } from 'assert';
 import { ref, watch, watchEffect, onMounted } from 'vue';
 import { onKeyStroke } from '@vueuse/core';
 
+import ScaledLetterBox from './ScaledLetterbox.vue';
 import PointerMarkerPanel from './PointerMarkerPanel.vue';
 import TuioMarkerPanel from './TuioMarkerPanel.vue';
 import ScoreTable from './ScoreTable.vue';
 import ControlPanel from './ControlPanel.vue';
-import TriggeredOverlay from './TriggeredOverlay.vue';
+import ConditionalLayer from './ConditionalLayer.vue';
 import BasicSlotGroup from './BasicSlotGroup.vue';
 import ActionCardSlotGroup from './ActionCardSlotGroup.vue';
 import EventCardSlotGroup from './EventCardSlotGroup.vue';
 import ModelVisualization from './ModelVisualization.vue';
 
-import { HOTKEYS } from '../../ts/builtin-config';
+import { HOTKEYS, BOARD_WIDTH, BOARD_HEIGHT } from '../../ts/builtin-config';
 import { useOptionStore } from '../../ts/stores/options';
 import { useConfigStore } from '../../ts/stores/config';
 import { useAppStore } from '../../ts/stores/app';
@@ -105,7 +105,7 @@ watchEffect(() => {
   else runner.pause();
 });
 
-const modelVisualization = ref<typeof ModelVisualization | null>(null);
+const modelVisualizations = ref<Array<typeof ModelVisualization>>([]);
 onMounted(() => {
   const tick = (deltaMs: DOMHighResTimeStamp) => {
     const { t: lastT } = modelSimulator.record;
@@ -115,29 +115,42 @@ onMounted(() => {
 
     const { record } = modelSimulator;
     modelStore.$patch({ record });
-    assert(modelVisualization.value !== null);
-    modelVisualization.value.update(deltaMs, deltaT, modelSimulator.record);
+    modelVisualizations.value.forEach((mv) =>
+      mv.update(deltaMs, deltaT, modelSimulator.record),
+    );
   };
   runner.on('tick', tick);
 });
 </script>
 
 <template>
-  <div class="fill">
-    <div id="illustration-panel" class="illustration-panel fill">
-      <TriggeredOverlay
-        v-for="triggerConfig in config.triggers"
-        :key="triggerConfig.id"
-        :trigger-config="triggerConfig"
-      >
-      </TriggeredOverlay>
-    </div>
-    <div ref="" class="viz-panel fill">
-      <ModelVisualization ref="modelVisualization" />
+  <ScaledLetterBox
+    :target-size="{ width: BOARD_WIDTH, height: BOARD_HEIGHT }"
+    class="scaled-letterbox"
+    @resize="(scale) => (appStore.scale = scale)"
+  >
+    <div
+      class="layer-panel abs-top-left"
+      :style="{
+        '--app-width': BOARD_WIDTH,
+        '--app-height': BOARD_HEIGHT,
+      }"
+    >
+      <template v-for="layerConfig in config.layers">
+        <ModelVisualization
+          v-if="layerConfig === 'modelVisualization'"
+          ref="modelVisualizations"
+          class="model-visualization"
+        />
+        <ConditionalLayer
+          v-if="layerConfig !== 'modelVisualization'"
+          :layer-config="layerConfig"
+        />
+      </template>
       <ScoreTable class="score-top-left" />
       <ScoreTable class="score-bottom-right" />
     </div>
-    <div class="slot-panel fill">
+    <div class="slot-panel abs-top-left">
       <template
         v-for="slotGroupConfig in config.interaction.slotGroups"
         :key="slotGroupConfig.id"
@@ -155,33 +168,40 @@ onMounted(() => {
           v-if="slotGroupConfig.type === 'event-card'"
         ></EventCardSlotGroup>
       </template>
+    </div>
+    <div class="marker-panel abs-top-left">
       <PointerMarkerPanel v-if="options.usePointerMarkers"></PointerMarkerPanel>
       <TuioMarkerPanel
         v-if="options.useTuioMarkers"
         class="pointer-events-fallthrough"
       ></TuioMarkerPanel>
     </div>
-  </div>
-  <ControlPanel
-    @keydown="$event.stopPropagation()"
-    :disabled="!enableControlPanel"
-  />
+    <ControlPanel
+      @keydown="$event.stopPropagation()"
+      :disabled="!enableControlPanel"
+    />
+  </ScaledLetterBox>
 </template>
 
 <style lang="scss" scoped>
-.illustration-panel {
+.app-background {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+}
+
+.layer-panel {
   background-color: white;
 }
 
-.viz-panel {
-  & > #model-viz-container {
-    width: calc(1px * var(--svg-width));
-    transform: scale(var(--svg-scale-factor));
-    transform-origin: top left;
-  }
+.model-visualization {
+  width: calc(1px * var(--svg-width));
+  transform: scale(var(--svg-scale-factor));
+  transform-origin: top left;
 }
 
-.slot-panel {
+.slot-panel,
+.marker-panel {
   touch-action: none;
 }
 

@@ -32,17 +32,19 @@ properties:
       $ref: '#/definitions/ParameterTransformConfig'
   interaction:
     $ref: '#/definitions/InteractionConfig'
-  triggers:
+  layers:
     type: array
     items:
-      $ref: '#/definitions/TriggerConfig'
+      anyOf:
+        - $ref: '#/definitions/ModelVisualizationLayerConfig'
+        - $ref: '#/definitions/ConditionalLayerConfig'
 required:
   - general
   - model
   - simulation
   - parameterTransforms
   - interaction
-  - triggers
+  - layers
 additionalProperties: false
 definitions:
   GeneralConfig:
@@ -206,11 +208,11 @@ definitions:
         type: number
       angle:
         type: number
-        default: 0
     required:
       - id
       - x
       - 'y'
+      - angle
     additionalProperties: false
   BasicSlotGroupConfig:
     type: object
@@ -247,7 +249,6 @@ definitions:
         type: number
       angle:
         type: number
-        default: 0
     required:
       - id
       - x
@@ -386,28 +387,19 @@ definitions:
       - assets
       - slotGroups
     additionalProperties: false
-  TriggerConditionConfig:
+  ModelVisualizationLayerConfig:
+    type: string
+    enum:
+      - modelVisualization
+  ConditionalLayerConfig:
     type: object
     properties:
-      condition:
-        type: string
       url:
         type: string
         pattern: _x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$
-    required:
-      - condition
-      - url
-    additionalProperties: false
-  TriggerConfig:
-    type: object
-    properties:
-      id:
+      condition:
         type: string
-      events:
-        type: array
-        items:
-          $ref: '#/definitions/TriggerConditionConfig'
     required:
-      - id
-      - events
+      - url
+      - condition
     additionalProperties: false

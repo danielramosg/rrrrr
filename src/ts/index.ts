@@ -7,14 +7,7 @@ import App from '../vue/components/App.vue';
 
 import { ConfigLoader } from './config/config-loader';
 import { documentReady } from './util/document-ready';
-import { ScaleToFitParent } from './util/scale-to-fit';
-import { guardedQuerySelector } from './util/guarded-query-selectors';
-import {
-  BOARD_WIDTH,
-  BOARD_HEIGHT,
-  CONFIG_URLS,
-  CONFIG_INJECTION_KEY,
-} from './builtin-config';
+import { CONFIG_URLS, CONFIG_INJECTION_KEY } from './builtin-config';
 
 // eslint-disable-next-line no-lone-blocks
 {
@@ -50,28 +43,12 @@ async function init(): Promise<CircularEconomyApi> {
   const config = configLoaderResult.data;
   console.log(config);
 
-  const rootStyle = document.documentElement.style;
-  rootStyle.setProperty('--app-width', `${BOARD_WIDTH}`);
-  rootStyle.setProperty('--app-height', `${BOARD_HEIGHT}`);
-
-  const fixedSizeContainer = guardedQuerySelector(
-    HTMLDivElement,
-    '#fixed-size-container',
-  );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const scaleToFitParent = new ScaleToFitParent(fixedSizeContainer, {
-    width: BOARD_WIDTH,
-    height: BOARD_HEIGHT,
-  });
-
   const pinia = createPinia();
 
   const app = createApp(App);
   app.provide(CONFIG_INJECTION_KEY, config);
   app.use(pinia);
-  const appComponent = app.mount(fixedSizeContainer) as InstanceType<
-    typeof App
-  >;
+  const appComponent = app.mount(document.body) as InstanceType<typeof App>;
 
   const circularEconomyApi: CircularEconomyApi = {
     app: appComponent,

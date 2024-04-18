@@ -7,6 +7,7 @@ import { useAppStore } from '../../ts/stores/app';
 const togglePlayingBtnId = `btn-toggle-playing-${uuidv4()}`;
 const toggleFullscreenBtnId = `btn-toggle-playing-${uuidv4()}`;
 const toggleDeveloperModeBtnId = `btn-toggle-playing-${uuidv4()}`;
+const toggleHighlightDerivativesBtnId = `btn-toggle-playing-${uuidv4()}`;
 
 const appStore = useAppStore();
 
@@ -17,6 +18,11 @@ const toggleFullscreen = () =>
 
 const toggleDeveloperMode = () =>
   appStore.$patch({ isDeveloperModeActive: !appStore.isDeveloperModeActive });
+
+const toggleHighlightDerivatives = () =>
+  appStore.$patch({
+    highlightDerivatives: !appStore.highlightDerivatives,
+  });
 </script>
 
 <template>
@@ -56,5 +62,18 @@ const toggleDeveloperMode = () =>
     :for="toggleDeveloperModeBtnId"
     @click="toggleDeveloperMode"
     >Developer mode ({{ HOTKEYS.developerMode.label }})</label
+  >
+  <input
+    type="checkbox"
+    class="btn-check"
+    :id="toggleHighlightDerivativesBtnId"
+    :class="() => (appStore.highlightDerivatives ? 'active' : '')"
+    autocomplete="off"
+  />
+  <label
+    class="btn btn-primary"
+    :for="toggleHighlightDerivativesBtnId"
+    @click="toggleHighlightDerivatives"
+    >Highlight derivatives ({{ HOTKEYS.highlightDerivatives.label }})</label
   >
 </template>

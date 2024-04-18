@@ -47,7 +47,10 @@ export const useMarkerStore = defineStore('marker', () => {
 
   if (options.useTuioMarkers) {
     const client = new Tuio11Client(
-      new WebsocketTuioReceiverExt(options.tuioUrl, 2000),
+      new WebsocketTuioReceiverExt(
+        options.tuioUrl,
+        options.tuioReconnectionDelayMs,
+      ),
     );
     client.addTuioListener(tuio11EventEmitter);
 
