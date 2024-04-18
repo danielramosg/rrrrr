@@ -69,7 +69,7 @@ export interface MarkerSlotConfig {
   id: string;
   x: number;
   y: number;
-  angle?: number;
+  angle: number;
 }
 
 export interface BasicSlotGroupConfig {
@@ -131,14 +131,11 @@ export interface InteractionConfig {
   slotGroups: SlotGroup[];
 }
 
-export interface TriggerConditionConfig {
-  condition: string;
-  url: string;
-}
+export type ModelVisualizationLayerConfig = 'modelVisualization';
 
-export interface TriggerConfig {
-  id: string;
-  events: TriggerConditionConfig[];
+export interface ConditionalLayerConfig {
+  url: string;
+  condition: string;
 }
 
 export interface Config {
@@ -153,5 +150,5 @@ export interface Config {
   };
   parameterTransforms: ParameterTransformConfig[];
   interaction: InteractionConfig;
-  triggers: TriggerConfig[];
+  layers: (ModelVisualizationLayerConfig | ConditionalLayerConfig)[];
 }

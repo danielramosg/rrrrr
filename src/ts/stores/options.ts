@@ -16,17 +16,26 @@ export const useOptionStore = defineStore('options', () => {
   );
   const tuioUrl = searchParams.get('tuioUrl') ?? 'ws://localhost:3339';
 
+  const tuioReconnectionDelayMs =
+    Number.parseInt(searchParams.get('tuioReconnectionDelay') ?? '10', 10) *
+    1000;
+
   const autoStart = (searchParams.get('autoStart') ?? 'true') === 'true';
 
   const developerMode = (searchParams.get('devMode') ?? 'false') === 'true';
+
+  const highlightDerivatives =
+    (searchParams.get('highlightDerivatives') ?? 'false') === 'true';
 
   const result = {
     useTuioMarkers,
     usePointerMarkers,
     numPointerMarkers,
     tuioUrl,
+    tuioReconnectionDelayMs,
     autoStart,
     developerMode,
+    highlightDerivatives,
   };
 
   return result as DeepReadonly<typeof result>;
