@@ -35,6 +35,7 @@ const HOTKEYS = {
   controlPanel: { key: 'c', label: 'c' },
   developerMode: { key: 'd', label: 'd' },
   fullscreen: { key: 'f', label: 'f' },
+  highlightDerivatives: { key: 'h', label: 'h' },
 } as const;
 
 export {

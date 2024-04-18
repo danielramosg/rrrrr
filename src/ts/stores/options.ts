@@ -24,6 +24,9 @@ export const useOptionStore = defineStore('options', () => {
 
   const developerMode = (searchParams.get('devMode') ?? 'false') === 'true';
 
+  const highlightDerivatives =
+    (searchParams.get('highlightDerivatives') ?? 'false') === 'true';
+
   const result = {
     useTuioMarkers,
     usePointerMarkers,
@@ -32,6 +35,7 @@ export const useOptionStore = defineStore('options', () => {
     tuioReconnectionDelayMs,
     autoStart,
     developerMode,
+    highlightDerivatives,
   };
 
   return result as DeepReadonly<typeof result>;

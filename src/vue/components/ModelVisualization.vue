@@ -81,7 +81,8 @@ const flowVizSigns: ModelElementObject<MainFlowIds> = {
 const scaleFactors = {
   global: 30000,
   stocks: 1,
-  flows: 0.002,
+  flows: 0.001,
+  flowHighlight: 10,
 };
 
 const svgPromise = loadSvg(svgUrl);
@@ -102,13 +103,15 @@ interface StockDescription {
   readonly id: string;
   readonly x: number;
   readonly y: number;
-  readonly radius: number;
+  radius: number;
+  highlight: number;
 }
 
 interface FlowDescription {
   readonly id: string;
   readonly svgPath: string;
   dashOffset: number;
+  highlight: number;
 }
 
 const useStockToRadius = (stockId: StockId) => {
@@ -143,6 +146,35 @@ const useFlowToDashoffset = (flowId: MainFlowId) => {
   return { dashoffset };
 };
 
+const useFlowToHighlight = (flowId: MainFlowId) => {
+  let previousFlow = updateInfo.value.record.flows[flowId];
+  const highlight = computed(() => {
+    const { flowVizScale, record, stepSize } = updateInfo.value;
+    const flow = record.flows[flowId];
+    const flowDerivative = (flow - previousFlow) / stepSize;
+    const scaledFlowDerivative =
+      scaleFactors.flowHighlight * flowVizScale * flowDerivative;
+
+    // TODO: fine-tune formula
+    const highlight =
+      0.5 *
+      (1 +
+        Math.min(
+          Math.max(
+            Math.sign(scaledFlowDerivative) *
+              Math.sqrt(Math.abs(scaledFlowDerivative)),
+            -1,
+          ),
+          1,
+        ));
+    previousFlow = flow;
+    return appStore.highlightDerivatives && !Number.isNaN(highlight)
+      ? highlight
+      : 0.5;
+  });
+  return { highlight };
+};
+
 const extractFlowDescriptions = (svgElement: SVGElement): FlowDescription[] =>
   mainFlowIds.map((id) => {
     const flowElement = guardedQuerySelector(
@@ -156,6 +188,7 @@ const extractFlowDescriptions = (svgElement: SVGElement): FlowDescription[] =>
       id,
       svgPath,
       dashOffset: useFlowToDashoffset(id).dashoffset,
+      highlight: useFlowToHighlight(id).highlight,
     });
     return flowDescription;
   });
@@ -192,6 +225,7 @@ const extractStockDescriptions = (
       x,
       y,
       radius: useStockToRadius(id).radius,
+      highlight: 0,
     });
     return stockDescription;
   });
@@ -262,6 +296,9 @@ defineExpose({ update });
         :d="flowDescription.svgPath"
         :stroke-dashoffset="flowDescription.dashOffset"
         class="flow anim-edge"
+        :style="{
+          '--highlight': flowDescription.highlight,
+        }"
       />
       <circle
         v-for="stockDescription in capacityDescriptions"
@@ -325,10 +362,26 @@ defineExpose({ update });
     fill: gray;
   }
 
+  @keyframes highlight {
+    0% {
+      stroke: red;
+    }
+
+    50% {
+      stroke: gray;
+    }
+
+    100% {
+      stroke: blue;
+    }
+  }
+
   .flow {
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke: #bbb;
+    animation: 100s linear calc(-100s * var(--highlight)) paused highlight;
+    animation-fill-mode: both;
+
     fill: none;
 
     &.edge {
