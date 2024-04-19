@@ -95,10 +95,15 @@ const toggleFullscreen = () => {
   appStore.isFullscreen = !appStore.isFullscreen;
 };
 
+const toggleHighlightDerivatives = () => {
+  appStore.highlightDerivatives = !appStore.highlightDerivatives;
+};
+
 onKeyStroke(HOTKEYS.controlPanel.key, toggleControlPanel);
 onKeyStroke(HOTKEYS.developerMode.key, toggleDeveloperMode);
 onKeyStroke(HOTKEYS.run.key, togglePlayPause);
 onKeyStroke(HOTKEYS.fullscreen.key, toggleFullscreen);
+onKeyStroke(HOTKEYS.highlightDerivatives.key, toggleHighlightDerivatives);
 
 watchEffect(() => {
   if (appStore.isPlaying) runner.play();
