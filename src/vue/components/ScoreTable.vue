@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { pick } from 'lodash';
+import {toRaw} from 'vue';
+
 import type { Ref } from 'vue';
 
 import { computed } from 'vue';
@@ -35,8 +38,42 @@ const happiness: ScoreInfo = {
   secondaryLabel: happinessLabels[secondaryLanguage],
 };
 
-window.record = () => modelStore.record;
-window.scores = () => Scores.all(modelStore.record)
+/** DEBUG / ADJUSTMENT FUNCTIONS */
+
+declare global {
+  interface Window {
+    record: () => Object;
+    scores: () => Object;
+    stocks: () => Object;
+    variables: () => Object;
+    flows: () => Object;
+    parameters: () => Object;
+    demands: () => Object;
+  }
+}
+
+window.record = () => toRaw(modelStore.record);
+window.scores = () => Scores.all(modelStore.record);
+window.stocks = () => pick(toRaw(modelStore.record), 'stocks')['stocks'];
+window.variables = () => pick(toRaw(modelStore.record), 'variables')['variables'];
+window.flows = () => pick(toRaw(modelStore.record), 'flows')['flows'];
+window.parameters = () => pick(toRaw(modelStore.record), 'parameters')['parameters'];
+
+window.demands = () => pick(pick(toRaw(modelStore.record), 'variables')['variables'],
+[ 'demandForNaturalResources',
+  'demandForNewlyProducedPhones',
+  'demandForPhones',
+  'demandForRecycledMaterials',
+  'demandForRecycling',
+  'demandForRefurbishedPhones',
+  'demandForRefurbishment',
+  'demandForRepair',
+  'demandForRepairedPhones',
+  'demandForResources',
+  'demandForReusedPhones']);
+  
+/** END OF DEBUG / ADJUSTMENT FUNCTIONS */
+
 
 const scores = [circularity, happiness];
 
