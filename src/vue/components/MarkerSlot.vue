@@ -185,9 +185,11 @@ watch(
   & .label {
     position: absolute;
     text-align: left;
+    text-transform: uppercase;
     white-space: pre-line;
-    font-size: 22pt;
-    line-height: 1em;
+    font-size: 20px;
+    line-height: 1.2;
+    color: black;
   }
 
   & .dev-label {

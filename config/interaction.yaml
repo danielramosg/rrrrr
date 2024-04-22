@@ -16,12 +16,12 @@ interaction:
         de: Technologie
         en: Technology
       slots:
-        - markerSlot: { id: technology-ms-1, x: 131, y: 744, angle: 90 }
-          cardSlot: { id: technology-cs-1, x: 470, y: 644, angle: 90 }
-        - markerSlot: { id: technology-ms-2, x: 131, y: 1000, angle: 90 }
-          cardSlot: { id: technology-cs-2, x: 470, y: 900, angle: 90 }
-        - markerSlot: { id: technology-ms-3, x: 131, y: 1256, angle: 90 }
-          cardSlot: { id: technology-cs-3, x: 470, y: 1156, angle: 90 }
+        - markerSlot: { id: technology-ms-1, x: 134, y: 744, angle: 90 }
+          cardSlot: { id: technology-cs-1, x: 497, y: 634, angle: 90 }
+        - markerSlot: { id: technology-ms-2, x: 134, y: 1000, angle: 90 }
+          cardSlot: { id: technology-cs-2, x: 497, y: 890, angle: 90 }
+        - markerSlot: { id: technology-ms-3, x: 134, y: 1255, angle: 90 }
+          cardSlot: { id: technology-cs-3, x: 497, y: 1145, angle: 90 }
       cards:
         - parameterTransformId: (T) Triple Diamantglas
           url: cards/technology/triple-diamond-glass.webp
@@ -36,15 +36,15 @@ interaction:
     - id: policy
       type: action-card
       label:
-        de: Vorschriften
+        de: Regelung
         en: Policy
       slots:
-        - markerSlot: { id: policy-ms-1, x: 1415, y: 2029, angle: 0 }
-          cardSlot: { id: policy-cs-1, x: 1315, y: 1690, angle: 0 }
-        - markerSlot: { id: policy-ms-2, x: 1671, y: 2029, angle: 0 }
-          cardSlot: { id: policy-cs-2, x: 1571, y: 1690, angle: 0 }
-        - markerSlot: { id: policy-ms-3, x: 1927, y: 2029, angle: 0 }
-          cardSlot: { id: policy-cs-3, x: 1827, y: 1690, angle: 0 }
+        - markerSlot: { id: policy-ms-1, x: 1354, y: 2007, angle: 0 }
+          cardSlot: { id: policy-cs-1, x: 1244, y: 1644, angle: 0 }
+        - markerSlot: { id: policy-ms-2, x: 1610, y: 2007, angle: 0 }
+          cardSlot: { id: policy-cs-2, x: 1500, y: 1644, angle: 0 }
+        - markerSlot: { id: policy-ms-3, x: 1866, y: 2007, angle: 0 }
+          cardSlot: { id: policy-cs-3, x: 1756, y: 1644, angle: 0 }
       cards:
         - parameterTransformId: (P) Schul-Repair-Café
           url: cards/policy/school-repair-cafe.webp
@@ -69,11 +69,11 @@ interaction:
       label:
         de: Ereignisse
         en: Events
-      markerSlot: { id: event-ms-1, x: 2298, y: 190, angle: 180 }
+      markerSlot: { id: event-ms-1, x: 2157, y: 216, angle: 180 }
       cardSlots:
-        - { id: event-cs-1, x: 1633, y: 318, angle: 180 }
-        - { id: event-cs-2, x: 1891, y: 318, angle: 180 }
-        - { id: event-cs-3, x: 2147, y: 318, angle: 180 }
+        - { id: event-cs-1, x: 2027, y: 324, angle: 180 }
+        - { id: event-cs-2, x: 1771, y: 324, angle: 180 }
+        - { id: event-cs-3, x: 1515, y: 324, angle: 180 }
       cards:
         - parameterTransformId: (E) Weltweite Chip-Krise
           url: cards/event/global-chip-crisis.webp
@@ -91,9 +91,9 @@ interaction:
         de: Reduzieren
         en: Reduce
       slots:
-        - { id: reduce-ms-1, x: 1604, y: 1217, angle: 0 }
-        - { id: reduce-ms-2, x: 1859, y: 1229, angle: 0 }
-        - { id: reduce-ms-2, x: 2111, y: 1240, angle: 0 }
+        - { id: reduce-ms-1, x: 1521, y: 1205, angle: 0 }
+        - { id: reduce-ms-2, x: 1762, y: 1267, angle: 0 }
+        - { id: reduce-ms-2, x: 2012, y: 1301, angle: 0 }
       parameterTransformIds: [reduce, reduce, reduce]
     - id: reuse
       type: basic
@@ -103,9 +103,9 @@ interaction:
           verwenden
         en: Reuse
       slots:
-        - { id: reuse-ms-1, x: 3494, y: 866, angle: -90 }
-        - { id: reuse-ms-2, x: 3503, y: 1118, angle: -90 }
-        - { id: reuse-ms-3, x: 3513, y: 1373, angle: -90 }
+        - { id: reuse-ms-1, x: 3594, y: 892, angle: -90 }
+        - { id: reuse-ms-2, x: 3603, y: 1144, angle: -90 }
+        - { id: reuse-ms-3, x: 3613, y: 1399, angle: -90 }
       parameterTransformIds: [reuse, reuse, reuse]
     - id: repair
       type: basic
@@ -113,9 +113,9 @@ interaction:
         de: Reparieren
         en: Repair
       slots:
-        - { id: repair-ms-1, x: 1390, y: 927, angle: 180 }
-        - { id: repair-ms-2, x: 1634, y: 855, angle: 180 }
-        - { id: repair-ms-3, x: 1878, y: 783, angle: 180 }
+        - { id: repair-ms-1, x: 1304, y: 889, angle: 180 }
+        - { id: repair-ms-2, x: 1548, y: 816, angle: 180 }
+        - { id: repair-ms-3, x: 1791, y: 744, angle: 180 }
       parameterTransformIds: [repair, repair, repair]
     - id: refurbish
       type: basic
@@ -123,9 +123,9 @@ interaction:
         de: Erneuern
         en: Refurbish
       slots:
-        - { id: refurbish-ms-1, x: 2959, y: 1981, angle: 0 }
-        - { id: refurbish-ms-2, x: 3194, y: 1879, angle: 0 }
-        - { id: refurbish-ms-3, x: 3424, y: 1778, angle: 0 }
+        - { id: refurbish-ms-1, x: 2607, y: 1924, angle: 0 }
+        - { id: refurbish-ms-2, x: 2856, y: 1869, angle: 0 }
+        - { id: refurbish-ms-3, x: 3101, y: 1814, angle: 0 }
       parameterTransformIds: [refurbish, refurbish, refurbish]
     - id: recycle
       type: basic
@@ -135,7 +135,7 @@ interaction:
           verwerten
         en: Recycle
       slots:
-        - { id: recycle-ms-1, x: 465, y: 423, angle: 180 }
-        - { id: recycle-ms-2, x: 693, y: 306, angle: 180 }
-        - { id: recycle-ms-3, x: 916, y: 190, angle: 180 }
+        - { id: recycle-ms-1, x: 468, y: 472, angle: 180 }
+        - { id: recycle-ms-2, x: 671, y: 315, angle: 180 }
+        - { id: recycle-ms-3, x: 870, y: 161, angle: 180 }
       parameterTransformIds: [recycle, recycle, recycle]

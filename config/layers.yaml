@@ -4,7 +4,9 @@ layers:
   - modelVisualization
   - url: government_static_x794_y1705.webp
     condition: 'true'
-  - url: reduce_cellphone_x1647_y1346.webp
+  - url: reduce_cellphone_x1489_y1328.webp
     condition: 'true'
-  - url: reduce_walkingman_x1471_y1347.webp
+  - url: reduce_walkingman_x1368_y1303.webp
+    condition: 'true'
+  - url: factory_workermiddle_x521_y1110.webp
     condition: 'true'
