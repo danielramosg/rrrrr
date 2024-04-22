@@ -4,12 +4,14 @@ import { ref } from 'vue';
 import ControlPanelTabInitialParameters from './ControlPanelTabInitialParameters.vue';
 import ControlPanelTabParameterTransforms from './ControlPanelTabParameterTransforms.vue';
 import ControlPanelTabCharts from './ControlPanelTabCharts.vue';
+import ControlPanelTabRawData from './ControlPanelTabRawData.vue';
 import ControlPanelTabImportExport from './ControlPanelTabImportExport.vue';
 import ControlPanelTabMisc from './ControlPanelTabMisc.vue';
 
 const props = defineProps({ disabled: Boolean });
 
 const diagramsTabDisabled = ref(true);
+const rawDataTabDisabled = ref(true);
 </script>
 
 <template>
@@ -55,6 +57,22 @@ const diagramsTabDisabled = ref(true);
           }"
         >
           Diagrams
+        </button>
+        <button
+          class="nav-link"
+          id="nav-raw-data-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#nav-raw-data"
+          type="button"
+          role="tab"
+          aria-controls="nav-raw-data"
+          aria-selected="false"
+          v-on="{
+            'hidden.bs.tab': () => (rawDataTabDisabled = true),
+            'show.bs.tab': () => (rawDataTabDisabled = false),
+          }"
+        >
+          Raw data
         </button>
         <button
           class="nav-link"
@@ -110,6 +128,17 @@ const diagramsTabDisabled = ref(true);
       >
         <ControlPanelTabCharts
           :disabled="props.disabled || diagramsTabDisabled"
+        />
+      </div>
+      <div
+        class="tab-pane show"
+        id="nav-raw-data"
+        role="tabpanel"
+        aria-labelledby="nav-raw-data-tab"
+        tabindex="0"
+      >
+        <ControlPanelTabRawData
+          :disabled="props.disabled || rawDataTabDisabled"
         />
       </div>
       <div
