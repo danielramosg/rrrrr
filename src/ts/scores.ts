@@ -70,11 +70,14 @@ class Scores {
   }
 
   static all(record: Record) {
+    const expectedTime = Scores.expectedLifetime(record);
+
     const circularity = Scores.circularity(record);
     const happiness = Scores.happiness(record);
-    const expectedLifetime = Scores.expectedLifetime(record);
+    const expectedLifetime = expectedTime?.all;
+    const expectedUsetime = expectedTime?.use;
 
-    return { circularity, happiness, expectedLifetime };
+    return { circularity, happiness, expectedLifetime, expectedUsetime };
   }
 }
 
