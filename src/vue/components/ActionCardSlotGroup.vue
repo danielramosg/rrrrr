@@ -37,9 +37,15 @@ const { slotGroupConfig } = props;
 
 const {
   config: {
+    general: { primaryLanguage, secondaryLanguage },
     interaction: { actionCardDelayMs },
   },
 } = useConfigStore();
+
+const { getPrimary, getSecondary } = useConfigStore();
+
+const primaryLabel = getPrimary(slotGroupConfig.label);
+const secondaryLabel = getSecondary(slotGroupConfig.label);
 
 const { slotGroups } = useSlotGroupsStore();
 const slotGroup = slotGroups.find(({ id }) => id === slotGroupConfig.id);
@@ -123,6 +129,8 @@ slotsWithCard.forEach((slotWithCard) => {
       v-for="slotWithCard in slotsWithCard"
       :key="slotWithCard.slotConfig.markerSlot.id"
       :slot-group-id="slotGroupConfig.id"
+      :primary-label="primaryLabel"
+      :secondary-label="secondaryLabel"
       :slot-config="slotWithCard.slotConfig.markerSlot"
       @activate="slotWithCard.active.value = true"
       @deactivate="slotWithCard.active.value = false"

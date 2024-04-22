@@ -12,6 +12,9 @@ interaction:
   slotGroups:
     - id: technology
       type: action-card
+      label:
+        de: Technologie
+        en: Technology
       slots:
         - markerSlot: { id: technology-ms-1, x: 131, y: 744, angle: 90 }
           cardSlot: { id: technology-cs-1, x: 470, y: 644, angle: 90 }
@@ -32,6 +35,9 @@ interaction:
           url: cards/technology/software-upgrade.webp
     - id: policy
       type: action-card
+      label:
+        de: Vorschriften
+        en: Policy
       slots:
         - markerSlot: { id: policy-ms-1, x: 1415, y: 2029, angle: 0 }
           cardSlot: { id: policy-cs-1, x: 1315, y: 1690, angle: 0 }
@@ -60,6 +66,9 @@ interaction:
           url: cards/policy/handy-detox-day.webp
     - id: event
       type: event-card
+      label:
+        de: Ereignisse
+        en: Events
       markerSlot: { id: event-ms-1, x: 2298, y: 190, angle: 180 }
       cardSlots:
         - { id: event-cs-1, x: 1633, y: 318, angle: 180 }
@@ -78,6 +87,9 @@ interaction:
           url: cards/event/landfill-strike.webp
     - id: reduce
       type: basic
+      label:
+        de: Reduzieren
+        en: Reduce
       slots:
         - { id: reduce-ms-1, x: 1604, y: 1217, angle: 0 }
         - { id: reduce-ms-2, x: 1859, y: 1229, angle: 0 }
@@ -85,6 +97,11 @@ interaction:
       parameterTransformIds: [reduce, reduce, reduce]
     - id: reuse
       type: basic
+      label:
+        de: |
+          Wieder-
+          verwenden
+        en: Reuse
       slots:
         - { id: reuse-ms-1, x: 3494, y: 866, angle: -90 }
         - { id: reuse-ms-2, x: 3503, y: 1118, angle: -90 }
@@ -92,6 +109,9 @@ interaction:
       parameterTransformIds: [reuse, reuse, reuse]
     - id: repair
       type: basic
+      label:
+        de: Reparieren
+        en: Repair
       slots:
         - { id: repair-ms-1, x: 1390, y: 927, angle: 180 }
         - { id: repair-ms-2, x: 1634, y: 855, angle: 180 }
@@ -99,6 +119,9 @@ interaction:
       parameterTransformIds: [repair, repair, repair]
     - id: refurbish
       type: basic
+      label:
+        de: Erneuern
+        en: Refurbish
       slots:
         - { id: refurbish-ms-1, x: 2959, y: 1981, angle: 0 }
         - { id: refurbish-ms-2, x: 3194, y: 1879, angle: 0 }
@@ -106,6 +129,11 @@ interaction:
       parameterTransformIds: [refurbish, refurbish, refurbish]
     - id: recycle
       type: basic
+      label:
+        de: |
+          Wieder-
+          verwerten
+        en: Recycle
       slots:
         - { id: recycle-ms-1, x: 465, y: 423, angle: 180 }
         - { id: recycle-ms-2, x: 693, y: 306, angle: 180 }

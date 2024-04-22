@@ -4,6 +4,11 @@ import { stockIds, parameterIds } from '../circular-economy-model';
 const POSITIONAL_ASSET_REGEX = /_x[+-]?[0-9]+_y[+-]?[0-9]+\.[a-zA-Z0-9]+$/g;
 const AssetUrlSchema = v.string().matches(POSITIONAL_ASSET_REGEX);
 
+const I18nSchema = suretype(
+  { name: 'I18nConfig' },
+  v.object({}).additional(v.string()),
+);
+
 const ParameterTransformSchema = suretype(
   { name: 'ParameterTransformConfig' },
   v
@@ -72,6 +77,7 @@ const BasicSlotGroupSchema = suretype(
     .object({
       id: SlotGroupIdSchema.required(),
       type: v.string().enum('basic').required(),
+      label: I18nSchema.required(),
       slots: v.array(MarkerSlotSchema).required(),
       parameterTransformIds: v.array(v.string()).required(),
     })
@@ -84,6 +90,7 @@ const ActionCardSlotGroupSchema = suretype(
     .object({
       id: SlotGroupIdSchema.required(),
       type: v.string().enum('action-card').required(),
+      label: I18nSchema.required(),
       slots: v
         .array(
           v
@@ -105,6 +112,7 @@ const EventCardSlotGroupSchema = suretype(
     .object({
       id: SlotGroupIdSchema.required(),
       type: v.string().enum('event-card').required(),
+      label: I18nSchema.required(),
       markerSlot: MarkerSlotSchema.required(),
       cardSlots: v.array(CardSlotSchema).required(),
       cards: v.array(CardSchema).required(),

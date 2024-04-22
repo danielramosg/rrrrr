@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { defineStore } from 'pinia';
-import { inject } from 'vue';
-import type { ReadonlyConfig } from '../config/config-schema';
+import { computed, inject } from 'vue';
+import type { ReadonlyConfig, I18nConfig } from '../config/config-schema';
 import { CONFIG_INJECTION_KEY } from '../builtin-config';
 
 export const useConfigStore = defineStore('config', () => {
@@ -32,5 +32,21 @@ export const useConfigStore = defineStore('config', () => {
     return { x, y };
   };
 
-  return { config, assetBaseUrl, toAssetUrl, extractAssetPosition };
+  const translate = (i18nConfig: I18nConfig, languageCode: string) =>
+    typeof i18nConfig[languageCode] === 'string'
+      ? i18nConfig[languageCode]
+      : '<undefined>';
+  const getPrimary = (i18nConfig: I18nConfig) =>
+    computed(() => translate(i18nConfig, config.general.primaryLanguage));
+  const getSecondary = (i18nConfig: I18nConfig) =>
+    computed(() => translate(i18nConfig, config.general.secondaryLanguage));
+
+  return {
+    config,
+    assetBaseUrl,
+    toAssetUrl,
+    extractAssetPosition,
+    getPrimary,
+    getSecondary,
+  };
 });

@@ -197,6 +197,10 @@ definitions:
       - id
       - script
     additionalProperties: false
+  I18nConfig:
+    type: object
+    additionalProperties:
+      type: string
   MarkerSlotConfig:
     type: object
     properties:
@@ -224,6 +228,8 @@ definitions:
         type: string
         enum:
           - basic
+      label:
+        $ref: '#/definitions/I18nConfig'
       slots:
         type: array
         items:
@@ -235,6 +241,7 @@ definitions:
     required:
       - id
       - type
+      - label
       - slots
       - parameterTransformIds
     additionalProperties: false
@@ -276,6 +283,8 @@ definitions:
         type: string
         enum:
           - action-card
+      label:
+        $ref: '#/definitions/I18nConfig'
       slots:
         type: array
         items:
@@ -296,6 +305,7 @@ definitions:
     required:
       - id
       - type
+      - label
       - slots
       - cards
     additionalProperties: false
@@ -309,6 +319,8 @@ definitions:
         type: string
         enum:
           - event-card
+      label:
+        $ref: '#/definitions/I18nConfig'
       markerSlot:
         $ref: '#/definitions/MarkerSlotConfig'
       cardSlots:
@@ -322,6 +334,7 @@ definitions:
     required:
       - id
       - type
+      - label
       - markerSlot
       - cardSlots
       - cards

@@ -4,6 +4,8 @@
  */
 
 import { Tab } from 'bootstrap';
+import '@fontsource/jost/latin-500.css'; // Medium weight
+import '@fontsource/jost/latin-700.css'; // Bold weight
 
 const sideEffects = {
   bootstrap: { Tab },

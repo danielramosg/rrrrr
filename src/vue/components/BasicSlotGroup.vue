@@ -6,6 +6,7 @@ import { ref, watchEffect } from 'vue';
 
 import type { BasicSlotGroupConfig } from '../../ts/config/config-schema';
 
+import { useConfigStore } from '../../ts/stores/config';
 import { useSlotGroupsStore } from '../../ts/stores/slot-groups';
 import MarkerSlot from './MarkerSlot.vue';
 
@@ -13,6 +14,11 @@ const props = defineProps<{
   readonly slotGroupConfig: DeepReadonly<BasicSlotGroupConfig>;
 }>();
 const { slotGroupConfig } = props;
+
+const { getPrimary, getSecondary } = useConfigStore();
+
+const primaryLabel = getPrimary(slotGroupConfig.label);
+const secondaryLabel = getSecondary(slotGroupConfig.label);
 
 const { slotGroups } = useSlotGroupsStore();
 const slotGroup = slotGroups.find(({ id }) => id === slotGroupConfig.id);
@@ -33,6 +39,8 @@ watchEffect(() =>
       v-for="slotConfig in slotGroupConfig.slots"
       :key="slotConfig.id"
       :slot-group-id="slotGroupConfig.id"
+      :primary-label="primaryLabel"
+      :secondary-label="secondaryLabel"
       :slot-config="slotConfig"
       @activate="numActive += 1"
       @deactivate="numActive -= 1"
