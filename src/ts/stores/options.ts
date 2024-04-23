@@ -25,10 +25,10 @@ export const useOptionStore = defineStore('options', () => {
   const developerMode = (searchParams.get('devMode') ?? 'false') === 'true';
 
   const highlightDerivatives =
-    (searchParams.get('highlightDerivatives') ?? 'false') === 'true';
+    (searchParams.get('highlightDerivatives') ?? 'true') === 'true';
 
   const markerSlotLabels =
-    (searchParams.get('markerSlotLabels') ?? 'false') === 'true';
+    (searchParams.get('markerSlotLabels') ?? 'true') === 'true';
 
   const result = {
     useTuioMarkers,
