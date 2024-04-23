@@ -31,10 +31,10 @@
      id="dispose-broken" /><path
      style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      d="m 2882.7461,1152.5176 c -207.7881,137.0227 -404.4584,208.998 -625.9052,271.2894 -275.201,77.4121 -579.936,77.7672 -875.6728,-81.3935"
-     id="abandon" /><path
+     id="acquire-used" /><path
      style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      d="m 2871.8167,1126.665 c -207.7881,137.0227 -407.2572,211.7968 -628.704,274.0882 -275.201,77.4121 -557.5454,77.7673 -853.2822,-81.3934"
-     id="acquire-used" /><path
+     id="abandon" /><path
      style="fill:none;stroke:#000000;stroke-width:4.31703px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      d="M 2278.0371,685.99143 C 2183.5288,604.43478 2069.4223,570.85172 1947.881,542.76999"
      id="repair" /><path
