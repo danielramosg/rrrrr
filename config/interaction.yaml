@@ -50,8 +50,8 @@ interaction:
           url: cards/policy/school-repair-cafe.webp
         - parameterTransformId: (P) Extreme Öko-Steuer
           url: cards/policy/extreme-eco-tax.webp
-        - parameterTransformId: (P) Handy-Abo
-          url: cards/policy/handy-abo.webp
+        # - parameterTransformId: (P) Handy-Abo
+        #   url: cards/policy/handy-abo.webp
         - parameterTransformId: (P) Recycle-Prämie
           url: cards/policy/recycle-bonus.webp
         - parameterTransformId: (P) Wartungsvertrag
