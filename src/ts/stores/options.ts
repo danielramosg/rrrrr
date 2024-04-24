@@ -25,7 +25,10 @@ export const useOptionStore = defineStore('options', () => {
   const developerMode = (searchParams.get('devMode') ?? 'false') === 'true';
 
   const highlightDerivatives =
-    (searchParams.get('highlightDerivatives') ?? 'false') === 'true';
+    (searchParams.get('highlightDerivatives') ?? 'true') === 'true';
+
+  const markerSlotLabels =
+    (searchParams.get('markerSlotLabels') ?? 'true') === 'true';
 
   const result = {
     useTuioMarkers,
@@ -36,6 +39,7 @@ export const useOptionStore = defineStore('options', () => {
     autoStart,
     developerMode,
     highlightDerivatives,
+    markerSlotLabels,
   };
 
   return result as DeepReadonly<typeof result>;

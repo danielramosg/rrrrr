@@ -31,13 +31,14 @@ function createTemplateFiller(
 
 const fillTemplate = createTemplateFiller`
 // This file was auto-generated from the InsightMaker model. Do not edit it manually.
-import {
-  Model,
+import type {
   ModelElementObject,
   ModelElementId,
   ModelElementArray,
   ModelRecord,
 } from './model';
+
+import { Model } from './model';
 
 ${'stockIdsString'}
 

@@ -1,11 +1,12 @@
 // This file was auto-generated from the InsightMaker model. Do not edit it manually.
-import { Model } from './model';
 import type {
   ModelElementObject,
   ModelElementId,
   ModelElementArray,
   ModelRecord,
 } from './model';
+
+import { Model } from './model';
 
 const stockIds = [
   'capacityOfNewlyProducedPhones',
@@ -325,17 +326,18 @@ class CircularEconomyModel extends Model<
         supplyOfHibernatingPhonesForRefurbishment,
         demandForRefurbishment,
       );
+    const supplyOfBrokenPhonesForRepair =
+      (repairIncentive / (repairIncentive + disposeIncentive)) *
+      supplyOfBrokenPhones;
     const demandForRepair = Math.max(
       capacityOfRepairedPhones - supplyOfRepairedPhones + acquireRepaired,
       0,
     );
-    const repair = repairRate * Math.min(supplyOfBrokenPhones, demandForRepair);
+    const repair =
+      repairRate * Math.min(supplyOfBrokenPhonesForRepair, demandForRepair);
     const repairShopCapcityAdjustment =
       capacityAdjustmentRate *
       (demandForRepairedPhones - capacityOfRepairedPhones);
-    const supplyOfBrokenPhonesForRepair =
-      (repairIncentive / (repairIncentive + disposeIncentive)) *
-      supplyOfBrokenPhones;
 
     const variables = {
       demandForNaturalResources,

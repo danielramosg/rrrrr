@@ -5,8 +5,6 @@ import {toRaw} from 'vue';
 import type { Ref } from 'vue';
 
 import { computed } from 'vue';
-import '@fontsource/jost/latin-500.css'; // Medium weight
-import '@fontsource/jost/latin-700.css'; // Bold weight
 
 import { useConfigStore } from '../../ts/stores/config';
 import { useModelStore } from '../../ts/stores/model';
@@ -14,8 +12,10 @@ import { Scores } from '../../ts/scores';
 
 const {
   config: { general },
+  getPrimary,
+  getSecondary,
 } = useConfigStore();
-const { primaryLanguage, secondaryLanguage, scoreLabels } = general;
+const { scoreLabels } = general;
 const { circularity: circularityLabels, happiness: happinessLabels } =
   scoreLabels;
 
@@ -23,19 +23,19 @@ const modelStore = useModelStore();
 
 interface ScoreInfo {
   score: Ref<number>;
-  primaryLabel: string;
-  secondaryLabel: string;
+  primaryLabel: Ref<string>;
+  secondaryLabel: Ref<string>;
 }
 
 const circularity: ScoreInfo = {
   score: computed(() => Scores.circularity(modelStore.record)),
-  primaryLabel: circularityLabels[primaryLanguage],
-  secondaryLabel: circularityLabels[secondaryLanguage],
+  primaryLabel: getPrimary(circularityLabels),
+  secondaryLabel: getSecondary(circularityLabels),
 };
 const happiness: ScoreInfo = {
   score: computed(() => Scores.happiness(modelStore.record)),
-  primaryLabel: happinessLabels[primaryLanguage],
-  secondaryLabel: happinessLabels[secondaryLanguage],
+  primaryLabel: getPrimary(happinessLabels),
+  secondaryLabel: getSecondary(happinessLabels),
 };
 
 /** DEBUG / ADJUSTMENT FUNCTIONS */
@@ -83,14 +83,18 @@ const format = (score: number) => `${(score * 100).toFixed(fractionDigits)}%`;
 
 <template>
   <div class="scores">
-    <table>
+    <table class="score-table">
       <template v-for="{ score, primaryLabel, secondaryLabel } in scores">
         <tr>
-          <td>
-            <span class="primary">{{ primaryLabel }}&nbsp;</span
-            ><span class="secondary">{{ secondaryLabel }}</span>
+          <td class="label-column">
+            <span class="primary-text">{{ primaryLabel.value }}&nbsp;</span
+            ><br /><span class="secondary-text">{{
+              secondaryLabel.value
+            }}</span>
           </td>
-          <td class="primary score-column">{{ format(score.value) }}</td>
+          <td class="primary-text score-column">
+            <span class="score-value">{{ format(score.value) }}</span>
+          </td>
         </tr>
       </template>
     </table>
@@ -101,32 +105,41 @@ const format = (score: number) => `${(score * 100).toFixed(fractionDigits)}%`;
 .scores {
   display: table;
   table-layout: fixed;
-  font-size: 38px;
+  margin: 44px;
+  width: 376px;
+  height: 376px;
+  background-color: black;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  line-height: 1.2;
+  text-transform: uppercase;
   position: absolute;
-  padding-bottom: 1.4ex;
-  padding-right: 2.5ex;
+}
 
-  & .table-row {
-    display: table-row;
-  }
+.score-table {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-  & .table-cell {
-    display: table-cell;
-  }
+table {
+  border-collapse: separate;
+  border-spacing: 1ex 1em;
+}
 
-  & .score-column {
-    width: 9ex;
-    text-align: right;
-  }
+td {
+  vertical-align: top;
+}
 
-  & .primary {
-    font-family: 'Jost', sans-serif;
-    font-weight: 700;
-  }
+.score-column {
+  text-align: right;
+}
 
-  & .secondary {
-    font-family: 'Jost', sans-serif;
-    font-weight: 500;
-  }
+.score-value {
+  display: inline-block;
+  width: 8ex;
+  text-align: right;
 }
 </style>

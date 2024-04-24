@@ -42,8 +42,8 @@ const appStore = useAppStore();
 <style scoped lang="scss">
 .card-slot {
   position: absolute;
-  width: 202px;
-  height: 275px;
+  width: 220px;
+  height: 300px;
   transform-origin: top left;
   --card-x-px: calc(1px * var(--card-x));
   --card-y-px: calc(1px * var(--card-y));

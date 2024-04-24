@@ -18,6 +18,8 @@ import { Circle } from '../../ts/util/geometry/circle';
 
 const props = defineProps<{
   readonly slotGroupId: string;
+  readonly primaryLabel: string;
+  readonly secondaryLabel: string;
   readonly slotConfig: DeepReadonly<SlotConfig>;
 }>();
 
@@ -126,7 +128,11 @@ watch(
       class="circle"
       :class="{ active: isActive, inactive: !isActive }"
     ></div>
-    <div v-if="appStore.isDeveloperModeActive" class="label">
+    <div v-if="appStore.showMarkerSlotLabels" class="label">
+      <div class="primary-text">{{ props.primaryLabel }}</div>
+      <div class="secondary-text">{{ props.secondaryLabel }}</div>
+    </div>
+    <div v-if="appStore.isDeveloperModeActive" class="dev-label">
       {{ slotGroupId }}<br />{{ slotConfig.id }}
     </div>
   </div>
@@ -178,6 +184,17 @@ watch(
 
   & .label {
     position: absolute;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: pre-line;
+    font-size: 20px;
+    line-height: 1.2;
+    color: black;
+  }
+
+  & .dev-label {
+    position: absolute;
+    background-color: #fffa;
   }
 
   * {

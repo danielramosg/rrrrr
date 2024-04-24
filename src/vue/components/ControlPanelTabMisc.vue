@@ -8,6 +8,7 @@ const togglePlayingBtnId = `btn-toggle-playing-${uuidv4()}`;
 const toggleFullscreenBtnId = `btn-toggle-playing-${uuidv4()}`;
 const toggleDeveloperModeBtnId = `btn-toggle-playing-${uuidv4()}`;
 const toggleHighlightDerivativesBtnId = `btn-toggle-playing-${uuidv4()}`;
+const toggleMarkerSlotLabelsBtnId = `btn-toggle-marker-slot-labels-${uuidv4()}`;
 
 const appStore = useAppStore();
 
@@ -22,6 +23,11 @@ const toggleDeveloperMode = () =>
 const toggleHighlightDerivatives = () =>
   appStore.$patch({
     highlightDerivatives: !appStore.highlightDerivatives,
+  });
+
+const toggleMarkerSlotLabels = () =>
+  appStore.$patch({
+    showMarkerSlotLabels: !appStore.showMarkerSlotLabels,
   });
 </script>
 
@@ -75,5 +81,18 @@ const toggleHighlightDerivatives = () =>
     :for="toggleHighlightDerivativesBtnId"
     @click="toggleHighlightDerivatives"
     >Highlight derivatives ({{ HOTKEYS.highlightDerivatives.label }})</label
+  >
+  <input
+    type="checkbox"
+    class="btn-check"
+    :id="toggleMarkerSlotLabelsBtnId"
+    :class="() => (appStore.showMarkerSlotLabels ? 'active' : '')"
+    autocomplete="off"
+  />
+  <label
+    class="btn btn-primary"
+    :for="toggleMarkerSlotLabelsBtnId"
+    @click="toggleMarkerSlotLabels"
+    >Show marker slot labels</label
   >
 </template>

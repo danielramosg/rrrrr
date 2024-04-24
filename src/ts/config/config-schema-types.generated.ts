@@ -65,6 +65,10 @@ export interface ParameterTransformConfig {
   script: string;
 }
 
+export interface I18nConfig {
+  [key: string]: string;
+}
+
 export interface MarkerSlotConfig {
   id: string;
   x: number;
@@ -75,6 +79,7 @@ export interface MarkerSlotConfig {
 export interface BasicSlotGroupConfig {
   id: string;
   type: 'basic';
+  label: I18nConfig;
   slots: MarkerSlotConfig[];
   parameterTransformIds: string[];
 }
@@ -94,6 +99,7 @@ export interface CardConfig {
 export interface ActionCardSlotGroupConfig {
   id: string;
   type: 'action-card';
+  label: I18nConfig;
   slots: {
     markerSlot: MarkerSlotConfig;
     cardSlot: CardSlotConfig;
@@ -104,6 +110,7 @@ export interface ActionCardSlotGroupConfig {
 export interface EventCardSlotGroupConfig {
   id: string;
   type: 'event-card';
+  label: I18nConfig;
   markerSlot: MarkerSlotConfig;
   cardSlots: CardSlotConfig[];
   cards: CardConfig[];
